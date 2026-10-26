@@ -11,6 +11,16 @@ const Store={
     st.botes=st.botes||{};st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.stock=st.stock||{};st.pjs=st.pjs||{};
     for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.vales=p.vales||0}
     for(const k in st.botes){st.botes[k].aportes=st.botes[k].aportes||{}}
+    // Hojas de personaje: lo que falte (o Firebase haya borrado por vacío) vuelve a su valor inicial
+    if(typeof hojaInicial==="function"){
+      st.hojas=st.hojas||{};
+      let saved=false;
+      const fill=(d,v)=>{if(Array.isArray(d))return Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):saved?[]:d);
+        if(d&&typeof d==="object"){const o={...(v||{})};for(const k in d)o[k]=fill(d[k],o[k]);return o}
+        return v===undefined||v===null?d:v};
+      // Una hoja ya guardada con listas vacías no recupera las cartas iniciales
+      for(const p of PJS){saved=!!st.hojas[p.id];st.hojas[p.id]=fill(hojaInicial(p.id),st.hojas[p.id])}
+    }
     // Lugares y tiendas nuevos aparecen con sus valores iniciales sin tocar los ya guardados
     if(typeof mundoInicial==="function"){
       const base=mundoInicial(),m=st.mundo||{};
@@ -37,7 +47,7 @@ const Store={
     }catch(e){console.error(e);this.mode="error";this.emit()}
   },
   async mutate(fn){
-    if(this.mode==="local"){const n=fn(this.state?structuredClone(this.state):null);this.state=n;this.emit();return}
+    if(this.mode==="local"){const n=fn(this.state?structuredClone(this.state):null);this.state=this.fix(n);this.emit();return}
     if(!this.ref)throw new this.RuleError("Sin conexión con la tienda.");
     let ruleErr=null;
     const r=await this.ref.transaction(cur=>{

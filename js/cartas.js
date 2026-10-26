@@ -1,11 +1,14 @@
-/* Cartas de equipo y botín al estilo de Daggerheart: arte arriba, filete dorado con
-   etiqueta y medallón (hexágono de daño, escudo de puntuación o precio en vales), texto abajo.
-   Si existe ARTE[id] (ruta a una imagen), se usa en lugar del icono. */
+/* Cartas al estilo de Daggerheart. Arriba, una escena pintada con SVG (cielo del color del tipo,
+   halo, círculo rúnico, niebla) y la silueta del objeto; en medio, el filete dorado con etiqueta y
+   medallón; abajo, el texto sobre papel. Un toque en la carta muestra el texto entero.
+   Si existe ARTE[id] (ruta a una imagen), se usa como ilustración. */
 const ARTE={}; // p. ej. ARTE["baston-corto"]="img/equipo/baston-corto.png"
 
 const escC=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
+let artSeq=0;
 
-// Siluetas en una caja de 100×100, dibujadas en vertical; la carta las inclina.
+// Siluetas en una caja de 100×100
 const GLYPH={
  espada:'<path d="M50 4 L56 62 L50 70 L44 62Z"/><rect x="33" y="62" width="34" height="6" rx="2"/><rect x="47" y="68" width="6" height="20" rx="2"/><circle cx="50" cy="92" r="5"/>',
  daga:'<path d="M50 22 L56 66 L50 72 L44 66Z"/><rect x="37" y="66" width="26" height="5" rx="2"/><rect x="47" y="71" width="6" height="16" rx="2"/><circle cx="50" cy="91" r="4"/>',
@@ -23,7 +26,17 @@ const GLYPH={
  pocion:'<rect x="42" y="6" width="16" height="10" rx="2"/><path d="M44 16 L44 34 C26 42 20 56 22 70 C25 88 75 88 78 70 C80 56 74 42 56 34 L56 16Z"/><path d="M26 62 C40 56 60 68 74 60" fill="none" stroke-width="2"/>',
  receta:'<rect x="22" y="16" width="56" height="70" rx="3"/><rect x="16" y="10" width="68" height="12" rx="6"/><rect x="16" y="80" width="68" height="12" rx="6"/><path d="M32 36 H68 M32 48 H68 M32 60 H58" fill="none" stroke-width="2.5"/>',
  gema:'<path d="M30 14 H70 L88 36 L50 92 L12 36Z"/><path d="M12 36 H88 M30 14 L40 36 L50 92 L60 36 L70 14" fill="none" stroke-width="2"/>',
- objeto:'<path d="M34 24 C34 12 66 12 66 24 L64 30 C82 40 88 60 82 78 C76 94 24 94 18 78 C12 60 18 40 36 30Z"/><path d="M34 30 H66" fill="none" stroke-width="3"/><circle cx="50" cy="62" r="9" fill="none" stroke-width="3"/>'
+ objeto:'<path d="M34 24 C34 12 66 12 66 24 L64 30 C82 40 88 60 82 78 C76 94 24 94 18 78 C12 60 18 40 36 30Z"/><path d="M34 30 H66" fill="none" stroke-width="3"/><circle cx="50" cy="62" r="9" fill="none" stroke-width="3"/>',
+ // Emblemas de dominio
+ Arcana:'<circle cx="50" cy="50" r="30" fill="none" stroke-width="4"/><path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42Z"/>',
+ Blade:'<path d="M50 4 L57 60 L50 68 L43 60Z"/><rect x="30" y="60" width="40" height="7" rx="2"/><rect x="46" y="67" width="8" height="20" rx="2"/><path d="M18 30 L82 30" fill="none" stroke-width="3"/>',
+ Bone:'<path d="M30 20 a9 9 0 1 1 10 -6 L66 60 a9 9 0 1 1 6 10 L40 30 a9 9 0 1 1 -10 -10Z"/><path d="M70 20 a9 9 0 1 0 -10 -6 L34 60 a9 9 0 1 0 -6 10 L60 30 a9 9 0 1 0 10 -10Z"/>',
+ Codex:'<path d="M12 22 C26 16 40 16 50 24 C60 16 74 16 88 22 V82 C74 76 60 76 50 84 C40 76 26 76 12 82Z"/><path d="M50 24 V84" fill="none" stroke-width="3"/>',
+ Grace:'<path d="M50 88 C20 66 8 50 8 34 C8 20 18 12 30 12 C40 12 46 18 50 26 C54 18 60 12 70 12 C82 12 92 20 92 34 C92 50 80 66 50 88Z"/>',
+ Midnight:'<path d="M62 8 C36 12 20 32 20 54 C20 76 38 92 60 92 C72 92 82 88 90 80 C60 82 42 62 46 38 C48 24 54 14 62 8Z"/><circle cx="74" cy="30" r="4"/><circle cx="84" cy="50" r="2.5"/>',
+ Sage:'<path d="M50 94 C50 70 50 50 50 30" fill="none" stroke-width="4"/><path d="M50 60 C20 60 12 34 14 14 C38 14 52 30 50 60Z"/><path d="M50 50 C76 50 88 30 86 10 C64 10 50 24 50 50Z"/>',
+ Splendor:'<circle cx="50" cy="50" r="20"/><path d="M50 4 V20 M50 80 V96 M4 50 H20 M80 50 H96 M17 17 L28 28 M72 72 L83 83 M83 17 L72 28 M28 72 L17 83" fill="none" stroke-width="5" stroke-linecap="round"/>',
+ Valor:'<path d="M50 6 L86 18 C86 56 72 80 50 94 C28 80 14 56 14 18Z"/><path d="M50 26 L56 44 L74 44 L60 56 L66 74 L50 62 L34 74 L40 56 L26 44 L44 44Z" fill="#fff" fill-opacity=".35" stroke="none"/>'
 };
 function glyphFor(kind,id,it){
   if(kind==="armadura")return "armadura";
@@ -34,61 +47,102 @@ function glyphFor(kind,id,it){
   for(const [re,g] of m)if(new RegExp(re).test(id))return g;
   return "espada";
 }
-const HAND='<path d="M8 30 L8 12 C8 9 12 9 12 12 L12 22 L12 7 C12 4 16 4 16 7 L16 21 L16 5 C16 2 20 2 20 5 L20 21 L20 8 C20 5 24 5 24 8 L24 26 L26 22 C28 18 32 20 30 24 L25 36 C23 40 20 42 16 42 L14 42 C10 42 8 38 8 34Z"/>';
-const SHIELD='<path d="M12 2 L22 5 C22 15 18 21 12 25 C6 21 2 15 2 5Z"/>';
-
-// medal: {kind:"hex", big, small} | {kind:"shield", big, small}
 const UPRIGHT=new Set(["armadura","pocion","receta","gema","objeto","escudo"]);
-function cardSVG(glyph,img,banner,medal){
-  const rot=UPRIGHT.has(glyph)?0:38;
-  const art=img?`<image href="${escC(img)}" x="70" y="20" width="600" height="560" preserveAspectRatio="xMidYMid meet"/>`
-    :`<g transform="translate(370 300) rotate(${rot}) translate(-210 -210) scale(4.2)" fill="url(#silver)" stroke="#5d5a66" stroke-width="1.4" stroke-linejoin="round" filter="url(#lift)">${GLYPH[glyph]}</g>`;
+// Tono de cada escena: [halo, cielo]
+const TINT={fis:["#F2913A","#3B2350"],mag:["#7C6CFF","#241A52"],arm:["#8FB6E8","#22304F"],c:["#5FC9A8","#173F45"],
+  pc:["#6BB3FF","#1B3358"],r:["#E06CFF","#3A1650"],rec:["#F5C35A","#4A2E14"]};
+
+// Escena pintada: cielo, halo, círculo rúnico, chispas, niebla y silueta (o imagen)
+function scene(w,h,tint,glyph,img,opts={}){
+  const k="a"+(artSeq++),[glow,sky]=tint,cx=w/2,cy=opts.cy??h*.5,R=Math.min(w,h)*.36;
+  let sparks="";for(let i=0;i<14;i++){const a=(i*137.5)%360*Math.PI/180,r=R*(.7+((i*53)%40)/50);
+    sparks+=`<circle cx="${(cx+Math.cos(a)*r).toFixed(1)}" cy="${(cy+Math.sin(a)*r*.8).toFixed(1)}" r="${(1.5+(i%3)).toFixed(1)}" fill="#FFF3D6" opacity="${(.35+(i%4)*.15).toFixed(2)}"/>`}
+  const ticks=Array.from({length:24},(_,i)=>{const a=i*15*Math.PI/180;return `M${(cx+Math.cos(a)*R*1.02).toFixed(1)} ${(cy+Math.sin(a)*R*1.02).toFixed(1)} L${(cx+Math.cos(a)*R*(i%2?1.07:1.12)).toFixed(1)} ${(cy+Math.sin(a)*R*(i%2?1.07:1.12)).toFixed(1)}`}).join(" ");
+  const rot=UPRIGHT.has(glyph)||opts.emblem?0:38,sc=(opts.size??R*2.3)/100;
+  const art=img?`<image href="${escC(img)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`
+   :`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#FAC472" stroke-opacity=".35" stroke-width="2"/>
+    <circle cx="${cx}" cy="${cy}" r="${R*.82}" fill="none" stroke="#FAC472" stroke-opacity=".18" stroke-width="1.5" stroke-dasharray="3 7"/>
+    <path d="${ticks}" stroke="#FAC472" stroke-opacity=".35" stroke-width="2"/>${sparks}
+    <g transform="translate(${cx} ${cy}) rotate(${rot}) scale(${sc}) translate(-50 -50)" fill="url(#${k}m)" stroke="${opts.emblem?"#FFF3D6":"#3A3550"}" stroke-width="${opts.emblem?1.2:1.6}" stroke-linejoin="round" filter="url(#${k}s)">${GLYPH[glyph]}</g>`;
+  return `<defs>
+    <radialGradient id="${k}g" cx="50%" cy="${(cy/h*100).toFixed(0)}%" r="70%"><stop offset="0" stop-color="${glow}" stop-opacity=".95"/><stop offset=".45" stop-color="${glow}" stop-opacity=".25"/><stop offset="1" stop-color="${sky}" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${k}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky}"/><stop offset="1" stop-color="#140D24"/></linearGradient>
+    <linearGradient id="${k}m" x1="0" y1="0" x2="1" y2="1">${opts.emblem?`<stop offset="0" stop-color="#FFE6A8"/><stop offset=".6" stop-color="#F9A72B"/><stop offset="1" stop-color="#B9661A"/>`:`<stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#D5D2DC"/><stop offset="1" stop-color="#8A8698"/>`}</linearGradient>
+    <filter id="${k}s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="${glow}" flood-opacity=".9"/></filter>
+   </defs>
+   <rect width="${w}" height="${h}" fill="url(#${k}b)"/><rect width="${w}" height="${h}" fill="url(#${k}g)"/>
+   <path d="M0 ${h*.78} C${w*.2} ${h*.7} ${w*.35} ${h*.84} ${w*.55} ${h*.76} S${w*.85} ${h*.7} ${w} ${h*.8} V${h} H0Z" fill="#140D24" opacity=".55"/>
+   <path d="M0 ${h*.88} C${w*.25} ${h*.82} ${w*.5} ${h*.92} ${w*.7} ${h*.86} S${w*.9} ${h*.84} ${w} ${h*.9} V${h} H0Z" fill="#140D24" opacity=".8"/>
+   ${art}`;
+}
+
+// medal: {kind:"hex"|"shield", big, small}
+function cardSVG(glyph,img,banner,medal,tint){
   const badge=medal.kind==="shield"
-    ?`<path d="M580 545 H720 V655 L650 700 L580 655Z" fill="#fff" stroke="url(#gold)" stroke-width="12" stroke-linejoin="round"/>
+    ?`<path d="M580 545 H720 V655 L650 700 L580 655Z" fill="#FBF7EE" stroke="url(#gold)" stroke-width="12" stroke-linejoin="round"/>
       <text x="650" y="622" class="m-big" text-anchor="middle">${escC(medal.big)}</text><text x="650" y="658" class="m-small" style="font-size:22px" text-anchor="middle">${escC(medal.small)}</text>`
-    :`<path d="M610 548 H690 L735 618 L690 688 H610 L565 618Z" fill="#fff" stroke="url(#gold)" stroke-width="12" stroke-linejoin="round"/>
+    :`<path d="M610 548 H690 L735 618 L690 688 H610 L565 618Z" fill="#FBF7EE" stroke="url(#gold)" stroke-width="12" stroke-linejoin="round"/>
       <text x="650" y="${medal.small?612:632}" class="m-big" text-anchor="middle">${escC(medal.big)}</text>${medal.small?`<text x="650" y="652" class="m-small" text-anchor="middle">${escC(medal.small)}</text>`:""}`;
   return `<svg class="cframe" viewBox="0 0 740 700" aria-hidden="true">
-   <defs>
-    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FAC472"/><stop offset=".5" stop-color="#F9A72B"/><stop offset="1" stop-color="#E08A1E"/></linearGradient>
-    <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#C9C7CF"/><stop offset="1" stop-color="#8E8B97"/></linearGradient>
-    <filter id="lift" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="3" stdDeviation="2" flood-color="#281C45" flood-opacity=".35"/></filter>
-   </defs>
-   ${art}
+   <defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FAC472"/><stop offset=".5" stop-color="#F9A72B"/><stop offset="1" stop-color="#E08A1E"/></linearGradient></defs>
+   <svg width="740" height="618" viewBox="0 0 740 618">${scene(740,618,tint,glyph,img,{cy:290})}</svg>
+   <rect y="618" width="740" height="82" fill="#FBF7EE"/>
    <g fill="none" stroke="url(#gold)" stroke-linejoin="miter">
     <path d="M0 455 L52 512 L52 612" stroke-width="7"/>
     <path d="M0 560 L50 620 L570 620" stroke-width="9"/>
     <path d="M96 600 L320 600" stroke-width="4"/>
-    <path d="M730 612 H740" stroke-width="9"/>
+    <path d="M730 618 H740" stroke-width="9"/>
    </g>
    <path d="M76 540 H292 L304 552 V576 L292 588 H76 L64 576 V552Z" fill="url(#gold)"/>
    <text x="184" y="575" class="c-banner" text-anchor="middle">${escC(banner)}</text>
    ${badge}
   </svg>`;
 }
+const HAND='<path d="M8 30 L8 12 C8 9 12 9 12 12 L12 22 L12 7 C12 4 16 4 16 7 L16 21 L16 5 C16 2 20 2 20 5 L20 21 L20 8 C20 5 24 5 24 8 L24 26 L26 22 C28 18 32 20 30 24 L25 36 C23 40 20 42 16 42 L14 42 C10 42 8 38 8 34Z"/>';
+const SHIELD='<path d="M12 2 L22 5 C22 15 18 21 12 25 C6 21 2 15 2 5Z"/>';
 function hands(n){return `<span class="hands" aria-label="${n===2?"Dos manos":"Una mano"}">${`<svg viewBox="0 0 34 44">${HAND}</svg>`.repeat(n)}</span>`}
+// "Fiable: +1..." → nombre del rasgo en negrita, como en las cartas
+function fmtFeature(f){const i=f.indexOf(":");return i>0&&i<24?`<b>${escC(f.slice(0,i))}:</b>${escC(f.slice(i+1))}`:escC(f)}
 
 function weaponCard(w){
   const tipo=w.g==="sec"?"Arma secundaria":"Arma principal";
   const [dado,tipoD]=w.d.split(" ");
-  return `<div class="dh-card">${cardSVG(glyphFor("arma",w.id),ARTE[w.id],"EQUIPO",{kind:"hex",big:dado,small:tipoD==="mág"?"mágico":"físico"})}
+  return `<div class="dh-card" tabindex="0">${cardSVG(glyphFor("arma",w.id),ARTE[w.id],"EQUIPO",{kind:"hex",big:dado,small:tipoD==="mág"?"mágico":"físico"},TINT[tipoD==="mág"?"mag":"fis"])}
    <div class="cbody"><h4>${escC(w.n)}</h4><div class="ctype">${tipo}${w.hf?" · H&amp;F":""}</div>
-   <div class="ctrait">${escC(w.tr)}, ${escC(w.a)}</div>${w.f?`<p>${fmtFeature(w.f)}</p>`:""}</div>${hands(w.h)}</div>`;
+   <div class="ctrait">${escC(w.tr)}, ${escC(w.a)}</div>${w.f?`<p class="clamp">${fmtFeature(w.f)}</p>`:""}</div>${hands(w.h)}</div>`;
 }
 function armorCard(a){
-  return `<div class="dh-card">${cardSVG("armadura",ARTE[a.id],"EQUIPO",{kind:"shield",big:a.sc,small:"puntuación"})}
+  return `<div class="dh-card" tabindex="0">${cardSVG("armadura",ARTE[a.id],"EQUIPO",{kind:"shield",big:a.sc,small:"puntuación"},TINT.arm)}
    <div class="cbody"><h4>${escC(a.n)}</h4><div class="ctype">Armadura${a.hf?" · H&amp;F":""}</div>
-   <p><b>Umbrales base:</b> ${escC(a.u.replace(/ /g,""))}</p>${a.f?`<p>${fmtFeature(a.f)}</p>`:""}</div>
+   <div class="ctrait">Umbrales ${escC(a.u.replace(/ /g,""))}</div>${a.f?`<p class="clamp">${fmtFeature(a.f)}</p>`:""}</div>
    <span class="slots" aria-label="${a.sc} espacios de armadura">${`<svg viewBox="0 0 24 27">${SHIELD}</svg>`.repeat(a.sc)}</span></div>`;
 }
 function itemCard(it){
   const banner=it.k==="rec"?"RECETA":it.k==="cons"?"CONSUMIBLE":"BOTÍN";
   const p=price(it);
   const tipo=it.k==="rec"?"Receta permanente":`${RAR[it.r].n} · ${it.k==="cons"?"consumible":"reutilizable"}`;
-  return `<div class="dh-card r-${it.r}">${cardSVG(glyphFor("item",it.id,it),ARTE[it.id],banner,{kind:"hex",big:p,small:p===1?"vale":"vales"})}
+  return `<div class="dh-card r-${it.r}" tabindex="0">${cardSVG(glyphFor("item",it.id,it),ARTE[it.id],banner,{kind:"hex",big:p,small:p===1?"vale":"vales"},TINT[it.r])}
    <div class="cbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4><div class="ctype">${tipo}${it.hf?" · H&amp;F":""}</div>
-   ${it.k==="rec"?`<p><b>Ingrediente:</b> ${escC(it.ing)}</p>`:""}<p>${escC(it.t)}</p></div></div>`;
+   <p class="clamp">${it.k==="rec"?`<b>Ingrediente:</b> ${escC(it.ing)} `:""}${escC(it.t)}</p></div></div>`;
 }
-const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
-// "Fiable: +1..." → nombre del rasgo en negrita, como en las cartas
-function fmtFeature(f){const i=f.indexOf(":");return i>0&&i<24?`<b>${escC(f.slice(0,i))}:</b>${escC(f.slice(i+1))}`:escC(f)}
+// Carta pequeña para la mochila: ilustración, nombre, cantidad y efecto resumido
+function miniCard(it,qty){
+  return `<div class="mini" tabindex="0"><svg class="mart" viewBox="0 0 300 170" aria-hidden="true">${scene(300,170,TINT[it.r],glyphFor("item",it.id,it),ARTE[it.id],{cy:82,size:110})}</svg>
+   ${qty>1?`<span class="qty num">×${qty}</span>`:""}<div class="mbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4>
+   <div class="mtype">${it.k==="rec"?"Receta":it.k==="cons"?"Consumible":"Objeto"} · ${escC(RAR[it.r].n)}</div>
+   <p class="clamp">${escC(it.k==="rec"?`${it.ing} ${it.t}`:it.t)}</p></div></div>`;
+}
+// Carta de dominio: banderín del color del dominio con el nivel, coste de recuperación arriba a la derecha
+function domainCard(c){
+  const D=DOMINIOS[c.d];
+  return `<div class="dh-card dom" tabindex="0" style="--dom:${D.c}"><svg class="cframe" viewBox="0 0 740 640" aria-hidden="true">
+   <svg width="740" height="600" viewBox="0 0 740 600">${scene(740,600,[D.c,mix(D.c,"#140D24")],c.d,ARTE[c.id],{cy:300,size:300,emblem:true})}</svg>
+   <path d="M60 0 H200 V230 L130 270 L60 230Z" fill="${D.c}" stroke="#FAC472" stroke-width="6"/>
+   <text x="130" y="120" class="d-lv" text-anchor="middle">${c.lv}</text><text x="130" y="175" class="d-dn" text-anchor="middle">${escC(D.n.toUpperCase())}</text>
+   <circle cx="650" cy="80" r="52" fill="#FBF7EE" stroke="#F9A72B" stroke-width="8"/>
+   <path d="M646 46 L622 86 H642 L636 114 L662 74 H642Z" fill="${D.c}"/><text x="676" y="112" class="d-rc" text-anchor="middle">${c.rc}</text>
+   <rect y="596" width="740" height="44" fill="#FBF7EE"/><path d="M0 600 H740" stroke="${D.c}" stroke-width="12"/><path d="M0 612 H740" stroke="#F9A72B" stroke-width="4"/>
+  </svg><div class="cbody"><h4>${escC(c.n)}</h4><div class="ctype">Nivel ${c.lv} · ${escC(D.n)} · ${TIPO_CARTA[c.ty]}</div>
+   <p class="clamp en" lang="en">${escC(c.t).replace(/\n/g,"<br>")}</p></div></div>`;
+}
+function mix(a,b){const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16));const A=p(a),B=p(b);return "#"+A.map((v,i)=>Math.round(v*.45+B[i]*.55).toString(16).padStart(2,"0")).join("")}

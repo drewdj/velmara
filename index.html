@@ -36,7 +36,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .deco::before,.deco::after{content:"";position:absolute;width:38px;height:38px;border:2px solid var(--gold);pointer-events:none}
 .deco::before{top:6px;left:6px;border-right:0;border-bottom:0;clip-path:polygon(0 0,100% 0,100% 2px,10px 2px,2px 10px,2px 100%,0 100%)}
 .deco::after{bottom:6px;right:6px;border-left:0;border-top:0;clip-path:polygon(100% 100%,0 100%,0 calc(100% - 2px),calc(100% - 10px) calc(100% - 2px),calc(100% - 2px) calc(100% - 10px),calc(100% - 2px) 0,100% 0)}
-.tab-label{display:inline-block;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+.tab-label{display:inline-block;justify-self:start;width:max-content;max-width:100%;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;
   color:var(--violet);background:linear-gradient(100deg,var(--gold-hi),var(--gold) 45%,var(--gold-lo));padding:3px 14px 2px;
   clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
 .black-label{display:inline-block;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:var(--paper);padding:2px 10px}
@@ -173,7 +173,7 @@ tr:last-child td{border-bottom:0}
 .log time{color:var(--muted);flex:none;width:44px}
 .invtop{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
 .invtop h1{font-size:clamp(2rem,6vw,3rem);text-transform:uppercase;letter-spacing:.06em}
-.ph{aspect-ratio:740/1036;display:grid;place-content:center;text-align:center;gap:6px;border:1.5px dashed var(--line);border-radius:10px;color:var(--muted);padding:16px}
+.ph{min-height:180px;display:grid;place-content:center;text-align:center;gap:6px;border:1.5px dashed var(--line);border-radius:10px;color:var(--muted);padding:16px}
 .ph b{font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;color:var(--paper)}
 .dmgrid{display:grid;gap:14px}
 .toggle{display:inline-flex;align-items:center;gap:8px;font-family:var(--cond);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
@@ -182,6 +182,64 @@ tr:last-child td{border-bottom:0}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;max-width:min(92vw,520px);
   background:var(--paper);color:var(--violet);padding:10px 18px;font-weight:600;box-shadow:0 8px 28px rgb(0 0 0 / .45)}
 .toast.err{background:var(--bad);color:var(--ink)}
+
+/* Cartas: texto sobre papel, recortado hasta que se toca */
+.dh-card{background:#FBF7EE;cursor:pointer}
+.cbody{background:#FBF7EE;border-radius:0 0 10px 10px}
+.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.open .clamp{-webkit-line-clamp:unset;display:block}
+.clamp.en{font-size:.92em}
+.dh-card.dom{box-shadow:0 0 0 2px var(--dom),0 10px 28px rgb(0 0 0 / .4)}
+.dh-card.dom .ctype{color:var(--dom)}
+.d-lv{font-family:var(--cond);font-weight:700;font-size:96px;fill:#fff}
+.d-dn{font-family:var(--cond);font-weight:700;font-size:26px;letter-spacing:2px;fill:#fff}
+.d-rc{font-family:var(--cond);font-weight:700;font-size:44px;fill:var(--violet)}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:18px}
+.minislot{display:grid;gap:6px;align-content:start;min-width:0}
+.mini{position:relative;background:#FBF7EE;color:var(--ink);border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px rgb(249 167 43 / .55),0 6px 18px rgb(0 0 0 / .35);cursor:pointer}
+.mart{display:block;width:100%;height:auto;border-bottom:4px solid var(--gold)}
+.qty{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--violet);font-family:var(--cond);font-weight:700;padding:1px 8px}
+.mbody{padding:8px 12px 12px;display:grid;gap:2px;font-size:.85rem;line-height:1.3}
+.mbody h4{font-size:1.15rem}
+.mtype{font-family:var(--cond);font-style:italic;font-weight:600;color:#5A4E78}
+.mbody p{margin:4px 0 0}
+.minislot .btns .btn{font-size:.9rem;padding:5px 10px}
+.minislot select{font-size:.85rem;padding:3px 6px}
+
+/* Hoja de personaje */
+.sheet{display:grid;gap:18px}
+.idrow{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between}
+.idrow h1{font-size:clamp(2.2rem,7vw,3.4rem);text-transform:uppercase;letter-spacing:.06em}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px 16px}
+.field{display:grid;gap:3px}
+.field label,.lab{font-family:var(--cond);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-hi)}
+.field input{width:100%}
+.traits{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.traits{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:400px){.traits{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.trait{display:grid;justify-items:center;gap:6px;background:var(--lilac);color:var(--ink);padding:0 6px 10px;text-align:center}
+.trait .black-label{width:calc(100% + 12px);font-size:.95rem}
+.trait .val{font-family:var(--cond);font-weight:700;font-size:2.2rem;line-height:1}
+.trait small{font-size:.75rem;color:#5A4E78;line-height:1.2}
+.step{display:inline-flex;align-items:center;gap:4px}
+.step button{width:28px;height:28px;border:1px solid var(--line);background:var(--violet-2);color:var(--paper);font-weight:700;line-height:1;padding:0}
+.trait .step button{background:#fff;color:var(--violet);border-color:#CFC3DB}
+.step .v{min-width:2.2ch;text-align:center;font-family:var(--cond);font-weight:700;font-size:1.3rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.stat{display:grid;gap:8px}
+.stat .big{font-family:var(--cond);font-weight:700;font-size:2.4rem;line-height:1}
+.track{display:flex;flex-wrap:wrap;gap:5px}
+.track button{width:26px;height:26px;padding:0;border:2px solid var(--gold);background:transparent}
+.track button.on{background:linear-gradient(135deg,var(--gold-hi),var(--gold-lo))}
+.track.hope button{transform:rotate(45deg);width:22px;height:22px;margin:3px}
+.track.stress button{border-color:#C8A2FF}.track.stress button.on{background:#9A6BE0}
+.thresh{display:flex;align-items:stretch;flex-wrap:wrap;font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:.9rem;letter-spacing:.04em}
+.thresh span{padding:6px 10px;background:var(--lilac);color:var(--ink);border-right:1px solid #CFC3DB}
+.thresh b{display:block;font-size:1.5rem;line-height:1}
+.thresh span.n{background:var(--ink);color:var(--paper);display:grid;place-content:center;font-size:1.3rem}
+.exps{display:grid;gap:8px}
+.exp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.exp input{flex:1 1 200px}
 @media (prefers-reduced-motion:no-preference){.pjcard,.place,.btn{transition:border-color .15s,filter .15s,opacity .15s}}
 </style>
 </head>
@@ -191,18 +249,19 @@ tr:last-child td{border-bottom:0}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=3"></script>
-<script src="js/datos.js?v=3"></script>
-<script src="js/reglas.js?v=3"></script>
-<script src="js/store.js?v=3"></script>
-<script src="js/cartas.js?v=3"></script>
+<script src="js/firebase-config.js?v=4"></script>
+<script src="js/datos.js?v=4"></script>
+<script src="js/dominios.js?v=4"></script>
+<script src="js/reglas.js?v=4"></script>
+<script src="js/store.js?v=4"></script>
+<script src="js/cartas.js?v=4"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
 const ui={me:ls.get("v-pj"),view:ls.get("v-view")||"lugares",lugar:ls.get("v-lugar"),tienda:ls.get("v-tienda"),
-  stab:ls.get("v-stab")||"equipo",pick:null,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false};
+  stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false};
 if(!PJ[ui.me])ui.me=null;
 function go(patch){Object.assign(ui,patch);["view","lugar","tienda","stab"].forEach(k=>ls.set("v-"+k,ui[k]));ui.confirmReset=false;render();scrollTo({top:0})}
 
@@ -227,7 +286,7 @@ function header(st){
    <span class="live${Store.mode==="live"?" on":""}"><i></i>${lt}</span></div></header>`;
 }
 function nav(){
-  const T=[["lugares","Lugares"],["inventario","Inventario"]];if(ui.canDM)T.push(["dm","Mesa del DM"]);
+  const T=[["lugares","Lugares"],["personaje","Personaje"],["inventario","Inventario"]];if(ui.canDM)T.push(["dm","Mesa del DM"]);
   return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}</button>`).join("")}</nav>`;
 }
 
@@ -340,6 +399,64 @@ function pickerHTML(){
 }
 function picker(id,mode){ui.pick={id,mode,para:ui.me};render();$("#picker")?.scrollIntoView({block:"start",behavior:"smooth"})}
 
+
+/* ---------- Hoja de personaje ---------- */
+const step=(path,v,lab)=>`<span class="step"><button data-hstep="${path}" data-d="-1" aria-label="${lab} menos" ${dis()}>−</button><span class="v num">${v}</span><button data-hstep="${path}" data-d="1" aria-label="${lab} más" ${dis()}>+</button></span>`;
+const track=(path,marked,max,cls,lab)=>`<div class="track ${cls||""}" role="group" aria-label="${lab}">${Array.from({length:max},(_,i)=>`<button data-htrack="${path}" data-i="${i+1}" class="${i<marked?"on":""}" aria-label="${lab} ${i+1}" ${dis()}></button>`).join("")}</div>`;
+function armorOf(st,id){const h=st.hojas[id],a=st.pjs[id].armadura&&ARMOR[st.pjs[id].armadura];
+  if(!a)return {shop:false,pts:h.arm.pts,mayor:h.arm.mayor,grave:h.arm.grave};
+  const [m,g]=a.u.split("/").map(x=>+x.trim());return {shop:a.n,pts:a.sc,mayor:m+h.nivel,grave:g+h.nivel}}
+function viewPersonaje(st){
+  const p=PJ[ui.me],h=st.hojas[ui.me],c=CLASES[h.clase],ar=armorOf(st,ui.me);
+  const fld=(k,lab,v)=>`<div class="field"><label for="hf-${k}">${lab}</label><input type="text" id="hf-${k}" data-hfield="${k}" value="${esc(v)}" maxlength="60"></div>`;
+  const known=new Set([...h.cartas,...h.baul]);
+  const doms=[...c.dom,...Object.keys(DOMINIOS).filter(d=>!c.dom.includes(d))];
+  const opts=doms.filter(d=>ui.allDoms||c.dom.includes(d)).map(d=>`<optgroup label="${esc(DOMINIOS[d].n)} (${d})">${CARTAS_DOMINIO.filter(x=>x.d===d&&!known.has(x.id)&&(ui.allDoms||x.lv<=h.nivel)).map(x=>`<option value="${x.id}">${x.lv} · ${esc(x.n)}</option>`).join("")}</optgroup>`).join("");
+  const dslot=(id,where)=>{const x=CARTA[id];if(!x)return "";return `<div class="slotcard">${domainCard(x)}<div class="under"><span class="btns">
+    ${where==="uso"?`<button class="btn ghost" data-cmove="${id}" data-to="baul" ${dis()}>Al baúl</button>`:`<button class="btn ghost" data-cmove="${id}" data-to="uso" ${dis(h.cartas.length>=5)}>A la mano</button>`}
+    <button class="btn warn" data-cdel="${id}" ${dis()}>Quitar</button></span></div></div>`};
+  return `<div class="sheet">
+   <div class="hero idrow"><div><span class="sub">${esc(c.n)} · ${esc(h.sub)} · Jugador: ${esc(p.j)}</span><h1>${esc(p.n)}</h1></div>
+    <div class="stat"><span class="lab">Nivel</span>${step("nivel",h.nivel,"Nivel")}</div></div>
+   <section class="block deco"><header><span class="tab-label">Origen</span><p>Clase, subclase, ascendencia y comunidad.</p></header>
+    <div class="fields"><div class="field"><label for="hf-clase">Clase</label><select id="hf-clase" data-hfield="clase">${Object.entries(CLASES).map(([k,v])=>`<option value="${k}" ${k===h.clase?"selected":""}>${v.n}</option>`).join("")}</select></div>
+    ${fld("sub","Subclase",h.sub)}${fld("asc","Ascendencia",h.asc)}${fld("com","Comunidad",h.com)}</div>
+    <p class="note">Dominios de ${esc(c.n)}: ${c.dom.map(d=>esc(DOMINIOS[d].n)).join(" y ")}.</p></section>
+   <section class="block"><header><span class="tab-label">Rasgos</span><p>Al crear el personaje se reparten +2, +1, +1, +0, +0, −1.</p></header>
+    <div class="traits">${RASGOS.map(([k,n,v])=>`<div class="trait"><span class="black-label">${n}</span><span class="val num">${h.rasgos[k]>0?"+":""}${h.rasgos[k]}</span>${step("rasgos."+k,"",n).replace('<span class="v num"></span>',"")}<small>${v}</small></div>`).join("")}</div></section>
+   <div class="cols">
+    <section class="block deco stat"><span class="tab-label">Defensa</span>
+     <div class="btns" style="gap:24px"><div class="stat"><span class="lab">Evasión</span><span class="big num">${h.evasion}</span>${step("evasion","",'Evasión').replace('<span class="v num"></span>',"")}</div>
+     <div class="stat"><span class="lab">Armadura</span><span class="big num">${ar.pts}</span>${ar.shop?`<span class="note">${esc(ar.shop)}</span>`:step("arm.pts","","Armadura").replace('<span class="v num"></span>',"")}</div></div>
+     <span class="lab">Espacios de armadura marcados</span>${ar.pts?track("armMarc",h.armMarc,ar.pts,"","Armadura"):`<span class="note">Sin armadura.</span>`}
+     <span class="lab">Umbrales de daño</span>
+     <div class="thresh"><span>Menor</span><span class="n num">${ar.mayor}</span><span>Mayor</span><span class="n num">${ar.grave}</span><span>Grave</span></div>
+     ${ar.shop?`<p class="note">Armadura de la tienda: umbrales base + nivel.</p>`:`<div class="btns"><span class="lab">Mayor</span>${step("arm.mayor",h.arm.mayor,"Umbral mayor")}<span class="lab">Grave</span>${step("arm.grave",h.arm.grave,"Umbral grave")}</div>`}</section>
+    <section class="block deco stat"><span class="tab-label">Salud</span>
+     <div class="btns" style="justify-content:space-between"><span class="lab">Puntos de golpe</span><span class="note">máx. ${step("pg.max",h.pg.max,"PG máximos")}</span></div>${track("pg.marc",h.pg.marc,h.pg.max,"","PG")}
+     <div class="btns" style="justify-content:space-between"><span class="lab">Estrés</span><span class="note">máx. ${step("estres.max",h.estres.max,"Estrés máximo")}</span></div>${track("estres.marc",h.estres.marc,h.estres.max,"stress","Estrés")}
+     <span class="lab">Esperanza</span>${track("esperanza",h.esperanza,6,"hope","Esperanza")}
+     <div class="btns"><span class="lab">Competencia</span>${step("competencia",h.competencia,"Competencia")}</div></section>
+   </div>
+   <div class="cols">
+    <section class="block deco"><span class="tab-label">Experiencias</span><div class="exps">${h.exp.map((e,i)=>`<div class="exp"><input type="text" id="hx-${i}" data-hexp="${i}" value="${esc(e.n)}" placeholder="Por ejemplo: Marinero curtido" maxlength="60" aria-label="Experiencia ${i+1}">
+      ${step(`exp.${i}.b`,"+"+e.b,"Bono")}<button class="btn warn" data-hexpdel="${i}" ${dis()} aria-label="Quitar experiencia">×</button></div>`).join("")}</div>
+     <div class="btns"><button class="btn ghost" data-hexpadd ${dis(h.exp.length>=8)}>Añadir experiencia</button></div></section>
+    <section class="block deco"><span class="tab-label">Oro</span><div class="btns" style="gap:22px">
+     <div class="stat"><span class="lab">Puñados</span>${step("oro.p",h.oro.p,"Puñados")}</div><div class="stat"><span class="lab">Bolsas</span>${step("oro.b",h.oro.b,"Bolsas")}</div><div class="stat"><span class="lab">Cofres</span>${step("oro.c",h.oro.c,"Cofres")}</div></div>
+     <p class="note">10 puñados son una bolsa; 10 bolsas, un cofre.</p></section>
+   </div>
+   <section class="block"><header><span class="tab-label">Cartas de dominio en la mano</span><p>${h.cartas.length} de 5. Toca una carta para leerla entera (texto del SRD, en inglés).</p></header>
+    ${h.cartas.length?`<div class="cards">${h.cartas.map(id=>dslot(id,"uso")).join("")}</div>`:`<p class="empty">Ninguna carta en la mano.</p>`}</section>
+   ${h.baul.length?`<section class="block"><header><span class="tab-label">Baúl</span><p>Cartas guardadas. Pasarlas a la mano cuesta su coste de recuperación en Estrés (salvo en un descanso).</p></header><div class="cards">${h.baul.map(id=>dslot(id,"baul")).join("")}</div></section>`:""}
+   <section class="block deco"><span class="tab-label">Añadir carta</span>
+    <div class="btns"><select id="add-card" aria-label="Carta de dominio">${opts}</select><button class="btn" data-cadd ${dis()}>Añadir</button></div>
+    <label class="toggle"><input type="checkbox" id="all-doms" ${ui.allDoms?"checked":""}> Mostrar todos los dominios y niveles</label></section>
+   <section class="block deco"><span class="tab-label">Notas</span><label class="note" for="hf-notas">Rasgo de clase, rasgo de Esperanza, conexiones o lo que quieras recordar.</label>
+    <textarea id="hf-notas" data-hfield="notas" maxlength="2000">${esc(h.notas)}</textarea></section>
+  </div>`;
+}
+
 /* ---------- Inventario ---------- */
 function viewInventario(st){
   const p=PJ[ui.me],s=st.pjs[ui.me];
@@ -349,7 +466,7 @@ function viewInventario(st){
    <section class="block"><header><span class="tab-label">Equipo</span><p>Se cambia en la entrega de equipo de la Tienda de las Tres Agujas.</p></header>
     <div class="cards">${slot("Arma principal",s.arma,s.arma&&weaponCard(WEAPON[s.arma]))}${slot("Arma secundaria",s.sec,s.sec&&weaponCard(WEAPON[s.sec]))}${slot("Armadura",s.armadura,s.armadura&&armorCard(ARMOR[s.armadura]))}</div></section>
    <section class="block"><header><span class="tab-label">Mochila</span><p>Usa consumibles, prepara recetas o pasa objetos a otro PJ.</p></header>
-    ${ids.length?`<div class="rows">${ids.map(id=>{const it=ITEM[id];return `<div class="row"><div class="l"><b>${esc(it.n)}</b>${s.inv[id]>1?` <span class="num">×${s.inv[id]}</span>`:""}<small>${esc(it.k==="rec"?`Ingrediente: ${it.ing} ${it.t}`:it.t)}</small></div>
+    ${ids.length?`<div class="minis">${ids.map(id=>{const it=ITEM[id];return `<div class="minislot">${miniCard(it,s.inv[id])}
      <div class="btns">${it.k==="cons"?`<button class="btn ghost" data-use="${id}" ${dis()}>Usar</button>`:""}${it.k==="rec"?`<button class="btn ghost" data-brew="${id}" ${dis()}>Preparar</button>`:""}
      ${it.k!=="rec"?`<select id="to-${id}" aria-label="Dar a">${PJS.filter(x=>x.id!==ui.me).map(x=>`<option value="${x.id}">${esc(x.n)}</option>`).join("")}</select><button class="btn ghost" data-pass="${id}" ${dis()}>Dar</button>`:""}</div></div>`}).join("")}</div>`
     :`<p class="empty">La mochila está vacía.</p>`}</section>`;
@@ -385,15 +502,16 @@ function render(){
   else if(!ui.me)body=viewPick();
   else{
     if(ui.view==="dm"&&!ui.canDM)ui.view="lugares";
-    const V={lugares:viewLugares,inventario:viewInventario,dm:viewDM}[ui.view]||viewLugares;
+    const V={lugares:viewLugares,personaje:viewPersonaje,inventario:viewInventario,dm:viewDM}[ui.view]||viewLugares;
     body=nav()+V(st);
   }
-  const keep=document.activeElement?.tagName==="TEXTAREA"?{id:document.activeElement.id,v:document.activeElement.value}:null;
+  const keep=["TEXTAREA","INPUT"].includes(document.activeElement?.tagName)&&document.activeElement.type!=="checkbox"?{id:document.activeElement.id,v:document.activeElement.value}:null;
   app.innerHTML=header(st)+body;
   if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus()}}
 }
 
 document.addEventListener("click",e=>{
+  const card=e.target.closest(".dh-card,.mini");if(card&&!e.target.closest("button")){card.classList.toggle("open");return}
   const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(b.hasAttribute("data-home"))return go({view:"lugares",lugar:null,tienda:null});
   if(b.hasAttribute("data-switch")){ui.me=null;ls.set("v-pj",null);render();return}
@@ -409,6 +527,18 @@ document.addEventListener("click",e=>{
   if(b.hasAttribute("data-pickok")){const {id,mode,para}=ui.pick,it=ITEM[id];ui.pick=null;
     if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
     return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
+
+  if(d.hstep){const [path,dd]=[d.hstep,+d.d];return act(st=>A.hoja(st,ui.me,h=>{const ks=path.split("."),last=ks.pop();let o=h;ks.forEach(k=>o=o[k]);
+    const lim={nivel:[1,10],evasion:[0,30],competencia:[1,6],"pg.max":[1,12],"estres.max":[1,12],"arm.pts":[0,12]}[path]||(path.startsWith("rasgos")?[-5,9]:path.startsWith("exp.")?[1,6]:[0,99]);
+    const cur=typeof o[last]==="number"?o[last]:+String(o[last]).replace("+","");o[last]=Math.max(lim[0],Math.min(lim[1],cur+dd));
+    if(path==="pg.max")h.pg.marc=Math.min(h.pg.marc,h.pg.max);if(path==="estres.max")h.estres.marc=Math.min(h.estres.marc,h.estres.max);
+    if(path==="arm.pts")h.armMarc=Math.min(h.armMarc,h.arm.pts)}))}
+  if(d.htrack){const path=d.htrack,i=+d.i;return act(st=>A.hoja(st,ui.me,h=>{const ks=path.split("."),last=ks.pop();let o=h;ks.forEach(k=>o=o[k]);o[last]=o[last]===i?i-1:i}))}
+  if(b.hasAttribute("data-hexpadd"))return act(st=>A.hoja(st,ui.me,h=>{h.exp.push({n:"",b:2})}));
+  if(d.hexpdel)return act(st=>A.hoja(st,ui.me,h=>{h.exp.splice(+d.hexpdel,1)}));
+  if(b.hasAttribute("data-cadd")){const id=$("#add-card")?.value;if(!id)return;return act(st=>A.hoja(st,ui.me,h=>{if(h.cartas.includes(id)||h.baul.includes(id))no("Ya tienes esa carta.");(h.cartas.length<5?h.cartas:h.baul).push(id)}),"Carta añadida.")}
+  if(d.cmove)return act(st=>A.hoja(st,ui.me,h=>{const id=d.cmove;if(d.to==="uso"){if(h.cartas.length>=5)no("Ya tienes 5 cartas en la mano.");h.baul=h.baul.filter(x=>x!==id);h.cartas.push(id)}else{h.cartas=h.cartas.filter(x=>x!==id);h.baul.push(id)}}));
+  if(d.cdel)return act(st=>A.hoja(st,ui.me,h=>{h.cartas=h.cartas.filter(x=>x!==d.cdel);h.baul=h.baul.filter(x=>x!==d.cdel)}),"Carta quitada.");
   if(d.buy)return picker(d.buy,"buy");
   if(d.pot)return picker(d.pot,"pot");
   if(d.equip)return act(st=>A.equip(st,ui.me,d.equip,d.id||null));
@@ -426,6 +556,9 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("change",e=>{
   const t=e.target;if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
+  if(t.id==="all-doms"){ui.allDoms=t.checked;render();return}
+  if(t.dataset?.hfield){const k=t.dataset.hfield,v=t.value.slice(0,k==="notas"?2000:60);act(st=>A.hoja(st,ui.me,h=>{h[k]=v}),"Guardado.");return}
+  if(t.dataset?.hexp!==undefined){const i=+t.dataset.hexp,v=t.value.slice(0,60);act(st=>A.hoja(st,ui.me,h=>{if(h.exp[i])h.exp[i].n=v}),"Guardado.");return}
   if(t.dataset?.lvis)act(st=>A.lugar(st,t.dataset.lvis,{visible:t.checked}),t.checked?"Lugar visible.":"Lugar oculto.");
 });
 

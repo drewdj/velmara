@@ -104,7 +104,9 @@ const A={
   },
   vales(st,pj,d){need(st);const me=st.pjs[pj];if(me.vales+d<0)no("No puede quedar en negativo.");me.vales+=d;log(st,`El DM ${d>0?"da":"quita"} ${Math.abs(d)} vale a ${PJ[pj].n}.`);return st},
   valesAll(st,n){need(st);PJS.forEach(p=>st.pjs[p.id].vales+=n);log(st,`El DM reparte ${n} vales a cada PJ.`);return st},
-  reset(st){const n=freshState();if(st?.mundo)n.mundo=st.mundo;return n},
+  reset(st){const n=freshState();if(st?.mundo)n.mundo=st.mundo;if(st?.hojas)n.hojas=st.hojas;return n},
+  // Hoja de personaje: el jugador cambia su propia hoja (mut recibe la hoja y la modifica)
+  hoja(st,pj,mut){need(st);mut(st.hojas[pj]);return st},
   lugar(st,id,patch){need(st);Object.assign(st.mundo.lugares[id],patch);
     if("visible" in patch)log(st,patch.visible?`Se abre el camino a ${LUGARES.find(l=>l.id===id).n}.`:`${LUGARES.find(l=>l.id===id).n} deja de estar disponible.`);return st},
   tienda(st,id,patch){need(st);Object.assign(st.mundo.tiendas[id],patch);

@@ -162,3 +162,37 @@ const LUGARES=[
   ]}
 ];
 const TIENDA=Object.fromEntries(LUGARES.flatMap(l=>l.tiendas.map(t=>[t.id,{...t,lugar:l.id}])));
+
+// Hoja de personaje. Clases del SRD: dominios, PG y Evasión iniciales.
+const CLASES={
+ bard:{n:"Bardo",dom:["Grace","Codex"],pg:5,ev:10}, druid:{n:"Druida",dom:["Sage","Arcana"],pg:6,ev:10},
+ guardian:{n:"Guardián",dom:["Valor","Blade"],pg:7,ev:9}, ranger:{n:"Explorador",dom:["Bone","Sage"],pg:6,ev:12},
+ rogue:{n:"Pícaro",dom:["Midnight","Grace"],pg:6,ev:12}, seraph:{n:"Serafín",dom:["Splendor","Valor"],pg:7,ev:9},
+ sorcerer:{n:"Hechicero",dom:["Arcana","Midnight"],pg:6,ev:10}, warrior:{n:"Guerrero",dom:["Blade","Bone"],pg:6,ev:11},
+ wizard:{n:"Mago",dom:["Codex","Splendor"],pg:5,ev:11}
+};
+const DOMINIOS={
+ Arcana:{c:"#6A3FB5",n:"Arcana"}, Blade:{c:"#B8282E",n:"Filo"}, Bone:{c:"#7E7A74",n:"Hueso"}, Codex:{c:"#2E5FB0",n:"Códice"},
+ Grace:{c:"#C23E8C",n:"Gracia"}, Midnight:{c:"#2A2340",n:"Medianoche"}, Sage:{c:"#3E8441",n:"Sabio"},
+ Splendor:{c:"#D4A21C",n:"Esplendor"}, Valor:{c:"#DA6A1E",n:"Valor"}
+};
+const TIPO_CARTA={Spell:"Hechizo",Ability:"Habilidad",Grimoire:"Grimorio"};
+const RASGOS=[["agi","Agilidad","Correr, saltar, maniobrar"],["fue","Fuerza","Levantar, golpear, agarrar"],["fin","Fineza","Controlar, ocultar, trastear"],
+ ["ins","Instinto","Percibir, sentir, orientarse"],["pre","Presencia","Encandilar, actuar, engañar"],["con","Conocimiento","Recordar, analizar, comprender"]];
+// Lo que ya sabemos de cada PJ (notas del vault); el resto lo rellena cada jugador
+const PJ_BASE={
+ cora:{clase:"wizard",sub:"Escuela del Conocimiento",asc:"Clank",com:"Loreborne",cartas:["mending-touch","book-of-illiat","book-of-tyfar"]},
+ chimpok:{clase:"ranger",sub:"Beastbound",asc:"Simiah / Goblin",com:"Seaborne",cartas:["untouchable","vicious-entangle"]},
+ fungrino:{clase:"bard",sub:"Wordsmith",asc:"Fungril / Giant",com:"Highborne",cartas:["inspirational-words","enrapture"]},
+ galeryon:{clase:"warrior",sub:"Slayer",asc:"Drakona / Elfo",com:"Orderborne",cartas:["not-good-enough","whirlwind"]},
+ geliberto:{clase:"sorcerer",sub:"Elemental",asc:"Infernis / Ribbet",com:"Wildborne",cartas:["unleash-chaos","rune-ward"]}
+};
+function hojaInicial(id){
+  const b=PJ_BASE[id],c=CLASES[b.clase];
+  return {nivel:4,clase:b.clase,sub:b.sub,asc:b.asc,com:b.com,
+    rasgos:{agi:0,fue:0,fin:0,ins:0,pre:0,con:0},evasion:c.ev,competencia:2,
+    arm:{pts:0,mayor:0,grave:0},armMarc:0,
+    pg:{max:c.pg,marc:0},estres:{max:6,marc:0},esperanza:2,
+    exp:[{n:"",b:2},{n:"",b:2}],oro:{p:0,b:0,c:0},
+    cartas:b.cartas.slice(),baul:[],notas:""};
+}
