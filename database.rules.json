@@ -1,14 +1,9 @@
 {
   "rules": {
     "tienda": { ".read": true, ".write": true },
-    "saber": {
-      ".read": true,
-      ".write": "auth != null && ((auth.token.email == 'TU_CORREO@gmail.com' && auth.token.email_verified == true) || auth.token.email == 'dm@velmara.app')"
-    },
-    "dm": {
-      ".read": "auth != null && ((auth.token.email == 'TU_CORREO@gmail.com' && auth.token.email_verified == true) || auth.token.email == 'dm@velmara.app')",
-      ".write": "auth != null && ((auth.token.email == 'TU_CORREO@gmail.com' && auth.token.email_verified == true) || auth.token.email == 'dm@velmara.app')"
-    },
+    "saber": { ".read": true, ".write": true },
+    "dmcheck": { ".read": true, ".write": "!data.exists()" },
+    "dm": { "$clave": { ".read": true, ".write": true } },
     "$other": { ".read": false, ".write": false }
   }
 }

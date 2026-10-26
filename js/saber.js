@@ -1,53 +1,45 @@
 /* Lo que saben los personajes de Velmara y el acceso del DM.
-   - Las notas completas del vault viven en Firebase bajo dm/lore: solo las lee la cuenta del DM.
+   - El DM entra con una contraseña. De ella sale una clave (SHA-256) que es el nombre de la carpeta
+     dm/<clave> donde viven las notas completas del vault: sin la contraseña no se puede llegar a ellas.
+   - dmcheck guarda una huella de la clave para saber si la contraseña es buena. La primera contraseña
+     que se usa queda fijada (las reglas no dejan cambiarla; para cambiarla, borra dmcheck en Firebase).
    - Lo que el DM comparte se copia a saber/{id} con el texto para jugadores y a quién va (para).
-   - El DM entra con Google o con contraseña (Firebase Authentication). Quién es DM lo deciden las reglas
-     de la base de datos: si la cuenta puede leer dm/lore, es el DM.
    Sin Firebase (modo prueba) todo queda en memoria y cualquier contraseña vale. */
-const DM_EMAIL="dm@velmara.app";
 const CATS=[["lugares","Lugares"],["personas","Personas"],["organizaciones","Organizaciones"],["mundo","Mundo"],["cronica","Crónica"]];
+const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
 const Saber={
-  dm:{},pub:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,err:"",
+  dm:{},pub:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,key:null,
   emit(){this.subs.forEach(f=>f())},
   init(){
     const cfg=window.FIREBASE_CONFIG;
-    if(!cfg||!window.firebase||!firebase.auth){this.mode="local";this.emit();return}
+    if(!cfg||!window.firebase){this.mode="local";this.emit();return}
     this.mode="live";
     const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
     this.db=app.database();
     this.db.ref("saber").on("value",s=>{this.pub=s.val()||{};this.emit()},e=>console.error(e));
-    firebase.auth().getRedirectResult().catch(e=>{this.err=this.msg(e);this.emit()});
-    firebase.auth().onAuthStateChanged(u=>{
-      if(this.dmRef){this.dmRef.off();this.dmRef=null;this.dm={}}
-      this.isDM=false;
-      if(u){this.dmRef=this.db.ref("dm/lore");
-        this.dmRef.on("value",s=>{this.dm=s.val()||{};this.isDM=true;this.err="";this.emit()},
-          e=>{console.error(e);this.dmRef=null;this.err=`${u.email||"Esa cuenta"} no tiene permiso de DM.`;firebase.auth().signOut();this.emit()})}
-      this.emit();
-    });
+    let k=null;try{k=localStorage.getItem("v-dmkey")}catch(e){}
+    if(k)this.enter(k).catch(()=>this.forget());
   },
   async login(pw){
-    if(this.mode==="local"){if(!pw)throw new Error("Escribe la contraseña.");this.isDM=true;this.emit();return}
-    try{await firebase.auth().signInWithEmailAndPassword(DM_EMAIL,pw)}
-    catch(e){
-      const c=e.code||"";
-      if(/wrong-password|invalid-credential|invalid-login|user-not-found/.test(c))throw new Error("Contraseña incorrecta.");
-      if(/too-many-requests/.test(c))throw new Error("Demasiados intentos. Espera un poco.");
-      throw new Error(this.msg(e));
-    }
-  },
-  async google(){
+    pw=String(pw||"").trim();if(!pw)throw new Error("Escribe la contraseña.");
     if(this.mode==="local"){this.isDM=true;this.emit();return}
-    const prov=new firebase.auth.GoogleAuthProvider();
-    try{await firebase.auth().signInWithPopup(prov)}
-    catch(e){if(/popup-blocked|operation-not-supported/.test(e.code||""))return firebase.auth().signInWithRedirect(prov);
-      if(/popup-closed|cancelled-popup/.test(e.code||""))return;throw new Error(this.msg(e))}
+    const k=await sha("velmara:"+pw),chk=await sha(k+":ok");
+    const ref=this.db.ref("dmcheck"),cur=(await ref.get()).val();
+    if(!cur)await ref.set(chk); // primera vez: esta contraseña queda como la del DM
+    else if(cur!==chk)throw new Error("Contraseña incorrecta.");
+    await this.enter(k);
   },
-  msg(e){const c=e.code||"";
-    if(/unauthorized-domain/.test(c))return "Falta añadir drewdj.github.io a los dominios autorizados de Firebase.";
-    if(/operation-not-allowed|configuration-not-found/.test(c))return "Falta activar ese tipo de acceso en Firebase.";
-    return "No se pudo entrar: "+(c||e.message)},
-  async logout(){if(this.mode==="local"){this.isDM=false;this.emit();return}await firebase.auth().signOut()},
+  async enter(k){
+    const cur=(await this.db.ref("dmcheck").get()).val();
+    if(!cur||cur!==await sha(k+":ok"))throw new Error("Contraseña incorrecta.");
+    this.key=k;try{localStorage.setItem("v-dmkey",k)}catch(e){}
+    if(this.dmRef)this.dmRef.off();
+    this.dmRef=this.db.ref(`dm/${k}/lore`);
+    this.dmRef.on("value",s=>{this.dm=s.val()||{};this.emit()},e=>console.error(e));
+    this.isDM=true;this.emit();
+  },
+  forget(){try{localStorage.removeItem("v-dmkey")}catch(e){}},
+  async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}this.dm={};this.key=null;this.isDM=false;this.forget();this.emit()},
   // Lo que ve un PJ: entradas compartidas con todos o con él
   visibleFor(pj){const o={};for(const [id,e] of Object.entries(this.pub))if(e&&(e.para?.todos||e.para?.[pj]))o[id]=e;return o},
   async share(id,para,txt){
@@ -59,7 +51,7 @@ const Saber={
   async importar(json){
     const E=json?.entradas;if(!E||typeof E!=="object")throw new Error("Ese archivo no tiene notas del vault.");
     if(this.mode==="local"){this.dm=E;this.emit();return Object.keys(E).length}
-    await this.db.ref("dm/lore").set(E);return Object.keys(E).length;
+    await this.db.ref(`dm/${this.key}/lore`).set(E);return Object.keys(E).length;
   }
 };
 

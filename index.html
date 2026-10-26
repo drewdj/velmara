@@ -254,7 +254,6 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .dmopen{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:6px;align-content:end;padding:22px 20px 20px;min-height:170px;position:relative;width:100%}
 .dmopen:focus-visible{outline:2px solid var(--gold)}
 .dmform{display:grid;gap:8px;padding:18px 20px}
-.dmform0{display:grid;gap:8px}
 .dmform input{width:100%;box-sizing:border-box;font:inherit;padding:6px 8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
 .err{margin:0;color:var(--bad);font-size:.9rem}
 .now{margin-bottom:18px}
@@ -415,15 +414,14 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="js/firebase-config.js?v=7"></script>
-<script src="js/datos.js?v=7"></script>
-<script src="js/dominios.js?v=7"></script>
-<script src="js/reglas.js?v=7"></script>
-<script src="js/store.js?v=7"></script>
-<script src="js/cartas.js?v=7"></script>
-<script src="js/mapa.js?v=7"></script>
-<script src="js/saber.js?v=7"></script>
+<script src="js/firebase-config.js?v=8"></script>
+<script src="js/datos.js?v=8"></script>
+<script src="js/dominios.js?v=8"></script>
+<script src="js/reglas.js?v=8"></script>
+<script src="js/store.js?v=8"></script>
+<script src="js/cartas.js?v=8"></script>
+<script src="js/mapa.js?v=8"></script>
+<script src="js/saber.js?v=8"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -472,12 +470,10 @@ function viewPick(){
    <p>Elige tu personaje. Se queda guardado en este dispositivo para todo lo que hagas: hoja, inventario y compras.</p></header>
    <div class="pjs">${PJS.map(p=>`<button class="pjcard deco" data-me="${p.id}"><span class="init" aria-hidden="true">${esc(p.n[0])}</span>
      <span class="nm">${esc(p.n)}</span><span class="cl">${esc(p.c)}<br>Jugador: ${esc(p.j)}</span></button>`).join("")}
-    <div class="pjcard deco dmcard">${ui.login||Saber.err?`<div class="dmform"><span class="nm">DM</span>
-      <button class="btn" type="button" data-google ${dis()}>Entrar con Google</button>
-      <form id="dmform" class="dmform0"><label class="note" for="dm-pw">O con la contraseña de DM</label>
-      <input type="password" id="dm-pw" autocomplete="current-password" required><div class="btns"><button class="btn ghost" type="submit" ${dis()}>Entrar</button><button class="btn ghost" type="button" data-login="0">Cancelar</button></div></form>
-      ${ui.loginErr||Saber.err?`<p class="err">${esc(ui.loginErr||Saber.err)}</p>`:""}</div>`
-     :`<button class="dmopen" data-login="1"><span class="init" aria-hidden="true">✦</span><span class="nm">Soy el DM</span><span class="cl">Entrar con Google o contraseña</span></button>`}</div></div></div>`;
+    <div class="pjcard deco dmcard">${ui.login?`<form id="dmform" class="dmform"><span class="nm">DM</span><label class="note" for="dm-pw">Contraseña</label>
+      <input type="password" id="dm-pw" autocomplete="current-password" required><div class="btns"><button class="btn" type="submit" ${dis()}>Entrar</button><button class="btn ghost" type="button" data-login="0">Cancelar</button></div>
+      ${ui.loginErr?`<p class="err">${esc(ui.loginErr)}</p>`:""}</form>`
+     :`<button class="dmopen" data-login="1"><span class="init" aria-hidden="true">✦</span><span class="nm">Soy el DM</span><span class="cl">Pide contraseña</span></button>`}</div></div></div>`;
 }
 
 /* ---------- Mundo: lo que sabe cada personaje ---------- */
@@ -866,7 +862,6 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(b.hasAttribute("data-home"))return go({view:ui.me?"personaje":"mundo",ent:null,tienda:null});
   if(b.hasAttribute("data-switch")){ui.me=null;ls.set("v-pj",null);render();return}
-  if(b.hasAttribute("data-google")){ui.loginErr="";Saber.err="";Saber.google().then(()=>{if(Saber.isDM||Saber.mode==="local"){ui.login=false;go({view:"dm"})}}).catch(err=>{ui.loginErr=err.message;render()});return}
   if(d.login!==undefined){ui.login=d.login==="1";ui.loginErr="";render();if(ui.login)$("#dm-pw")?.focus();return}
   if(b.hasAttribute("data-logout")){Saber.logout();ui.me=ls.get("v-pj-own")||null;if(!PJ[ui.me])ui.me=null;ls.set("v-pj",ui.me);return go({view:"personaje"})}
   if(d.me){ui.me=d.me;ls.set("v-pj",d.me);ls.set("v-pj-own",d.me);return go({view:"personaje"})}
