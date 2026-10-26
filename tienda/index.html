@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tienda de las Tres Agujas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+/* Layout: tienda en tres plataformas; cabecera con el grupo y sus vales, pestañas por planta, fichas en rejilla que se apilan en móvil. */
+:root{
+  --bg:#ECEEE4; --surface:#F7F8F1; --sunk:#E2E5D8; --ink:#1D2520; --muted:#5A645B; --line:#C8CEBE;
+  --accent:#8F6210; --accent-ink:#FFF8EA; --moss:#2E5B43; --unc:#256783; --rare:#6A3D9C; --danger:#A13A28; --ok:#2E6B3E;
+  --display:"IM Fell English SC", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --body:"Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111713; --surface:#19211C; --sunk:#0D120F; --ink:#E5E9DE; --muted:#97A294; --line:#2D3932;
+  --accent:#D8A341; --accent-ink:#1A1306; --moss:#74B48F; --unc:#7DB9D6; --rare:#BB98E8; --danger:#E27B63; --ok:#7CC48E; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#111713; --surface:#19211C; --sunk:#0D120F; --ink:#E5E9DE; --muted:#97A294; --line:#2D3932;
+  --accent:#D8A341; --accent-ink:#1A1306; --moss:#74B48F; --unc:#7DB9D6; --rare:#BB98E8; --danger:#E27B63; --ok:#7CC48E; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:.01em}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;padding-block:28px 14px;border-bottom:1px solid var(--line)}
+header.top h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1}
+header.top .sub{color:var(--muted);max-width:52ch;margin-top:6px}
+.back{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--accent)}
+.quote{font-style:italic;color:var(--muted);font-size:.95rem}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.live.on i{background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+
+/* Grupo */
+.party{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding-block:14px}
+@media (max-width:720px){.party{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.party{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pj{display:flex;flex-direction:column;gap:4px;text-align:left;padding:10px 12px;border:1px solid var(--line);background:var(--surface);border-radius:6px;min-width:0}
+.pj .nm{font-family:var(--display);font-size:1.15rem;line-height:1.1}
+.pj .pl{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.coins{display:flex;gap:3px;flex-wrap:wrap;align-items:center;min-height:16px}
+.coin{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent-ink) 35%,transparent)}
+.coin.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.coins .n{font-size:.8rem;color:var(--muted);margin-left:4px}
+
+/* Pestañas */
+nav.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px;scrollbar-width:thin}
+nav.tabs button{background:none;border:0;padding:10px 14px;border-bottom:2px solid transparent;white-space:nowrap;color:var(--muted);font-weight:500}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.badge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-size:.75rem;margin-left:4px;text-align:center}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.9rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+section.floor{display:grid;gap:10px;margin-bottom:28px}
+section.floor>header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+section.floor>header h2{font-size:1.5rem}
+section.floor>header p{margin:0;color:var(--muted);font-size:.92rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+
+.card{display:grid;grid-template-rows:auto 1fr auto;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;min-width:0}
+.card .hd{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card h3{font-size:1.12rem;line-height:1.15}
+.card .tx{margin:0;font-size:.95rem}
+.card .ft{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.card.gone{opacity:.55}
+.card.mine{border-color:var(--moss);box-shadow:inset 3px 0 0 var(--moss)}
+.tag{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.price{display:inline-flex;gap:3px;align-items:center;flex:none}
+.r-c{--r:var(--moss)} .r-pc{--r:var(--unc)} .r-r{--r:var(--rare)} .r-rec{--r:var(--accent)}
+.rar{color:var(--r);font-weight:700}
+.stat{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.88rem;color:var(--muted)}
+.stat b{color:var(--ink);font-weight:500}
+.stock{font-size:.85rem;color:var(--muted)}
+.stock.zero{color:var(--danger)}
+.holder{font-size:.85rem;color:var(--muted)}
+.holder b{color:var(--ink)}
+
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:4px;padding:6px 12px;font-weight:500;font-size:.92rem}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.warn{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+
+.hero{display:grid;gap:12px;padding:20px;border:1px dashed var(--line);border-radius:6px;margin-block:18px;background:var(--sunk)}
+.hero h2{font-size:1.5rem}
+.hero p{margin:0;max-width:60ch;color:var(--muted)}
+
+/* Botes */
+.pot{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px}
+.pot .bar{height:10px;background:var(--sunk);border-radius:5px;overflow:hidden;display:flex}
+.pot .bar span{background:var(--accent)}
+.pot .bar span+span{box-shadow:inset 1px 0 0 var(--surface)}
+.contrib{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.9rem;color:var(--muted)}
+.contrib b{color:var(--ink)}
+
+/* Inventario y grupo */
+.sheet{display:grid;gap:14px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:760px){.sheet{grid-template-columns:minmax(0,1fr)}}
+.slot{display:grid;gap:2px;padding:10px 12px;border-left:3px solid var(--line);background:var(--surface)}
+.slot.full{border-left-color:var(--moss)}
+.slot .k{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.inv{display:grid;gap:6px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.row .l{min-width:0;flex:1 1 200px}
+.row .l small{display:block;color:var(--muted)}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:5px 8px;max-width:100%}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.9rem}
+.log li{display:flex;gap:10px}
+.log time{color:var(--muted);flex:none;width:46px}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;max-width:min(92vw,520px);z-index:20;box-shadow:0 6px 24px rgb(0 0 0 / .25)}
+.toast.err{background:var(--danger);color:#fff}
+.note{font-size:.88rem;color:var(--muted);margin:0}
+.empty{color:var(--muted);font-style:italic}
+@media (prefers-reduced-motion:no-preference){.card,.pj,.btn{transition:border-color .15s,opacity .15s,background .15s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <a class="back" href="../">Velmara</a>
+      <h1>Tienda de las Tres Agujas</h1>
+      <div class="sub">Armería, botica y objetos recuperados. Taller de confianza de los Disipadores en Aelrennor.</div>
+      <div class="quote">«Tres vales por cabeza. Juntadlos o no, pero gastadlos con cabeza.»</div>
+    </div>
+    <span id="live" class="live"><i></i><span id="liveTxt">Conectando…</span></span>
+  </header>
+  <div id="party" class="party" aria-label="Elige tu personaje"></div>
+  <div id="main"></div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="../js/store.js"></script>
+<script>
+/* ---------- Datos del mundo ---------- */
+const PJS=[
+ {id:"cora",n:"C.O.R.A",j:"Adrián",c:"Mago · Clank"},
+ {id:"chimpok",n:"Chimpok",j:"Andrés",c:"Explorador · Simiah"},
+ {id:"fungrino",n:"Fungrino",j:"Quique",c:"Bardo · Fungril"},
+ {id:"galeryon",n:"Galeryon",j:"Gabriel",c:"Guerrero · Drakona"},
+ {id:"geliberto",n:"Geliberto",j:"Mateo",c:"Hechicero · Infernis"}
+];
+const RAR={c:{n:"Común",p:1},pc:{n:"Poco común",p:2},r:{n:"Raro",p:4},rec:{n:"Receta"}};
+const MAX_CONS=5;
+
+// k: cons (consumible) | obj (reutilizable) | rec (receta). s: unidades (sin s = ilimitado)
+const ITEMS=[
+ // Comunes
+ {id:"p-men-salud",n:"Poción menor de salud",r:"c",k:"cons",s:3,t:"Limpia 1d4 PG."},
+ {id:"p-men-res",n:"Poción menor de resistencia",r:"c",k:"cons",s:3,t:"Limpia 1d4 Estrés."},
+ {id:"p-atributo",n:"Poción de atributo",r:"c",k:"cons",s:3,t:"+1 a la próxima tirada del rasgo que elijas al comprarla."},
+ {id:"veneno-grindle",n:"Veneno de diente de grindle",r:"c",k:"cons",s:2,t:"En un arma física: +1d6 a la siguiente tirada de daño."},
+ {id:"hojas-varik",n:"Hojas de Varik",r:"c",k:"cons",s:2,t:"Ganas 2 Esperanza."},
+ {id:"gota-lunar",n:"Vial de gota lunar",r:"c",k:"cons",s:1,t:"Ves en oscuridad total hasta tu próximo descanso."},
+ {id:"frag-inestable",n:"Fragmento arcano inestable",r:"c",k:"cons",s:1,t:"Tirada de Fineza contra un grupo a Lejana: 1d20 de daño mágico."},
+ {id:"vela-protectora",n:"Vela protectora",r:"c",k:"cons",s:1,t:"Halo de luz a Cercana durante 1 hora; quien tenga malas intenciones no puede entrar.",hf:1},
+ {id:"pastilla-lira",n:"Pastilla de lira",r:"c",k:"cons",s:1,t:"Imitas cualquier voz que hayas oído hasta el final de la escena.",hf:1},
+ {id:"hierba-pipa",n:"Hierba de pipa",r:"c",k:"cons",s:2,t:"En un descanso corto, quienes elijan limpiar Estrés limpian 1 más.",hf:1},
+ {id:"saco-dormir",n:"Saco de dormir de calidad",r:"c",k:"obj",s:1,t:"En el descanso, limpias 1 Estrés automáticamente."},
+ {id:"carcaj",n:"Carcaj cargador",r:"c",k:"obj",s:1,t:"Al acertar con una flecha de este carcaj, suma tu tier al daño (ahora +2)."},
+ {id:"antorcha",n:"Antorcha de Alistair",r:"c",k:"obj",s:1,t:"Se enciende a voluntad e ilumina una cueva como si fuera de día."},
+ {id:"orbes",n:"Orbes comunicadores",r:"c",k:"obj",s:1,t:"Dos portadores hablan entre sí a cualquier distancia."},
+ {id:"capa-arcana",n:"Capa arcana",r:"c",k:"obj",s:1,t:"Si tienes rasgo de lanzamiento, cambias su color, textura y tamaño a voluntad."},
+ {id:"piedra-apariencia",n:"Piedra de apariencia",r:"c",k:"obj",s:1,t:"Memoriza el aspecto de alguien que veas; gasta 1 Esperanza para copiarlo como ilusión."},
+ {id:"abrojos",n:"Abrojos",r:"c",k:"obj",s:1,t:"Los esparces a Muy Cercana; quien cruce con prisa marca 1 Estrés.",hf:1},
+ {id:"garfio",n:"Garfio",r:"c",k:"obj",s:1,t:"Ventaja en tiradas de acción para escalar paredes lisas.",hf:1},
+ {id:"catalejo",n:"Catalejo élfico",r:"c",k:"obj",s:1,t:"Aumenta tu vista cien veces.",hf:1},
+ // Poco comunes
+ {id:"p-salud",n:"Poción de salud",r:"pc",k:"cons",s:2,t:"Limpia 1d4+1 PG."},
+ {id:"p-res",n:"Poción de resistencia",r:"pc",k:"cons",s:2,t:"Limpia 1d4+1 Estrés."},
+ {id:"polvo-chasquido",n:"Polvo de chasquido",r:"pc",k:"cons",s:2,t:"Marca 1 Estrés y limpia 1 PG."},
+ {id:"p-estabilidad",n:"Poción de estabilidad",r:"pc",k:"cons",s:1,t:"Un movimiento de descanso adicional."},
+ {id:"arcilla",n:"Arcilla cambiante",r:"pc",k:"cons",s:1,t:"Gasta 1 Esperanza: tu rostro es irreconocible hasta el próximo descanso."},
+ {id:"humo-oscuro",n:"Vial de humo oscuro",r:"pc",k:"cons",s:1,t:"Cuando te ataquen, tira tantos d6 como tu Agilidad y suma el mayor a tu Evasión."},
+ {id:"branquias",n:"Ungüento de branquias",r:"pc",k:"cons",s:1,t:"Respiras bajo el agua tantos minutos como tu nivel."},
+ {id:"costurador",n:"Costurador de armadura",r:"pc",k:"cons",s:1,t:"Gasta X Esperanza y limpia X espacios de Armadura."},
+ {id:"frag-mejorado",n:"Fragmento arcano mejorado",r:"pc",k:"cons",s:1,t:"Como el inestable, pero 2d20 de daño mágico."},
+ {id:"leche-yakamel",n:"Leche de yakamel",r:"pc",k:"cons",s:1,t:"La próxima vez que limpies PG, limpias 1 más.",hf:1},
+ {id:"limo-rojo",n:"Aceite de limo rojo",r:"pc",k:"cons",s:1,t:"Tu siguiente ataque con éxito hace +1d8 mágico y el objetivo queda Ardiendo (1d4 mágico al tomar el foco).",hf:1},
+ {id:"niebla-cisca",n:"Botella de niebla cisca",r:"pc",k:"cons",s:1,t:"Niebla a Cercana: quien entra limpia 1 Estrés y queda Oculto.",hf:1},
+ {id:"semilla-espino",n:"Semilla de espino",r:"pc",k:"cons",s:1,t:"La lanzas a un punto visible: Restringe temporalmente a todos a Cercana de ese punto.",hf:1},
+ {id:"botella-duende",n:"Botella de duende",r:"pc",k:"cons",s:1,t:"Cuando marcas tu último PG, se rompe y limpias todos tus PG.",hf:1},
+ {id:"estuche",n:"Estuche para compañero",r:"pc",k:"obj",s:1,t:"Un compañero animal pequeño dentro es inmune al daño y a efectos dañinos."},
+ {id:"prisma",n:"Prisma arcano",r:"pc",k:"obj",s:1,t:"Lo colocas y activas: aliados a Cercana +1 a lanzamiento. No se mueve; tras apagarlo, no funciona hasta el próximo descanso largo."},
+ {id:"flechas-perf",n:"Flechas perforantes",r:"pc",k:"obj",s:1,t:"3 veces por descanso, al acertar, suma tu Competencia al daño."},
+ {id:"piedra-valor",n:"Piedra del valor",r:"pc",k:"obj",s:1,t:"Una armadura sin rasgo gana Resistente: antes de marcar tu último espacio de Armadura, tira 1d6; con 6, reduce la gravedad un umbral sin marcarlo."},
+ {id:"duende-corrector",n:"Duende corrector",r:"pc",k:"obj",s:1,t:"Una vez por descanso corto, ventaja en una tirada de ataque."},
+ {id:"guardasaberes",n:"Guardasaberes",r:"pc",k:"obj",s:1,t:"Guarda hasta 3 criaturas hostiles; +1 a tus tiradas de acción contra ellas."},
+ {id:"cuerda",n:"Cuerda que se ata sola",r:"pc",k:"obj",s:1,t:"Se ata o desata cuando se lo ordenas.",hf:1},
+ {id:"brujula",n:"Brújula del ladrón",r:"pc",k:"obj",s:1,t:"En interiores señala la salida más cercana; en exteriores, la entrada más cercana.",hf:1},
+ {id:"anillo-retorno",n:"Anillo de retorno",r:"pc",k:"obj",s:1,t:"Al lanzar tu arma principal, vuelve a tu mano tras el ataque.",hf:1},
+ {id:"cenidor",n:"Ceñidor del titán",r:"pc",k:"obj",s:1,t:"Una vez por escena, +1 a Competencia en tu siguiente ataque.",hf:1},
+ // Recetas (permanentes; fabricas 1 poción como movimiento de descanso)
+ {id:"rec-men-salud",n:"Receta: poción menor de salud",r:"rec",k:"rec",p:2,mk:"p-men-salud",ing:"Un vial de sangre.",t:"Fabrica: limpia 1d4 PG."},
+ {id:"rec-men-res",n:"Receta: poción menor de resistencia",r:"rec",k:"rec",p:2,mk:"p-men-res",ing:"Un hueso de criatura.",t:"Fabrica: limpia 1d4 Estrés."},
+ {id:"rec-atributo",n:"Receta: poción de atributo",r:"rec",k:"rec",p:2,mk:"p-atributo",ing:"Algo ligado al rasgo: pluma (Agilidad), colmillo (Fuerza), hilo de araña (Fineza), musgo (Instinto), pétalo (Presencia), tinta (Conocimiento).",t:"Fabrica: +1 a la próxima tirada de ese rasgo."},
+ {id:"rec-salud",n:"Receta: poción de salud",r:"rec",k:"rec",p:4,mk:"p-salud",ing:"Sangre de un adversario de tier 2 o superior.",t:"Fabrica: limpia 1d4+1 PG."},
+ {id:"rec-res",n:"Receta: poción de resistencia",r:"rec",k:"rec",p:4,mk:"p-res",ing:"Hueso de un adversario de tier 2 o superior.",t:"Fabrica: limpia 1d4+1 Estrés."},
+ {id:"rec-estabilidad",n:"Receta: poción de estabilidad",r:"rec",k:"rec",p:4,mk:"p-estabilidad",ing:"Savia de un árbol de Aelrennor, y marcar 3 Estrés.",t:"Fabrica: un movimiento de descanso adicional."},
+ // Raros (vitrina)
+ {id:"piedra-sangre",n:"Piedra de sangre",r:"r",k:"obj",s:1,t:"Un arma sin rasgo gana Brutal: cuando sacas el máximo en un dado de daño, tiras otro."},
+ {id:"gran-piedra",n:"Gran piedra",r:"r",k:"obj",s:1,t:"Un arma sin rasgo gana Potente: tira un dado de daño extra y descarta el menor."},
+ {id:"anillo-resist",n:"Anillo de resistencia",r:"r",k:"obj",s:1,t:"Una vez por descanso largo, tras recibir un ataque con éxito, recibes la mitad del daño."},
+ {id:"colgante",n:"Colgante calmante",r:"r",k:"obj",s:1,t:"Cuando fueras a marcar tu último Estrés, tira 1d6; con 5 o más, no lo marcas."},
+ {id:"homet",n:"Poción secreta de Homet",r:"r",k:"cons",s:1,t:"Tu siguiente ataque con éxito es crítico."},
+ {id:"yorgi",n:"Sangre de Yorgi",r:"r",k:"cons",s:1,t:"Desapareces y reapareces en un punto que veas a Muy Lejana."},
+ {id:"piedra-canal",n:"Piedra canalizadora",r:"r",k:"cons",s:1,t:"Sacas un conjuro o grimorio de tu reserva, lo usas una vez y lo devuelves."},
+ {id:"lupa",n:"Lupa del encantador",r:"r",k:"obj",s:1,t:"Ves a través de ilusiones y encantamientos.",hf:1},
+ {id:"moneda-eclipse",n:"Moneda del eclipse",r:"r",k:"obj",s:1,t:"Una vez por descanso, lánzala. Cara: +1 a ataque hasta que aciertes. Cruz: +1 a Evasión hasta que un ataque falle contra ti.",hf:1},
+ {id:"sombrero",n:"Sombrero del hechicero",r:"r",k:"obj",s:1,t:"Una vez por descanso, lanzas un conjuro de tu reserva con coste de recuperación igual o menor que tu tier.",hf:1},
+ {id:"hilo-cose",n:"Hilo que se cose solo",r:"r",k:"cons",s:1,t:"Limpia 1 PG o 2 espacios de Armadura.",hf:1}
+];
+const ITEM=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+const price=i=>i.p ?? RAR[i.r].p;
+
+// Entrega gratuita: 1 unidad de cada. a=alcance, h=manos
+const ARMORS=[
+ {id:"gambeson",n:"Gambesón mejorado",u:"7 / 16",sc:4,f:"Flexible: +1 a Evasión."},
+ {id:"cuero",n:"Cuero mejorado",u:"9 / 20",sc:4,f:""},
+ {id:"cota",n:"Cota de malla mejorada",u:"11 / 24",sc:5,f:"Pesada: −1 a Evasión."},
+ {id:"placas",n:"Placas mejoradas",u:"13 / 28",sc:5,f:"Muy pesada: −2 a Evasión y −1 a Agilidad."},
+ {id:"tunica",n:"Túnica de mago mejorada",u:"6 / 15",sc:3,f:"Encantada: suma tu rasgo de lanzamiento a tus umbrales.",hf:1},
+ {id:"brigantina",n:"Brigantina mejorada",u:"9 / 19",sc:4,f:"Forrada: marca 1 Estrés para anular daño Menor.",hf:1},
+ {id:"escamas",n:"Escamas mejoradas",u:"11 / 23",sc:4,f:"Engorrosa: −1 a Fineza.",hf:1},
+ {id:"bandas",n:"Bandas mejoradas",u:"13 / 27",sc:5,f:"Voluminosa: −1 a Evasión; al recibir daño Grave, marca 1 Estrés.",hf:1}
+];
+const W=(g,id,n,tr,a,d,h,f)=>({g,id,n,tr,a,d,h,f:f||""});
+const WEAPONS=[
+ W("fis","espada-ancha","Espada ancha mejorada","Agilidad","Cuerpo a cuerpo","d8+3 fís",1,"Fiable: +1 a las tiradas de ataque."),
+ W("fis","espada-larga","Espada larga mejorada","Agilidad","Cuerpo a cuerpo","d8+6 fís",2),
+ W("fis","hacha-batalla","Hacha de batalla mejorada","Fuerza","Cuerpo a cuerpo","d10+6 fís",2),
+ W("fis","mandoble","Mandoble mejorado","Fuerza","Cuerpo a cuerpo","d10+6 fís",2,"Masivo: −1 a Evasión; al acertar, tira un dado de daño extra y descarta el menor."),
+ W("fis","maza","Maza mejorada","Fuerza","Cuerpo a cuerpo","d8+4 fís",1),
+ W("fis","martillo","Martillo de guerra mejorado","Fuerza","Cuerpo a cuerpo","d12+6 fís",2,"Pesado: −1 a Evasión."),
+ W("fis","daga","Daga mejorada","Fineza","Cuerpo a cuerpo","d8+4 fís",1),
+ W("fis","baston","Bastón mejorado","Instinto","Cuerpo a cuerpo","d10+6 fís",2),
+ W("fis","sable","Sable mejorado","Presencia","Cuerpo a cuerpo","d8+4 fís",1),
+ W("fis","estoque","Estoque mejorado","Presencia","Cuerpo a cuerpo","d8+3 fís",1,"Rápido: al atacar, puedes marcar 1 Estrés para atacar a otra criatura a tu alcance."),
+ W("fis","alabarda","Alabarda mejorada","Fuerza","Muy Cercana","d10+5 fís",2,"Engorrosa: −1 a Fineza."),
+ W("fis","lanza","Lanza mejorada","Fineza","Muy Cercana","d10+5 fís",2,"Engorrosa: −1 a Fineza."),
+ W("fis","arco-corto","Arco corto mejorado","Agilidad","Lejana","d6+6 fís",2),
+ W("fis","ballesta","Ballesta mejorada","Fineza","Lejana","d6+4 fís",1),
+ W("fis","arco-largo","Arco largo mejorado","Agilidad","Muy Lejana","d8+6 fís",2,"Engorroso: −1 a Fineza."),
+ W("fis","falcata","Falcata dorada","Fuerza","Cuerpo a cuerpo","d10+4 fís",1,"Potente: al acertar, tira un dado de daño extra y descarta el menor."),
+ W("fis","nudillos","Hojas de nudillo","Fuerza","Cuerpo a cuerpo","d10+6 fís",2,"Brutal: cuando sacas el máximo en un dado de daño, tira otro."),
+ W("fis","urok","Espada ancha urok","Fineza","Cuerpo a cuerpo","d8+3 fís",1,"Mortal: cuando haces daño Grave, el objetivo marca 1 PG más."),
+ W("fis","latigo-cuchillas","Látigo de cuchillas","Agilidad","Muy Cercana","d8+3 fís",1,"Rápido: al atacar, puedes marcar 1 Estrés para atacar a otra criatura a tu alcance."),
+ W("fis","alabarda-acero","Alabarda de acero forjado","Fuerza","Muy Cercana","d8+4 fís",2,"Aterradora: al acertar, el objetivo marca 1 Estrés."),
+ W("fis","guadana","Guadaña de guerra","Fineza","Muy Cercana","d8+5 fís",2,"Fiable: +1 a las tiradas de ataque."),
+ W("fis","trabuco","Trabuco","Fineza","Cercana","d8+6 fís",2,"Recarga: tras atacar, tira 1d6; con 1, marca 1 Estrés para recargar antes de volver a disparar."),
+ W("fis","gran-arco","Gran arco","Fuerza","Lejana","d6+6 fís",2,"Potente: al acertar, tira un dado de daño extra y descarta el menor."),
+ W("fis","arco-pelofino","Arco de pelo fino","Agilidad","Muy Lejana","d6+5 fís",2,"Fiable: +1 a las tiradas de ataque."),
+ W("mag","guanteletes","Guanteletes arcanos mejorados","Fuerza","Cuerpo a cuerpo","d10+6 mág",2),
+ W("mag","hacha-consagrada","Hacha consagrada mejorada","Fuerza","Cuerpo a cuerpo","d8+4 mág",1),
+ W("mag","anillos","Anillos brillantes mejorados","Agilidad","Muy Cercana","d10+5 mág",2),
+ W("mag","runas","Runas de mano mejoradas","Instinto","Muy Cercana","d10+3 mág",1),
+ W("mag","hoja-retornante","Hoja retornante mejorada","Fineza","Cercana","d8+3 mág",1,"Retornante: al lanzarla dentro de su alcance, vuelve a tu mano tras el ataque."),
+ W("mag","baston-corto","Bastón corto mejorado","Instinto","Cercana","d8+4 mág",1),
+ W("mag","baston-doble","Bastón doble mejorado","Instinto","Lejana","d6+6 mág",2),
+ W("mag","cetro","Cetro mejorado","Presencia","Lejana","d6+3 mág",2,"Versátil: también Presencia, Cuerpo a cuerpo, d8+3."),
+ W("mag","varita","Varita mejorada","Conocimiento","Lejana","d6+4 mág",1),
+ W("mag","gran-baston","Gran bastón mejorado","Conocimiento","Muy Lejana","d6+3 mág",2,"Potente: al acertar, tira un dado de daño extra y descarta el menor."),
+ W("mag","hoja-ego","Hoja del ego","Agilidad","Cuerpo a cuerpo","d12+4 mág",1,"Pomposa: necesitas Presencia 0 o menos para usarla."),
+ W("mag","espada-lanzamiento","Espada de lanzamiento","Fuerza","Cuerpo a cuerpo","d10+4 mág",2,"Versátil: también Conocimiento, Lejana, d6+3."),
+ W("mag","daga-devoradora","Daga devoradora","Fineza","Cuerpo a cuerpo","d8+4 mág",1,"Aterradora: al acertar, el objetivo marca 1 Estrés."),
+ W("mag","martillo-exota","Martillo de Exota","Instinto","Cuerpo a cuerpo","d8+6 mág",2,"Eruptivo: al acertar en Cuerpo a cuerpo, los demás adversarios a Muy Cercana superan una reacción (14) o reciben la mitad del daño."),
+ W("mag","arco-yutari","Arco de sangre yutari","Fineza","Lejana","d6+4 mág",2,"Brutal: cuando sacas el máximo en un dado de daño, tira otro."),
+ W("mag","arco-anciano","Arco anciano","Instinto","Lejana","d6+4 mág",2,"Potente: al acertar, tira un dado de daño extra y descarta el menor."),
+ W("mag","cetro-elias","Cetro de Elias","Presencia","Lejana","d6+3 mág",1,"Vigorizante: al acertar, tira 1d4; con 4, limpia 1 Estrés."),
+ W("mag","varita-embeleso","Varita del embeleso","Presencia","Lejana","d6+4 mág",1,"Persuasiva: antes de una tirada de Presencia, puedes marcar 1 Estrés para sumar +2."),
+ W("mag","baston-guardian","Bastón del guardián","Conocimiento","Lejana","d6+4 mág",2,"Fiable: +1 a las tiradas de ataque."),
+ W("sec","espada-corta","Espada corta mejorada","Agilidad","Cuerpo a cuerpo","d8+2 fís",1,"Emparejada: +3 al daño del arma principal contra objetivos en Cuerpo a cuerpo."),
+ W("sec","escudo-redondo","Escudo redondo mejorado","Fuerza","Cuerpo a cuerpo","d4+2 fís",1,"Protector: +2 a la puntuación de Armadura."),
+ W("sec","escudo-torre","Escudo torre mejorado","Fuerza","Cuerpo a cuerpo","d6+2 fís",1,"Barrera: +3 a la puntuación de Armadura; −1 a Evasión."),
+ W("sec","daga-pequena","Daga pequeña mejorada","Fineza","Cuerpo a cuerpo","d8+2 fís",1,"Emparejada: +3 al daño del arma principal contra objetivos en Cuerpo a cuerpo."),
+ W("sec","latigo","Látigo mejorado","Presencia","Muy Cercana","d6+2 fís",1,"Sobresaltante: marca 1 Estrés para hacer retroceder a todos los adversarios en Cuerpo a cuerpo hasta Cercana."),
+ W("sec","garfio-agarre","Garfio de agarre mejorado","Fineza","Cercana","d6+2 fís",1,"Enganche: al acertar, puedes atraer al objetivo a Cuerpo a cuerpo."),
+ W("sec","ballesta-mano","Ballesta de mano mejorada","Fineza","Lejana","d6+3 fís",1),
+ W("sec","escudo-pinchos","Escudo con pinchos","Fuerza","Cuerpo a cuerpo","d6+2 fís",1,"Doble función: +1 a la puntuación de Armadura; +1 al daño del arma principal en Cuerpo a cuerpo."),
+ W("sec","daga-parada","Daga de parada","Fineza","Cuerpo a cuerpo","d6+2 fís",1,"Parada: cuando te atacan, tira los dados de daño de esta arma; los dados del atacante que coincidan con los tuyos se descartan."),
+ W("sec","hacha-retornante","Hacha retornante","Agilidad","Cercana","d6+4 fís",1,"Retornante: al lanzarla dentro de su alcance, vuelve a tu mano tras el ataque.")
+];
+const ARMOR=Object.fromEntries(ARMORS.map(a=>[a.id,a]));
+const WEAPON=Object.fromEntries(WEAPONS.map(w=>[w.id,w]));
+const PJ=Object.fromEntries(PJS.map(p=>[p.id,p]));
+
+/* ---------- Reglas (funciones puras sobre el estado) ---------- */
+class Nope extends Error{}
+const no=m=>{throw new Nope(m)};
+function freshState(){
+  const pjs={};PJS.forEach(p=>pjs[p.id]={vales:3,arma:null,sec:null,armadura:null,inv:{}});
+  const stock={};ITEMS.forEach(i=>{if(i.s!=null)stock[i.id]=i.s});
+  return {v:1,pjs,stock,botes:{},log:[{t:Date.now(),x:"La tienda abre sus puertas. Tres vales por cabeza."}]};
+}
+function log(st,x){st.log=[{t:Date.now(),x},...(st.log||[])].slice(0,60)}
+function need(st){if(!st||!st.pjs)no("La tienda todavía no está abierta.");return st}
+const holderOf=(st,slot,id)=>PJS.find(p=>st.pjs[p.id][slot]===id)?.id;
+function pending(st,para,itemId){return Object.values(st.botes||{}).filter(b=>b.para===para&&b.item===itemId).length}
+function checkCanReceive(st,para,it){
+  const have=st.pjs[para].inv[it.id]||0, pend=pending(st,para,it.id);
+  if(it.k==="cons"&&have+pend>=MAX_CONS)no(`${PJ[para].n} ya lleva ${MAX_CONS} de «${it.n}» (máximo por PJ).`);
+  if(it.k==="rec"&&have+pend>0)no(`${PJ[para].n} ya tiene «${it.n}».`);
+}
+function reserve(st,it){
+  if(it.s==null)return;
+  if((st.stock[it.id]??0)<=0)no(`«${it.n}» está agotado.`);
+  st.stock[it.id]--;
+}
+const A={
+  equip(st,pj,slot,id){
+    need(st);const me=st.pjs[pj];
+    if(id){
+      const other=holderOf(st,slot,id);
+      if(other&&other!==pj)no(`Esa ya la ha cogido ${PJ[other].n}.`);
+      if(slot==="sec"&&me.arma&&WEAPON[me.arma].h===2)no("Tu arma principal es a dos manos: no te deja llevar secundaria.");
+      if(slot==="arma"&&WEAPON[id].h===2&&me.sec){log(st,`${PJ[pj].n} deja su ${WEAPON[me.sec].n} para usar un arma a dos manos.`);me.sec=null}
+      me[slot]=id;
+      log(st,`${PJ[pj].n} se lleva ${slot==="armadura"?ARMOR[id].n:WEAPON[id].n}.`);
+    }else{
+      const old=me[slot];me[slot]=null;
+      if(old)log(st,`${PJ[pj].n} devuelve ${slot==="armadura"?ARMOR[old].n:WEAPON[old].n} a la armería.`);
+    }
+    return st;
+  },
+  buy(st,pj,itemId,para){
+    need(st);const it=ITEM[itemId],p=price(it),me=st.pjs[pj];
+    if(me.vales<p)no(`Te faltan ${p-me.vales} vale(s). Abre un bote para que el grupo ponga el resto.`);
+    checkCanReceive(st,para,it);reserve(st,it);
+    me.vales-=p;st.pjs[para].inv[itemId]=(st.pjs[para].inv[itemId]||0)+1;
+    log(st,para===pj?`${PJ[pj].n} compra ${it.n} (${p} vale${p>1?"s":""}).`:`${PJ[pj].n} compra ${it.n} para ${PJ[para].n} (${p} vale${p>1?"s":""}).`);
+    return st;
+  },
+  openPot(st,pj,itemId,para,id){
+    need(st);const it=ITEM[itemId];
+    checkCanReceive(st,para,it);reserve(st,it);
+    st.botes[id]={item:itemId,para,por:pj,aportes:{},t:Date.now()};
+    log(st,`${PJ[pj].n} abre un bote para ${it.n} (para ${PJ[para].n}).`);
+    return A.give(st,pj,id,1,true);
+  },
+  give(st,pj,id,d,quiet){
+    need(st);const b=st.botes[id];if(!b)no("Ese bote ya no existe.");
+    const it=ITEM[b.item],p=price(it),me=st.pjs[pj];
+    const sum=Object.values(b.aportes).reduce((a,n)=>a+n,0),mine=b.aportes[pj]||0;
+    if(d>0){if(me.vales<1)no("No te quedan vales.");if(sum>=p)no("El bote ya está completo.");}
+    if(d<0&&mine<1)no("No has puesto vales en este bote.");
+    me.vales-=d;b.aportes[pj]=mine+d;if(!b.aportes[pj])delete b.aportes[pj];
+    if(!quiet)log(st,`${PJ[pj].n} ${d>0?"pone":"retira"} 1 vale ${d>0?"en":"del"} bote de ${it.n}.`);
+    if(sum+d>=p){
+      st.pjs[b.para].inv[b.item]=(st.pjs[b.para].inv[b.item]||0)+1;
+      const who=Object.entries(b.aportes).map(([k,n])=>`${PJ[k].n} ${n}`).join(", ");
+      log(st,`Bote completo: ${PJ[b.para].n} recibe ${it.n} (${who}).`);
+      delete st.botes[id];
+    }
+    return st;
+  },
+  cancelPot(st,pj,id){
+    need(st);const b=st.botes[id];if(!b)no("Ese bote ya no existe.");
+    Object.entries(b.aportes).forEach(([k,n])=>st.pjs[k].vales+=n);
+    if(ITEM[b.item].s!=null)st.stock[b.item]++;
+    delete st.botes[id];
+    log(st,`${PJ[pj].n} cancela el bote de ${ITEM[b.item].n}; cada uno recupera sus vales.`);
+    return st;
+  },
+  use(st,pj,itemId){
+    need(st);const inv=st.pjs[pj].inv;if(!inv[itemId])no("No lo tienes.");
+    if(--inv[itemId]<=0)delete inv[itemId];
+    log(st,`${PJ[pj].n} usa ${ITEM[itemId].n}.`);return st;
+  },
+  pass(st,pj,itemId,to){
+    need(st);const inv=st.pjs[pj].inv,it=ITEM[itemId];if(!inv[itemId])no("No lo tienes.");
+    if(it.k==="rec")no("Una receta se aprende: no se puede pasar.");
+    checkCanReceive(st,to,it);
+    if(--inv[itemId]<=0)delete inv[itemId];
+    st.pjs[to].inv[itemId]=(st.pjs[to].inv[itemId]||0)+1;
+    log(st,`${PJ[pj].n} le da ${it.n} a ${PJ[to].n}.`);return st;
+  },
+  brew(st,pj,recId){
+    need(st);const r=ITEM[recId],me=st.pjs[pj];if(!me.inv[recId])no("No conoces esa receta.");
+    const it=ITEM[r.mk];if((me.inv[it.id]||0)>=MAX_CONS)no(`Ya llevas ${MAX_CONS} de «${it.n}».`);
+    me.inv[it.id]=(me.inv[it.id]||0)+1;
+    log(st,`${PJ[pj].n} prepara ${it.n} (gasta: ${r.ing.replace(/\.$/,"").toLowerCase()}).`);return st;
+  },
+  vales(st,pj,d){need(st);const me=st.pjs[pj];if(me.vales+d<0)no("No puede quedar en negativo.");me.vales+=d;log(st,`El DM ${d>0?"da":"quita"} ${Math.abs(d)} vale a ${PJ[pj].n}.`);return st},
+  valesAll(st,n){need(st);PJS.forEach(p=>st.pjs[p.id].vales+=n);log(st,`El DM reparte ${n} vales a cada PJ.`);return st},
+  reset(){return freshState()}
+};
+
+const TAB=Math.random().toString(36).slice(2);
+
+/* ---------- Interfaz ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const ui={me:ls.get("ta-pj"),tab:ls.get("ta-tab")||"tienda",filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false};
+let toastT;
+function toast(m,err){const t=$("#toast");t.textContent=m;t.className="toast"+(err?" err":"");t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3600)}
+const coins=(n,max)=>{let h="";const m=Math.max(n,max||0);for(let i=0;i<Math.min(m,8);i++)h+=`<span class="coin${i<n?"":" off"}"></span>`;return h+`<span class="n num">${n} vale${n===1?"":"s"}</span>`};
+const priceTag=it=>`<span class="price" title="${price(it)} vales">${'<span class="coin"></span>'.repeat(price(it))}</span>`;
+const rarLabel=it=>`<span class="tag rar r-${it.r}">${RAR[it.r].n}${it.k==="cons"?" · consumible":it.k==="obj"?" · reutilizable":""}</span>`;
+
+async function act(fn,ok){
+  if(ui.busy)return;ui.busy=true;render();
+  try{await Store.mutate(st=>fn(st));if(ok)toast(ok)}
+  catch(e){toast(e instanceof Nope?e.message:"No se pudo guardar. Revisa la conexión y prueba otra vez.",true);if(!(e instanceof Nope))console.error(e)}
+  finally{ui.busy=false;render()}
+}
+
+function renderParty(st){
+  $("#party").innerHTML=PJS.map(p=>{const s=st?.pjs?.[p.id];return `<button class="pj" data-me="${p.id}" aria-pressed="${ui.me===p.id}">
+    <span class="nm">${esc(p.n)}</span><span class="pl">${esc(p.j)} · ${esc(p.c)}</span>
+    <span class="coins">${s?coins(s.vales,3):""}</span></button>`}).join("");
+}
+function tabsHTML(st){
+  const nb=Object.keys(st?.botes||{}).length;
+  const T=[["tienda","Tienda"],["armeria","Armería"],["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`],["inventario","Mi inventario"],["grupo","Grupo"]];
+  if(ui.canDM)T.push(["dm","DM"]);
+  return `<nav class="tabs" role="tablist">${T.map(([k,l])=>`<button role="tab" data-tab="${k}" aria-selected="${ui.tab===k}">${l}</button>`).join("")}</nav>`;
+}
+
+function itemCard(st,it){
+  const me=st.pjs[ui.me],left=it.s==null?null:st.stock[it.id]??0;
+  const p=price(it),have=me.inv[it.id]||0;
+  const gone=left===0;
+  const stockTxt=it.s==null?(have?"Ya la conoces":"Se aprende, no se agota"):gone?"Agotado":`Quedan <span class="num">${left}</span> de ${it.s}`;
+  const extra=it.k==="rec"?`<p class="tx"><b>Ingrediente:</b> ${esc(it.ing)}</p>`:"";
+  const owned=have?` · llevas <span class="num">${have}</span>`:"";
+  const blocked=gone||(it.k==="rec"&&have);
+  return `<article class="card r-${it.r}${gone?" gone":""}">
+   <div class="hd"><div><h3>${esc(it.n.replace("Receta: ",""))}</h3>${rarLabel(it)}${it.hf?' <span class="tag">· H&amp;F</span>':""}</div>${priceTag(it)}</div>
+   <div><p class="tx">${esc(it.t)}</p>${extra}</div>
+   <div class="ft"><span class="stock${gone?" zero":""}">${stockTxt}${owned}</span>
+    <span class="btns">${blocked?"":`
+     <button class="btn" data-buy="${it.id}" ${me.vales<p||ui.busy?"disabled":""}>Comprar</button>
+     <button class="btn ghost" data-pot="${it.id}" ${ui.busy||me.vales<1||p<2?"disabled":""} title="El grupo junta vales">Bote</button>`}
+    </span></div></article>`;
+}
+function viewTienda(st){
+  const F=[["todo","Todo"],["c","Comunes · 1"],["pc","Poco comunes · 2"],["rec","Recetas"],["r","Vitrina · 4"]];
+  const groups=[
+    ["c","Planta baja · Comunes","1 vale cada uno."],
+    ["pc","Planta media · Poco comunes","2 vales cada uno."],
+    ["rec","Recetas de pociones","Permanentes. Como movimiento de descanso gastas el ingrediente y fabricas 1 poción."],
+    ["r","La vitrina · Raros","4 vales. Una sola unidad de cada; lo normal es juntar vales en un bote."]
+  ].filter(g=>ui.filt==="todo"||ui.filt===g[0]);
+  return `<div class="chips">${F.map(([k,l])=>`<button class="chip" data-filt="${k}" aria-pressed="${ui.filt===k}">${l}</button>`).join("")}</div>
+   ${groups.map(([r,h,p])=>`<section class="floor"><header><h2>${h}</h2><p>${p}</p></header>
+    <div class="grid">${ITEMS.filter(i=>i.r===r).map(i=>itemCard(st,i)).join("")}</div></section>`).join("")}
+   <p class="note">Máximo ${MAX_CONS} copias de un mismo consumible por PJ. Los vales que no gastéis se guardan para otra visita.</p>`;
+}
+
+function gearCard(st,slot,g){
+  const h=holderOf(st,slot,g.id),mine=h===ui.me,me=st.pjs[ui.me];
+  const twoBlock=slot==="sec"&&me.arma&&WEAPON[me.arma].h===2;
+  const stats=slot==="armadura"
+    ?`<span>Umbrales <b class="num">${g.u}</b></span><span>Puntuación <b class="num">${g.sc}</b></span>`
+    :`<span><b>${g.tr}</b></span><span>${g.a}</span><span><b class="num">${g.d}</b></span><span>${g.h===2?"Dos manos":"Una mano"}</span>`;
+  let btn;
+  if(mine)btn=`<button class="btn ghost" data-equip="${slot}" data-id="" ${ui.busy?"disabled":""}>Devolver</button>`;
+  else if(h)btn="";
+  else btn=`<button class="btn" data-equip="${slot}" data-id="${g.id}" ${ui.busy||twoBlock?"disabled":""}>${me[slot]?"Cambiar por esta":"Elegir"}</button>`;
+  return `<article class="card${h&&!mine?" gone":""}${mine?" mine":""}">
+   <div class="hd"><h3>${esc(g.n)}</h3>${g.hf?'<span class="tag">H&amp;F</span>':""}</div>
+   <div><div class="stat">${stats}</div>${g.f?`<p class="tx">${esc(g.f)}</p>`:""}</div>
+   <div class="ft"><span class="holder">${h?(mine?"<b>La llevas tú</b>":`La lleva <b>${esc(PJ[h].n)}</b>`):twoBlock?"Tu arma es a dos manos":"Libre"}</span>${btn}</div></article>`;
+}
+function viewArmeria(st){
+  const F=[["fis","Armas físicas"],["mag","Armas mágicas"],["sec","Secundarias"],["arm","Armaduras"]];
+  let body;
+  if(ui.wf==="arm")body=`<section class="floor"><header><h2>Armaduras de tier 2</h2><p>Umbrales finales = base + nivel.</p></header><div class="grid">${ARMORS.map(a=>gearCard(st,"armadura",a)).join("")}</div></section>`;
+  else{
+    const slot=ui.wf==="sec"?"sec":"arma";
+    const h={fis:["Armas principales físicas",""],mag:["Armas principales mágicas","Requieren rasgo de lanzamiento."],sec:["Armas secundarias","No se pueden llevar con un arma principal a dos manos."]}[ui.wf];
+    body=`<section class="floor"><header><h2>${h[0]}</h2><p>${h[1]}</p></header><div class="grid">${WEAPONS.filter(w=>w.g===ui.wf).map(w=>gearCard(st,slot,w)).join("")}</div></section>`;
+  }
+  return `<div class="hero" style="margin-top:0"><h2>Entrega de los Disipadores</h2>
+   <p>Gratis: un arma principal, una secundaria y una armadura de tier 2 por PJ. Hay una sola pieza de cada: lo que coge uno ya no lo puede coger otro hasta que lo devuelva. Si prefieres la versión mejorada de tu arma de siempre, búscala aquí antes de que vuele.</p></div>
+   <div class="chips">${F.map(([k,l])=>`<button class="chip" data-wf="${k}" aria-pressed="${ui.wf===k}">${l}</button>`).join("")}</div>${body}`;
+}
+
+function viewBotes(st){
+  const B=Object.entries(st.botes||{}).sort((a,b)=>a[1].t-b[1].t);
+  if(!B.length)return `<div class="hero"><h2>No hay botes abiertos</h2><p>En la tienda, pulsa «Bote» en un objeto para que el grupo junte vales. Por ejemplo, un objeto de la vitrina cuesta 4: cada uno puede poner uno.</p></div>`;
+  const me=st.pjs[ui.me];
+  return `<div class="grid">${B.map(([id,b])=>{
+    const it=ITEM[b.item],p=price(it),sum=Object.values(b.aportes).reduce((a,n)=>a+n,0),mine=b.aportes[ui.me]||0;
+    const segs=Object.entries(b.aportes).flatMap(([k,n])=>Array(n).fill(`<span style="width:${100/p}%" title="${esc(PJ[k].n)}"></span>`)).join("");
+    return `<article class="pot r-${it.r}">
+      <div class="hd" style="display:flex;justify-content:space-between;gap:10px"><div><h3>${esc(it.n)}</h3>${rarLabel(it)}</div>${priceTag(it)}</div>
+      <p class="tx" style="margin:0">${esc(it.t)}</p>
+      <div class="bar" role="img" aria-label="${sum} de ${p} vales">${segs}</div>
+      <div class="contrib"><span>Para <b>${esc(PJ[b.para].n)}</b></span><span class="num">${sum} / ${p} vales</span>
+        ${Object.entries(b.aportes).map(([k,n])=>`<span>${esc(PJ[k].n)} <b class="num">${n}</b></span>`).join("")}</div>
+      <div class="btns">
+        <button class="btn" data-give="${id}" data-d="1" ${ui.busy||me.vales<1?"disabled":""}>Poner 1 vale</button>
+        <button class="btn ghost" data-give="${id}" data-d="-1" ${ui.busy||!mine?"disabled":""}>Retirar 1</button>
+        <button class="btn warn" data-cancel="${id}" ${ui.busy?"disabled":""}>Cancelar bote</button>
+      </div></article>`}).join("")}</div>
+    <p class="note">Al llegar al precio, el objeto pasa solo a quien lo recibe. Si se cancela, cada uno recupera sus vales.</p>`;
+}
+
+function invRows(st,pj,editable){
+  const inv=st.pjs[pj].inv,ids=Object.keys(inv).sort((a,b)=>ITEMS.indexOf(ITEM[a])-ITEMS.indexOf(ITEM[b]));
+  if(!ids.length)return `<p class="empty">Nada en la mochila todavía.</p>`;
+  return `<div class="inv">${ids.map(id=>{const it=ITEM[id];return `<div class="row r-${it.r}">
+    <div class="l"><b>${esc(it.n)}</b>${inv[id]>1?` <span class="num">×${inv[id]}</span>`:""} ${rarLabel(it)}<small>${esc(it.k==="rec"?it.ing+" "+it.t:it.t)}</small></div>
+    ${editable?`<div class="btns">
+      ${it.k==="cons"?`<button class="btn ghost" data-use="${id}" ${ui.busy?"disabled":""}>Usar</button>`:""}
+      ${it.k==="rec"?`<button class="btn ghost" data-brew="${id}" ${ui.busy?"disabled":""}>Preparar</button>`:""}
+      ${it.k!=="rec"?`<select id="to-${id}" aria-label="Dar a">${PJS.filter(p=>p.id!==pj).map(p=>`<option value="${p.id}">${esc(p.n)}</option>`).join("")}</select><button class="btn ghost" data-pass="${id}" ${ui.busy?"disabled":""}>Dar</button>`:""}
+    </div>`:""}</div>`}).join("")}</div>`;
+}
+function slotsHTML(st,pj){
+  const s=st.pjs[pj];
+  const sl=(k,lab,obj,extra)=>`<div class="slot${obj?" full":""}"><span class="k">${lab}</span>${obj?`<b>${esc(obj.n)}</b><span class="note">${extra}</span>`:`<span class="empty">Conserva la suya</span>`}</div>`;
+  const w=s.arma&&WEAPON[s.arma],x=s.sec&&WEAPON[s.sec],a=s.armadura&&ARMOR[s.armadura];
+  return `<div class="inv">${sl("arma","Arma principal",w,w?`${w.tr} · ${w.a} · ${w.d} · ${w.h===2?"dos manos":"una mano"}`:"")}
+   ${sl("sec","Arma secundaria",x,x?`${x.tr} · ${x.a} · ${x.d}`:"")}
+   ${sl("armadura","Armadura",a,a?`Umbrales ${a.u} · Puntuación ${a.sc}`:"")}</div>`;
+}
+function viewInventario(st){
+  const p=PJ[ui.me],s=st.pjs[ui.me];
+  return `<div class="sheet">
+   <section class="floor"><header><h2>${esc(p.n)}</h2><p>${esc(p.j)} · ${esc(p.c)}</p></header>
+     <div class="coins" style="font-size:1rem">${coins(s.vales,3)}</div>${slotsHTML(st,ui.me)}</section>
+   <section class="floor"><header><h2>Mochila</h2><p>Usa consumibles, prepara recetas o pasa objetos a otro PJ.</p></header>${invRows(st,ui.me,true)}</section></div>`;
+}
+function viewGrupo(st){
+  const fmt=t=>new Date(t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+  const rows=PJS.map(p=>{const s=st.pjs[p.id],n=Object.values(s.inv).reduce((a,b)=>a+b,0);
+    return `<tr><td><b>${esc(p.n)}</b><br><span class="note">${esc(p.j)}</span></td><td class="num">${s.vales}</td>
+      <td>${s.arma?esc(WEAPON[s.arma].n):'<span class="empty">la suya</span>'}${s.sec?`<br>${esc(WEAPON[s.sec].n)}`:""}</td>
+      <td>${s.armadura?esc(ARMOR[s.armadura].n):'<span class="empty">la suya</span>'}</td>
+      <td>${n?Object.entries(s.inv).map(([k,q])=>esc(ITEM[k].n)+(q>1?` ×${q}`:"")).join(", "):'<span class="empty">—</span>'}</td></tr>`}).join("");
+  return `<section class="floor"><header><h2>El grupo</h2></header>
+   <div class="tbl-wrap"><table><thead><tr><th>PJ</th><th>Vales</th><th>Armas</th><th>Armadura</th><th>Mochila</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+   <section class="floor"><header><h2>Libro de la tienda</h2><p>Últimos movimientos.</p></header>
+   <ul class="log">${(st.log||[]).map(l=>`<li><time class="num">${fmt(l.t)}</time><span>${esc(l.x)}</span></li>`).join("")}</ul></section>`;
+}
+function viewDM(st){
+  return `<section class="floor"><header><h2>Mesa del DM</h2><p>Ajusta vales y prepara la siguiente visita.</p></header>
+   <div class="inv">${PJS.map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j)}</small></div>
+     <div class="coins">${coins(st.pjs[p.id].vales)}</div>
+     <div class="btns"><button class="btn ghost" data-vales="${p.id}" data-d="-1" ${ui.busy?"disabled":""}>−1</button><button class="btn ghost" data-vales="${p.id}" data-d="1" ${ui.busy?"disabled":""}>+1</button></div></div>`).join("")}</div>
+   <div class="btns"><button class="btn" data-valesall="3" ${ui.busy?"disabled":""}>Dar 3 vales a cada PJ</button>
+     <button class="btn warn" data-reset ${ui.busy?"disabled":""}>${ui.confirmReset?"Pulsa otra vez para vaciarlo todo":"Reiniciar tienda"}</button></div>
+   <p class="note">Reiniciar devuelve existencias, armas y armaduras, borra inventarios y deja 3 vales por PJ.</p></section>`;
+}
+
+function render(){
+  const st=Store.state;
+  const live=$("#live"),lt=$("#liveTxt");
+  live.classList.toggle("on",Store.mode==="live");
+  lt.textContent={live:"En vivo",local:"Modo prueba (no se guarda)",wait:"Conectando…",error:"Sin conexión",offline:"Reconectando…"}[Store.mode];
+  renderParty(st);
+  const main=$("#main");
+  if(Store.mode==="wait"){main.innerHTML=`<div class="hero"><h2>Abriendo la puerta…</h2><p>Cargando existencias y vales del grupo.</p></div>`;return}
+  if(Store.mode==="error"&&!st){main.innerHTML=`<div class="hero"><h2>No hay conexión con la tienda</h2><p>Recarga la página. Si sigue igual, avisa al DM.</p></div>`;return}
+  if(!st){main.innerHTML=`<div class="hero"><h2>La tienda aún no ha abierto</h2><p>El DM abre la tienda: cinco PJs con 3 vales cada uno y todas las existencias completas.</p>
+    ${ui.canDM?`<div class="btns"><button class="btn" data-open ${ui.busy?"disabled":""}>Abrir la tienda</button></div>`:""}</div>`;return}
+  if(!ui.me||!PJ[ui.me]){main.innerHTML=`<div class="hero"><h2>¿Quién entra por la puerta?</h2><p>Elige tu personaje arriba. Se recuerda en este dispositivo y puedes cambiarlo cuando quieras.</p></div>`;return}
+  if(ui.tab==="dm"&&!ui.canDM)ui.tab="tienda";
+  const V={tienda:viewTienda,armeria:viewArmeria,botes:viewBotes,inventario:viewInventario,grupo:viewGrupo,dm:viewDM}[ui.tab]||viewTienda;
+  main.innerHTML=tabsHTML(st)+V(st);
+}
+
+// Diálogo mínimo dentro de la página para elegir destinatario
+function pickRecipient(itemId,mode){
+  const it=ITEM[itemId],main=$("#main");
+  const box=document.createElement("div");box.className="hero";box.style.marginTop="0";
+  box.innerHTML=`<h2>${mode==="pot"?"Abrir bote":"Comprar"}: ${esc(it.n)}</h2>
+   <p>${mode==="pot"?`Pones 1 vale y el resto del grupo completa hasta ${price(it)}.`:`Cuesta ${price(it)} vale${price(it)>1?"s":""} de tu bolsa.`} ¿Para quién es?</p>
+   <div class="btns"><select id="para-sel" aria-label="Para quién">${PJS.map(p=>`<option value="${p.id}" ${p.id===ui.me?"selected":""}>${esc(p.n)}${p.id===ui.me?" (yo)":""}</option>`).join("")}</select>
+   <button class="btn" id="para-ok">${mode==="pot"?"Abrir bote":"Comprar"}</button><button class="btn ghost" id="para-no">Cancelar</button></div>`;
+  main.prepend(box);box.scrollIntoView({block:"nearest",behavior:"smooth"});
+  box.querySelector("#para-no").onclick=()=>box.remove();
+  box.querySelector("#para-ok").onclick=()=>{
+    const para=box.querySelector("#para-sel").value;box.remove();
+    if(mode==="pot"){act(st=>A.openPot(st,ui.me,itemId,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.");ui.tab="botes"}
+    else act(st=>A.buy(st,ui.me,itemId,para),`${it.n}: comprado.`);
+  };
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+  if(d.me){ui.me=d.me;ls.set("ta-pj",d.me);render();return}
+  if(d.tab){ui.tab=d.tab;ui.confirmReset=false;ls.set("ta-tab",d.tab);render();return}
+  if(d.filt){ui.filt=d.filt;render();return}
+  if(d.wf){ui.wf=d.wf;render();return}
+  if(b.hasAttribute("data-open"))return act(st=>{if(st)no("La tienda ya está abierta.");return freshState()},"Tienda abierta.");
+  if(d.buy)return pickRecipient(d.buy,"buy");
+  if(d.pot)return pickRecipient(d.pot,"pot");
+  if(d.equip)return act(st=>A.equip(st,ui.me,d.equip,d.id||null));
+  if(d.give)return act(st=>A.give(st,ui.me,d.give,+d.d));
+  if(d.cancel)return act(st=>A.cancelPot(st,ui.me,d.cancel),"Bote cancelado.");
+  if(d.use)return act(st=>A.use(st,ui.me,d.use),"Usado.");
+  if(d.brew)return act(st=>A.brew(st,ui.me,d.brew),"Poción preparada.");
+  if(d.pass){const to=document.getElementById("to-"+d.pass).value;return act(st=>A.pass(st,ui.me,d.pass,to),"Entregado.")}
+  if(d.vales)return act(st=>A.vales(st,d.vales,+d.d));
+  if(d.valesall)return act(st=>A.valesAll(st,+d.valesall),"Vales repartidos.");
+  if(b.hasAttribute("data-reset")){
+    if(!ui.confirmReset){ui.confirmReset=true;render();return}
+    ui.confirmReset=false;return act(()=>A.reset(),"Tienda reiniciada.");
+  }
+});
+
+Store.subs.push(render);
+render();
+// La mesa del DM se abre con #dm al final de la dirección (o siempre en modo prueba)
+ui.canDM=location.hash==="#dm";
+addEventListener("hashchange",()=>{ui.canDM=location.hash==="#dm"||Store.mode==="local";render()});
+Store.init(Nope).then(()=>{if(Store.mode==="local")ui.canDM=true;render()});
+</script>
+</body>
+</html>
