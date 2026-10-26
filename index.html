@@ -414,14 +414,14 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=8"></script>
-<script src="js/datos.js?v=8"></script>
-<script src="js/dominios.js?v=8"></script>
-<script src="js/reglas.js?v=8"></script>
-<script src="js/store.js?v=8"></script>
-<script src="js/cartas.js?v=8"></script>
-<script src="js/mapa.js?v=8"></script>
-<script src="js/saber.js?v=8"></script>
+<script src="js/firebase-config.js?v=9"></script>
+<script src="js/datos.js?v=9"></script>
+<script src="js/dominios.js?v=9"></script>
+<script src="js/reglas.js?v=9"></script>
+<script src="js/store.js?v=9"></script>
+<script src="js/cartas.js?v=9"></script>
+<script src="js/mapa.js?v=9"></script>
+<script src="js/saber.js?v=9"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -515,7 +515,7 @@ function viewEntrada(st,id,E){
   const l=LUGARES.find(x=>x.id===id),lm=l&&st.mundo.lugares[id];
   const shops=l&&(lm?.visible||ui.canDM)?`${lm.nota?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:""}<section class="block"><header><span class="tab-label">Tiendas</span></header><div class="shops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
      return `<div class="shop deco"><div class="l"><h3>${esc(t.n)}</h3><span class="note">${esc(t.sub)}</span>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>
-      <div class="btns"><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div></div>`}).join("")}</div></section>`:"";
+      <div class="btns"><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div></div>`}).join("")}</div></section>`:"";
   const head=`<div class="hero"><span class="sub">${esc(e.sub||catN)}${e.estado?` · ${esc(e.estado)}`:""}</span><h1>${esc(e.n)}</h1></div>`;
   if(!ui.canDM)return crumbs+head+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
   const pub=Saber.pub[id],para=pub?.para||{};
@@ -533,21 +533,24 @@ function viewEntrada(st,id,E){
 function viewTienda(st,id){
   const t=TIENDA[id],l=LUGARES.find(x=>x.id===t.lugar),s=st.mundo.tiendas[id];
   const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i><button data-ent="${l.id}">${esc(l.n)}</button><i>/</i><span>${esc(t.n)}</span></div>`;
-  if(!ui.me)return crumbs+`<div class="deco"><h2>Elige un PJ</h2><p class="note">Arriba, en «Ver la hoja de…», elige por quién quieres mirar o comprar.</p></div>`;
   const hero=`<div class="hero"><span class="sub">${esc(t.sub)}</span><h1>${esc(t.n)}</h1><p>${esc(t.desc)}</p><p class="quote">«${esc(t.cita)}»</p>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>`;
-  if(!s.abierta)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">La encargada ha echado el cierre. Volved cuando el DM la abra.</p></div>`;
+  if(!s.abierta&&!ui.canDM)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">La encargada ha echado el cierre. Volved cuando el DM la abra.</p></div>`;
+  // El DM puede mirar siempre; para comprar o coger equipo elige antes un PJ
+  const dmNote=ui.canDM&&(!s.abierta||!ui.me)?`<div class="notice"><b>DM</b>${!s.abierta?"Está cerrada: los jugadores no pueden entrar. ":""}${!ui.me?"Solo mirando. Para comprar o coger equipo por un PJ, elígelo arriba en «Ver la hoja de…».":""}</div>`:"";
   const nb=Object.keys(st.botes).length;
   const T=[["equipo","Entrega de equipo"],["botin","Botín y botica"],["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`],["libro","Libro de cuentas"]];
   const V={equipo:tabEquipo,botin:tabBotin,botes:tabBotes,libro:tabLibro}[ui.stab]||tabEquipo;
-  return crumbs+hero+`<nav class="subtabs" role="tablist">${T.map(([k,lab])=>`<button role="tab" data-stab="${k}" aria-selected="${ui.stab===k}">${lab}</button>`).join("")}</nav>`+V(st);
+  return crumbs+hero+dmNote+`<nav class="subtabs" role="tablist">${T.map(([k,lab])=>`<button role="tab" data-stab="${k}" aria-selected="${ui.stab===k}">${lab}</button>`).join("")}</nav>`+V(st);
 }
+const NOPJ={vales:0,inv:{},arma:null,sec:null,armadura:null,bolsa:[],propios:{}};
 function gearSlot(st,slot,g){
-  const h=holderOf(st,slot,g.id),mine=h===ui.me,me=st.pjs[ui.me];
+  const h=holderOf(st,slot,g.id),mine=!!ui.me&&h===ui.me,me=st.pjs[ui.me]||NOPJ;
   const twoBlock=slot==="sec"&&me.arma&&gearInfo(st,ui.me,me.arma)?.h===2;
   const card=(slot==="armadura"?armorCard(g):weaponCard(g)).replace('class="dh-card"',`class="dh-card${h&&!mine?" gone":""}${mine?" mine":""}"`);
   let btn="";
   if(mine)btn=`<button class="btn ghost" data-devolver="${g.id}" ${dis()}>Devolver</button>`;
   else if(!h)btn=`<button class="btn" data-equip="${slot}" data-id="${g.id}" ${dis(twoBlock)}>${me[slot]?"Cambiar":"Elegir"}</button>`;
+  if(!ui.me)btn="";
   const who=h?(mine?(me[slot]===g.id?"<b>La llevas tú</b>":"<b>En tu bolsa</b>"):`La lleva <b>${esc(PJ[h].n)}</b>`):twoBlock?"Tu arma es a dos manos":"Libre";
   return `<div class="slotcard">${card}<div class="under"><span class="holder">${who}</span>${btn}</div></div>`;
 }
@@ -563,9 +566,9 @@ function tabEquipo(st){
    <section class="block"><header><span class="tab-label">${head[0]}</span><p>${head[1]}</p></header><div class="cards">${cards.join("")}</div></section>`;
 }
 function lootSlot(st,it){
-  const me=st.pjs[ui.me],left=it.s==null?null:st.stock[it.id]??0,p=price(it),have=me.inv[it.id]||0,gone=left===0;
+  const me=st.pjs[ui.me]||NOPJ,left=it.s==null?null:st.stock[it.id]??0,p=price(it),have=me.inv[it.id]||0,gone=left===0;
   const stockTxt=it.s==null?(have?"Ya la conoces":"Se aprende, no se agota"):gone?"Agotado":`Quedan <span class="num">${left}</span> de ${it.s}`;
-  const blocked=gone||(it.k==="rec"&&have);
+  const blocked=gone||(it.k==="rec"&&have)||!ui.me;
   const card=itemCard(it).replace('class="dh-card',`class="dh-card${gone?" gone":""}`);
   return `<div class="slotcard">${card}<div class="under"><span class="holder stock${gone?" zero":""}">${stockTxt}${have&&it.k!=="rec"?` · llevas ${have}`:""}</span>
    ${blocked?"":`<span class="btns"><button class="btn" data-buy="${it.id}" ${dis(me.vales<p)}>Comprar</button>${p>1?`<button class="btn ghost" data-pot="${it.id}" ${dis(me.vales<1)}>Bote</button>`:""}</span>`}</div></div>`;
@@ -580,15 +583,15 @@ function tabBotin(st){
    <p class="note">Máximo ${MAX_CONS} copias de un mismo consumible por PJ. Los vales que no gastéis se guardan para otra visita.</p>`;
 }
 function tabBotes(st){
-  const B=Object.entries(st.botes).sort((a,b)=>a[1].t-b[1].t),me=st.pjs[ui.me];
+  const B=Object.entries(st.botes).sort((a,b)=>a[1].t-b[1].t),me=st.pjs[ui.me]||NOPJ;
   if(!B.length)return `<div class="deco"><h2>No hay botes abiertos</h2><p class="note">En «Botín y botica», pulsa «Bote» en un objeto para que el grupo junte vales. Un objeto de la vitrina cuesta 4: cada uno puede poner uno.</p></div>`;
   return `<div class="pots">${B.map(([id,b])=>{const it=ITEM[b.item],p=price(it),sum=Object.values(b.aportes).reduce((a,n)=>a+n,0),mine=b.aportes[ui.me]||0;
     const segs=Object.entries(b.aportes).flatMap(([k,n])=>Array(n).fill(`<span style="width:${100/p}%" title="${esc(PJ[k].n)}"></span>`)).join("");
     return `<article class="pot deco"><span class="black-label">${esc(RAR[it.r].n)} · ${p} vales</span><h3>${esc(it.n)}</h3><p class="note">${esc(it.t)}</p>
      <div class="bar" role="img" aria-label="${sum} de ${p} vales">${segs}</div>
      <div class="contrib"><span>Para <b>${esc(PJ[b.para].n)}</b></span><span class="num">${sum} / ${p}</span>${Object.entries(b.aportes).map(([k,n])=>`<span>${esc(PJ[k].n)} <b class="num">${n}</b></span>`).join("")}</div>
-     <div class="btns"><button class="btn" data-give="${id}" data-d="1" ${dis(me.vales<1)}>Poner 1 vale</button>
-      <button class="btn ghost" data-give="${id}" data-d="-1" ${dis(!mine)}>Retirar 1</button><button class="btn warn" data-cancel="${id}" ${dis()}>Cancelar</button></div></article>`}).join("")}</div>
+     ${ui.me?`<div class="btns"><button class="btn" data-give="${id}" data-d="1" ${dis(me.vales<1)}>Poner 1 vale</button>
+      <button class="btn ghost" data-give="${id}" data-d="-1" ${dis(!mine)}>Retirar 1</button><button class="btn warn" data-cancel="${id}" ${dis()}>Cancelar</button></div>`:""}</article>`}).join("")}</div>
    <p class="note" style="margin-top:14px">Al llegar al precio, el objeto pasa solo a quien lo recibe. Si se cancela, cada uno recupera sus vales.</p>`;
 }
 function tabLibro(st){
@@ -807,7 +810,6 @@ function render(){
   else{
     if(!ui.me&&["personaje","inventario"].includes(ui.view))ui.view="mundo";
     if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
-    if(ui.tienda&&!ui.me&&ui.view==="mundo")ui.tienda=null;
     const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
     body=nav(st)+V(st);
   }
