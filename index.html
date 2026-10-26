@@ -6,32 +6,435 @@
 <title>Velmara</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Overpass:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
-:root{--bg:#ECEEE4;--surface:#F7F8F1;--ink:#1D2520;--muted:#5A645B;--line:#C8CEBE;--accent:#8F6210;
-  --display:"IM Fell English SC",Georgia,serif;--body:"Alegreya Sans","Segoe UI",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#111713;--surface:#19211C;--ink:#E5E9DE;--muted:#97A294;--line:#2D3932;--accent:#D8A341;color-scheme:dark}}
+/* Estilo del manual de Daggerheart: páginas violeta profundo, filetes dorados con esquinas
+   angulares, etiquetas doradas y cartas blancas. Interstate Condensed → Barlow Condensed; cuerpo en Overpass. */
+:root{
+  --night:#1B1230; --violet:#281C45; --violet-2:#33255A; --lilac:#F5EEF2; --paper:#FDFCF7;
+  --gold:#F9A72B; --gold-hi:#FAC472; --gold-lo:#E08A1E; --ink:#231F20; --muted:#B9AECF; --line:#4A3B73;
+  --ok:#8FD19E; --bad:#FF8A70;
+  --cond:"Barlow Condensed","Interstate Condensed","Arial Narrow",sans-serif;
+  --body:"Overpass","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;
-  padding:48px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
-main{max-width:760px;margin:0 auto;display:grid;gap:28px}
-h1,h2{font-family:var(--display);font-weight:400;margin:0}
-h1{font-size:clamp(2.4rem,8vw,3.6rem);line-height:1}
-p{margin:0;color:var(--muted);max-width:56ch}
-.places{display:grid;gap:10px}
-a.place{display:grid;gap:4px;padding:16px 18px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:inherit;text-decoration:none}
-a.place:hover,a.place:focus-visible{border-color:var(--accent)}
-a.place h2{font-size:1.4rem}
-.soon{padding:16px 18px;border:1px dashed var(--line);border-radius:6px;color:var(--muted)}
+html{background:var(--night)}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#3A2A66 0%,var(--night) 60%) fixed,var(--night);color:var(--paper);
+  font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--cond);font-weight:700;margin:0;text-wrap:balance;line-height:1.05}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+
+/* Marco con esquinas doradas, como los recuadros del manual */
+.deco{position:relative;background:var(--violet);border:1px solid var(--line);padding:22px 24px}
+.deco::before,.deco::after{content:"";position:absolute;width:38px;height:38px;border:2px solid var(--gold);pointer-events:none}
+.deco::before{top:6px;left:6px;border-right:0;border-bottom:0;clip-path:polygon(0 0,100% 0,100% 2px,10px 2px,2px 10px,2px 100%,0 100%)}
+.deco::after{bottom:6px;right:6px;border-left:0;border-top:0;clip-path:polygon(100% 100%,0 100%,0 calc(100% - 2px),calc(100% - 10px) calc(100% - 2px),calc(100% - 2px) calc(100% - 10px),calc(100% - 2px) 0,100% 0)}
+.tab-label{display:inline-block;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--violet);background:linear-gradient(100deg,var(--gold-hi),var(--gold) 45%,var(--gold-lo));padding:3px 14px 2px;
+  clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.black-label{display:inline-block;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:var(--paper);padding:2px 10px}
+
+/* Cabecera */
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding-block:18px 14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;background:none;border:0;padding:0}
+.brand svg{width:34px;height:34px}
+.brand span{font-family:var(--cond);font-weight:700;font-size:1.7rem;letter-spacing:.18em;text-transform:uppercase}
+.who{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.who .nm{font-family:var(--cond);font-weight:700;font-size:1.25rem;text-transform:uppercase;letter-spacing:.04em}
+.linkbtn{background:none;border:0;color:var(--gold-hi);text-decoration:underline;text-underline-offset:3px;padding:0;font-size:.9rem}
+.live{display:inline-flex;align-items:center;gap:6px;font-family:var(--cond);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.live.on i{background:var(--ok);box-shadow:0 0 0 3px rgb(143 209 158 / .25)}
+.coins{display:inline-flex;gap:4px;align-items:center}
+.coin{width:15px;height:15px;transform:rotate(45deg);background:linear-gradient(135deg,var(--gold-hi),var(--gold-lo));box-shadow:inset 0 0 0 2px rgb(40 28 69 / .35)}
+.coin.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.coins .n{margin-left:6px;font-size:.85rem;color:var(--muted)}
+
+nav.main{display:flex;gap:6px;flex-wrap:wrap;padding-block:16px}
+nav.main button{font-family:var(--cond);font-weight:600;font-size:1.1rem;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid transparent;padding:6px 16px;color:var(--muted)}
+nav.main button[aria-current="true"]{color:var(--violet);background:linear-gradient(100deg,var(--gold-hi),var(--gold) 45%,var(--gold-lo));clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-family:var(--cond);font-size:1rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.crumbs button{background:none;border:0;padding:0;color:var(--gold-hi);text-transform:uppercase;letter-spacing:.05em}
+.crumbs i{font-style:normal;opacity:.6}
+
+/* Elegir personaje */
+.pick{padding-block:6vh 24px;display:grid;gap:26px}
+.pick header h1{font-size:clamp(2.6rem,9vw,4.6rem);letter-spacing:.14em;text-transform:uppercase}
+.pick header p{margin:6px 0 0;color:var(--muted);max-width:52ch}
+.pjs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:14px}
+.pjcard{display:grid;gap:6px;text-align:left;padding:22px 20px 20px;background:var(--violet);border:1px solid var(--line);position:relative;min-height:170px;align-content:end}
+.pjcard:hover,.pjcard:focus-visible{border-color:var(--gold)}
+.pjcard .init{position:absolute;top:10px;right:16px;font-family:var(--cond);font-weight:700;font-size:4rem;line-height:1;color:var(--violet-2)}
+.pjcard .nm{position:relative;font-family:var(--cond);font-weight:700;font-size:1.7rem;text-transform:uppercase;letter-spacing:.04em}
+.pjcard .cl{position:relative;color:var(--muted);font-size:.92rem}
+
+/* Lugares */
+.places{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px}
+.place{display:grid;gap:10px;text-align:left;width:100%;color:inherit}
+button.place:hover{border-color:var(--gold)}
+.place h2{font-size:2rem;text-transform:uppercase;letter-spacing:.04em}
+.place p{margin:0;color:var(--muted)}
+.place.locked{background:transparent;border-style:dashed;color:var(--muted)}
+.place.locked::before,.place.locked::after{border-color:var(--line)}
+.notice{border-left:3px solid var(--gold);background:rgb(249 167 43 / .08);padding:8px 12px;color:var(--paper);font-size:.95rem}
+.notice b{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--gold-hi);margin-right:6px}
+.hero{display:grid;gap:10px;margin-bottom:18px}
+.hero h1{font-size:clamp(2rem,6vw,3.2rem);text-transform:uppercase;letter-spacing:.06em}
+.hero .sub{font-family:var(--cond);font-size:1.15rem;color:var(--gold-hi);letter-spacing:.06em;text-transform:uppercase}
+.hero p{margin:0;max-width:66ch;color:var(--lilac)}
+.hero .quote{font-style:italic;color:var(--muted)}
+.shops{display:grid;gap:12px}
+.shop{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.shop .l{min-width:0;flex:1 1 260px;display:grid;gap:4px}
+.shop h3{font-size:1.5rem;text-transform:uppercase;letter-spacing:.04em}
+.state{font-family:var(--cond);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.9rem;padding:2px 10px;border:1px solid}
+.state.open{color:var(--ok);border-color:var(--ok)}
+.state.shut{color:var(--muted);border-color:var(--line)}
+
+/* Botones */
+.btn{font-family:var(--cond);font-weight:700;font-size:1.02rem;letter-spacing:.06em;text-transform:uppercase;border:0;padding:7px 16px 6px;
+  color:var(--violet);background:linear-gradient(100deg,var(--gold-hi),var(--gold) 45%,var(--gold-lo));clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%)}
+.btn.ghost{background:transparent;color:var(--gold-hi);box-shadow:inset 0 0 0 1.5px var(--gold);clip-path:none}
+.btn.warn{background:transparent;color:var(--bad);box-shadow:inset 0 0 0 1.5px var(--bad);clip-path:none}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* Subpestañas de la tienda */
+.subtabs{display:flex;gap:2px;overflow-x:auto;border-bottom:2px solid var(--line);margin-bottom:18px}
+.subtabs button{font-family:var(--cond);font-weight:600;font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;padding:8px 14px;color:var(--muted);white-space:nowrap}
+.subtabs button[aria-selected="true"]{color:var(--paper);border-bottom-color:var(--gold)}
+.badge{display:inline-block;min-width:20px;margin-left:6px;padding:0 6px;background:var(--gold);color:var(--violet);font-size:.8rem;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.chip{font-family:var(--cond);font-weight:600;letter-spacing:.05em;text-transform:uppercase;background:transparent;border:1px solid var(--line);color:var(--muted);padding:4px 12px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+section.block{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-bottom:34px}
+section.block>header{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+section.block>header p{margin:0;color:var(--muted);font-size:.95rem}
+.note{margin:0;font-size:.9rem;color:var(--muted)}
+.empty{color:var(--muted);font-style:italic}
+
+/* Cartas */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:22px 18px}
+.slotcard{container-type:inline-size;display:grid;gap:8px;align-content:start;min-width:0}
+.dh-card{container-type:inline-size;position:relative;width:100%;min-height:140cqw;background:#fff;color:var(--ink);border-radius:10px;
+  box-shadow:0 0 0 1px rgb(249 167 43 / .55),0 10px 28px rgb(0 0 0 / .4);display:flex;flex-direction:column}
+.dh-card.gone{filter:grayscale(1);opacity:.55}
+.dh-card.mine{box-shadow:0 0 0 3px var(--gold),0 10px 28px rgb(0 0 0 / .4)}
+.cframe{display:block;width:100%;height:auto;flex:none}
+.cframe text{font-family:var(--cond)}
+.c-banner{font-weight:700;font-size:31px;letter-spacing:2px;fill:var(--violet)}
+.m-big{font-weight:700;font-size:46px;fill:var(--violet)}
+.m-small{font-style:italic;font-weight:500;font-size:27px;fill:var(--violet)}
+.cbody{flex:1;padding:0 5cqw 13cqw;margin-top:-1cqw;display:grid;align-content:start;gap:1.2cqw;font-size:4.6cqw;line-height:1.3}
+.cbody h4{font-size:8.2cqw;text-align:center;color:var(--ink);letter-spacing:.01em}
+.cbody .ctype{text-align:center;font-family:var(--cond);font-style:italic;font-weight:600;font-size:5.2cqw;margin-bottom:1.5cqw}
+.cbody .ctrait{font-family:var(--cond);font-weight:700;font-size:6cqw}
+.cbody p{margin:0}
+.cbody b{font-family:var(--cond);font-weight:700;font-size:1.08em}
+.hands{position:absolute;right:4cqw;bottom:3cqw;display:flex;gap:1.5cqw}
+.hands svg{width:8.5cqw;height:auto;fill:#fff;stroke:#9a97a3;stroke-width:1.6}
+.slots{position:absolute;right:4cqw;bottom:3.5cqw;display:grid;grid-template-columns:repeat(3,auto);gap:1.2cqw}
+.slots svg{width:6cqw;height:auto;fill:#fff;stroke:#8e8b97;stroke-width:1.4}
+.under{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;min-height:34px}
+.holder{font-size:.9rem;color:var(--muted)}
+.holder b{color:var(--paper)}
+.stock.zero{color:var(--bad)}
+
+/* Botes, inventario, libro */
+.pots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
+.pot{display:grid;gap:10px}
+.pot h3{font-size:1.4rem;text-transform:uppercase}
+.bar{height:12px;background:var(--night);display:flex;border:1px solid var(--line)}
+.bar span{background:linear-gradient(100deg,var(--gold-hi),var(--gold))}
+.bar span+span{box-shadow:inset 2px 0 0 var(--night)}
+.contrib{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.92rem;color:var(--muted)}
+.contrib b{color:var(--paper)}
+.rows{display:grid;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--violet);border-left:3px solid var(--gold)}
+.row .l{min-width:0;flex:1 1 240px}
+.row .l b{font-family:var(--cond);font-size:1.15rem;letter-spacing:.02em}
+.row .l small{display:block;color:var(--muted);font-size:.88rem}
+select,input[type=text],textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);padding:5px 8px;max-width:100%}
+textarea{width:100%;min-height:64px;resize:vertical}
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--violet)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--cond);font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper)}
+tr:last-child td{border-bottom:0}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.93rem}
+.log li{display:flex;gap:12px}
+.log time{color:var(--muted);flex:none;width:44px}
+.invtop{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.invtop h1{font-size:clamp(2rem,6vw,3rem);text-transform:uppercase;letter-spacing:.06em}
+.ph{aspect-ratio:740/1036;display:grid;place-content:center;text-align:center;gap:6px;border:1.5px dashed var(--line);border-radius:10px;color:var(--muted);padding:16px}
+.ph b{font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;color:var(--paper)}
+.dmgrid{display:grid;gap:14px}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-family:var(--cond);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.toggle input{width:20px;height:20px;accent-color:var(--gold)}
+.picker{display:grid;gap:10px;margin-bottom:18px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;max-width:min(92vw,520px);
+  background:var(--paper);color:var(--violet);padding:10px 18px;font-weight:600;box-shadow:0 8px 28px rgb(0 0 0 / .45)}
+.toast.err{background:var(--bad);color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){.pjcard,.place,.btn{transition:border-color .15s,filter .15s,opacity .15s}}
 </style>
 </head>
 <body>
-<main>
-  <header><h1>Velmara</h1><p>Lo que los aventureros pueden visitar entre sesión y sesión.</p></header>
-  <div class="places">
-    <a class="place" href="tienda/"><h2>Tienda de las Tres Agujas</h2><p>Aelrennor. Equipo de los Disipadores, botica y vitrina. Gasta y junta vales con el grupo.</p></a>
-    <div class="soon">Más lugares, pronto.</div>
-  </div>
-</main>
+<div class="wrap" id="app"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="js/firebase-config.js?v=3"></script>
+<script src="js/datos.js?v=3"></script>
+<script src="js/reglas.js?v=3"></script>
+<script src="js/store.js?v=3"></script>
+<script src="js/cartas.js?v=3"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+const TAB=Math.random().toString(36).slice(2);
+const ui={me:ls.get("v-pj"),view:ls.get("v-view")||"lugares",lugar:ls.get("v-lugar"),tienda:ls.get("v-tienda"),
+  stab:ls.get("v-stab")||"equipo",pick:null,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false};
+if(!PJ[ui.me])ui.me=null;
+function go(patch){Object.assign(ui,patch);["view","lugar","tienda","stab"].forEach(k=>ls.set("v-"+k,ui[k]));ui.confirmReset=false;render();scrollTo({top:0})}
+
+let toastT;
+function toast(m,err){const t=$("#toast");t.textContent=m;t.className="toast"+(err?" err":"");t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3800)}
+async function act(fn,ok){
+  if(ui.busy)return;ui.busy=true;render();
+  try{await Store.mutate(st=>fn(st));if(ok)toast(ok)}
+  catch(e){toast(e instanceof Nope?e.message:"No se pudo guardar. Revisa la conexión y prueba otra vez.",true);if(!(e instanceof Nope))console.error(e)}
+  finally{ui.busy=false;render()}
+}
+const coins=(n,max)=>{let h="";const m=Math.max(n,max||0);for(let i=0;i<Math.min(m,8);i++)h+=`<span class="coin${i<n?"":" off"}"></span>`;return `<span class="coins">${h}<span class="n num">${n} vale${n===1?"":"s"}</span></span>`};
+const dis=c=>c||ui.busy?"disabled":"";
+const MARK=`<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FAC472"/><stop offset="1" stop-color="#E08A1E"/></linearGradient></defs><path d="M20 2 L36 11 V29 L20 38 L4 29 V11Z" fill="none" stroke="url(#mg)" stroke-width="2.5"/><path d="M20 9 L28 20 L20 31 L12 20Z" fill="url(#mg)"/></svg>`;
+
+/* ---------- Cabecera y navegación ---------- */
+function header(st){
+  const me=ui.me&&st?.pjs?.[ui.me];
+  const lt={live:"En vivo",local:"Modo prueba",wait:"Conectando…",error:"Sin conexión",offline:"Reconectando…"}[Store.mode];
+  return `<header class="top"><button class="brand" data-home>${MARK}<span>Velmara</span></button>
+   <div class="who">${ui.me?`<span class="nm">${esc(PJ[ui.me].n)}</span>${me?coins(me.vales,3):""}<button class="linkbtn" data-switch>Cambiar personaje</button>`:""}
+   <span class="live${Store.mode==="live"?" on":""}"><i></i>${lt}</span></div></header>`;
+}
+function nav(){
+  const T=[["lugares","Lugares"],["inventario","Inventario"]];if(ui.canDM)T.push(["dm","Mesa del DM"]);
+  return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}</button>`).join("")}</nav>`;
+}
+
+/* ---------- Elegir personaje ---------- */
+function viewPick(){
+  return `<div class="pick"><header><span class="tab-label">Antes de entrar</span><h1>¿Quién eres?</h1>
+   <p>Elige tu personaje. Se queda guardado en este dispositivo para todo lo que hagas: compras, equipo e inventario.</p></header>
+   <div class="pjs">${PJS.map(p=>`<button class="pjcard deco" data-me="${p.id}"><span class="init" aria-hidden="true">${esc(p.n[0])}</span>
+     <span class="nm">${esc(p.n)}</span><span class="cl">${esc(p.c)}<br>Jugador: ${esc(p.j)}</span></button>`).join("")}</div></div>`;
+}
+
+/* ---------- Lugares ---------- */
+function viewLugares(st){
+  if(ui.tienda&&TIENDA[ui.tienda]&&st.mundo.lugares[TIENDA[ui.tienda].lugar]?.visible)return viewTienda(st,ui.tienda);
+  if(ui.lugar&&st.mundo.lugares[ui.lugar]?.visible)return viewLugar(st,LUGARES.find(l=>l.id===ui.lugar));
+  const vis=LUGARES.filter(l=>st.mundo.lugares[l.id]?.visible),hidden=LUGARES.length-vis.length;
+  return `<div class="hero"><span class="tab-label">Mapa</span><h1>Lugares</h1><p>Los sitios que el grupo puede visitar entre sesiones. Se irán abriendo a medida que los descubráis.</p></div>
+   <div class="places">${vis.map(l=>{const m=st.mundo.lugares[l.id];const open=l.tiendas.filter(t=>st.mundo.tiendas[t.id]?.abierta).length;
+     return `<button class="place deco" data-lugar="${l.id}"><span class="black-label">${esc(l.sub)}</span><h2>${esc(l.n)}</h2><p>${esc(l.desc)}</p>
+      ${m.nota?`<div class="notice"><b>Aviso</b>${esc(m.nota)}</div>`:""}
+      <p>${open?`${open} tienda${open>1?"s":""} abierta${open>1?"s":""}`:"Ninguna tienda abierta ahora"}</p></button>`}).join("")}
+    ${hidden||!vis.length?`<div class="place deco locked"><span class="black-label">Por descubrir</span><h2>???</h2><p>Más lugares aparecerán aquí cuando el DM los desvele.</p></div>`:""}</div>`;
+}
+function viewLugar(st,l){
+  const m=st.mundo.lugares[l.id];
+  return `<div class="crumbs"><button data-lugar="">Lugares</button><i>/</i><span>${esc(l.n)}</span></div>
+   <div class="hero"><span class="sub">${esc(l.sub)}</span><h1>${esc(l.n)}</h1><p>${esc(l.desc)}</p>${m.nota?`<div class="notice"><b>Aviso</b>${esc(m.nota)}</div>`:""}</div>
+   <section class="block"><header><span class="tab-label">Tiendas</span></header><div class="shops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
+     return `<div class="shop deco"><div class="l"><h3>${esc(t.n)}</h3><span class="note">${esc(t.sub)}</span>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>
+      <div class="btns"><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div></div>`}).join("")}</div></section>`;
+}
+
+/* ---------- Tienda ---------- */
+function viewTienda(st,id){
+  const t=TIENDA[id],l=LUGARES.find(x=>x.id===t.lugar),s=st.mundo.tiendas[id];
+  const crumbs=`<div class="crumbs"><button data-lugar="">Lugares</button><i>/</i><button data-lugar="${l.id}">${esc(l.n)}</button><i>/</i><span>${esc(t.n)}</span></div>`;
+  const hero=`<div class="hero"><span class="sub">${esc(t.sub)}</span><h1>${esc(t.n)}</h1><p>${esc(t.desc)}</p><p class="quote">«${esc(t.cita)}»</p>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>`;
+  if(!s.abierta)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">La encargada ha echado el cierre. Volved cuando el DM la abra.</p></div>`;
+  const nb=Object.keys(st.botes).length;
+  const T=[["equipo","Entrega de equipo"],["botin","Botín y botica"],["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`],["libro","Libro de cuentas"]];
+  const V={equipo:tabEquipo,botin:tabBotin,botes:tabBotes,libro:tabLibro}[ui.stab]||tabEquipo;
+  return crumbs+hero+`<nav class="subtabs" role="tablist">${T.map(([k,lab])=>`<button role="tab" data-stab="${k}" aria-selected="${ui.stab===k}">${lab}</button>`).join("")}</nav>`+V(st);
+}
+function gearSlot(st,slot,g){
+  const h=holderOf(st,slot,g.id),mine=h===ui.me,me=st.pjs[ui.me];
+  const twoBlock=slot==="sec"&&me.arma&&WEAPON[me.arma].h===2;
+  const card=(slot==="armadura"?armorCard(g):weaponCard(g)).replace('class="dh-card"',`class="dh-card${h&&!mine?" gone":""}${mine?" mine":""}"`);
+  let btn="";
+  if(mine)btn=`<button class="btn ghost" data-equip="${slot}" data-id="" ${dis()}>Devolver</button>`;
+  else if(!h)btn=`<button class="btn" data-equip="${slot}" data-id="${g.id}" ${dis(twoBlock)}>${me[slot]?"Cambiar":"Elegir"}</button>`;
+  const who=h?(mine?"<b>La llevas tú</b>":`La lleva <b>${esc(PJ[h].n)}</b>`):twoBlock?"Tu arma es a dos manos":"Libre";
+  return `<div class="slotcard">${card}<div class="under"><span class="holder">${who}</span>${btn}</div></div>`;
+}
+function tabEquipo(st){
+  const F=[["fis","Armas físicas"],["mag","Armas mágicas"],["sec","Secundarias"],["arm","Armaduras"]];
+  let head,cards;
+  if(ui.wf==="arm"){head=["Armaduras de tier 2","Umbrales finales = base + nivel."];cards=ARMORS.map(a=>gearSlot(st,"armadura",a))}
+  else{const slot=ui.wf==="sec"?"sec":"arma";
+    head={fis:["Armas principales físicas","Versiones de tier 2."],mag:["Armas principales mágicas","Requieren rasgo de lanzamiento."],sec:["Armas secundarias","No se pueden llevar con un arma principal a dos manos."]}[ui.wf];
+    cards=WEAPONS.filter(w=>w.g===ui.wf).map(w=>gearSlot(st,slot,w))}
+  return `<p class="note" style="margin-bottom:14px">Regalo de los Disipadores: un arma principal, una secundaria y una armadura por PJ. Hay una sola pieza de cada; lo que coge uno no lo puede coger otro hasta que lo devuelva.</p>
+   <div class="chips">${F.map(([k,l])=>`<button class="chip" data-wf="${k}" aria-pressed="${ui.wf===k}">${l}</button>`).join("")}</div>
+   <section class="block"><header><span class="tab-label">${head[0]}</span><p>${head[1]}</p></header><div class="cards">${cards.join("")}</div></section>`;
+}
+function lootSlot(st,it){
+  const me=st.pjs[ui.me],left=it.s==null?null:st.stock[it.id]??0,p=price(it),have=me.inv[it.id]||0,gone=left===0;
+  const stockTxt=it.s==null?(have?"Ya la conoces":"Se aprende, no se agota"):gone?"Agotado":`Quedan <span class="num">${left}</span> de ${it.s}`;
+  const blocked=gone||(it.k==="rec"&&have);
+  const card=itemCard(it).replace('class="dh-card',`class="dh-card${gone?" gone":""}`);
+  return `<div class="slotcard">${card}<div class="under"><span class="holder stock${gone?" zero":""}">${stockTxt}${have&&it.k!=="rec"?` · llevas ${have}`:""}</span>
+   ${blocked?"":`<span class="btns"><button class="btn" data-buy="${it.id}" ${dis(me.vales<p)}>Comprar</button>${p>1?`<button class="btn ghost" data-pot="${it.id}" ${dis(me.vales<1)}>Bote</button>`:""}</span>`}</div></div>`;
+}
+function tabBotin(st){
+  const F=[["todo","Todo"],["c","Comunes · 1"],["pc","Poco comunes · 2"],["rec","Recetas"],["r","Vitrina · 4"]];
+  const G=[["c","Planta baja · Comunes","1 vale cada uno."],["pc","Planta media · Poco comunes","2 vales cada uno."],
+    ["rec","Recetas de pociones","Permanentes. Como movimiento de descanso gastas el ingrediente y fabricas 1 poción."],
+    ["r","La vitrina · Raros","4 vales y una sola unidad. Lo normal es juntar vales en un bote."]].filter(g=>ui.filt==="todo"||ui.filt===g[0]);
+  return `${pickerHTML()}<div class="chips">${F.map(([k,l])=>`<button class="chip" data-filt="${k}" aria-pressed="${ui.filt===k}">${l}</button>`).join("")}</div>
+   ${G.map(([r,h,p])=>`<section class="block"><header><span class="tab-label">${h}</span><p>${p}</p></header><div class="cards">${ITEMS.filter(i=>i.r===r).map(i=>lootSlot(st,i)).join("")}</div></section>`).join("")}
+   <p class="note">Máximo ${MAX_CONS} copias de un mismo consumible por PJ. Los vales que no gastéis se guardan para otra visita.</p>`;
+}
+function tabBotes(st){
+  const B=Object.entries(st.botes).sort((a,b)=>a[1].t-b[1].t),me=st.pjs[ui.me];
+  if(!B.length)return `<div class="deco"><h2>No hay botes abiertos</h2><p class="note">En «Botín y botica», pulsa «Bote» en un objeto para que el grupo junte vales. Un objeto de la vitrina cuesta 4: cada uno puede poner uno.</p></div>`;
+  return `<div class="pots">${B.map(([id,b])=>{const it=ITEM[b.item],p=price(it),sum=Object.values(b.aportes).reduce((a,n)=>a+n,0),mine=b.aportes[ui.me]||0;
+    const segs=Object.entries(b.aportes).flatMap(([k,n])=>Array(n).fill(`<span style="width:${100/p}%" title="${esc(PJ[k].n)}"></span>`)).join("");
+    return `<article class="pot deco"><span class="black-label">${esc(RAR[it.r].n)} · ${p} vales</span><h3>${esc(it.n)}</h3><p class="note">${esc(it.t)}</p>
+     <div class="bar" role="img" aria-label="${sum} de ${p} vales">${segs}</div>
+     <div class="contrib"><span>Para <b>${esc(PJ[b.para].n)}</b></span><span class="num">${sum} / ${p}</span>${Object.entries(b.aportes).map(([k,n])=>`<span>${esc(PJ[k].n)} <b class="num">${n}</b></span>`).join("")}</div>
+     <div class="btns"><button class="btn" data-give="${id}" data-d="1" ${dis(me.vales<1)}>Poner 1 vale</button>
+      <button class="btn ghost" data-give="${id}" data-d="-1" ${dis(!mine)}>Retirar 1</button><button class="btn warn" data-cancel="${id}" ${dis()}>Cancelar</button></div></article>`}).join("")}</div>
+   <p class="note" style="margin-top:14px">Al llegar al precio, el objeto pasa solo a quien lo recibe. Si se cancela, cada uno recupera sus vales.</p>`;
+}
+function tabLibro(st){
+  const fmt=t=>new Date(t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+  const rows=PJS.map(p=>{const s=st.pjs[p.id];return `<tr><td><b>${esc(p.n)}</b></td><td class="num">${s.vales}</td>
+    <td>${s.arma?esc(WEAPON[s.arma].n):'<span class="empty">la suya</span>'}${s.sec?`<br>${esc(WEAPON[s.sec].n)}`:""}</td>
+    <td>${s.armadura?esc(ARMOR[s.armadura].n):'<span class="empty">la suya</span>'}</td>
+    <td>${Object.keys(s.inv).length?Object.entries(s.inv).map(([k,q])=>esc(ITEM[k].n)+(q>1?` ×${q}`:"")).join(", "):'<span class="empty">—</span>'}</td></tr>`}).join("");
+  return `<section class="block"><header><span class="tab-label">El grupo</span></header><div class="tbl"><table><thead><tr><th>PJ</th><th>Vales</th><th>Armas</th><th>Armadura</th><th>Mochila</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+   <section class="block"><header><span class="tab-label">Movimientos</span></header><ul class="log">${st.log.map(l=>`<li><time class="num">${fmt(l.t)}</time><span>${esc(l.x)}</span></li>`).join("")}</ul></section>`;
+}
+// Ventana para elegir destinatario; vive en ui para sobrevivir a los cambios de otros jugadores
+function pickerHTML(){
+  if(!ui.pick)return "";const it=ITEM[ui.pick.id],pot=ui.pick.mode==="pot",p=price(it);
+  return `<div class="picker deco" id="picker"><h2>${pot?"Abrir bote":"Comprar"}: ${esc(it.n)}</h2>
+   <p class="note">${pot?`Pones 1 vale y el resto del grupo completa hasta ${p}.`:`Cuesta ${p} vale${p>1?"s":""} de tu bolsa.`} ¿Para quién es?</p>
+   <div class="btns"><select id="para-sel" aria-label="Para quién">${PJS.map(x=>`<option value="${x.id}" ${x.id===ui.pick.para?"selected":""}>${esc(x.n)}${x.id===ui.me?" (yo)":""}</option>`).join("")}</select>
+   <button class="btn" data-pickok ${dis()}>${pot?"Abrir bote":"Comprar"}</button><button class="btn ghost" data-pickno>Cancelar</button></div></div>`;
+}
+function picker(id,mode){ui.pick={id,mode,para:ui.me};render();$("#picker")?.scrollIntoView({block:"start",behavior:"smooth"})}
+
+/* ---------- Inventario ---------- */
+function viewInventario(st){
+  const p=PJ[ui.me],s=st.pjs[ui.me];
+  const slot=(label,obj,html)=>`<div class="slotcard">${obj?html:`<div class="ph"><b>${label}</b><span>Conserva la suya</span></div>`}<div class="under"><span class="holder">${label}</span></div></div>`;
+  const ids=Object.keys(s.inv).sort((a,b)=>ITEMS.indexOf(ITEM[a])-ITEMS.indexOf(ITEM[b]));
+  return `<div class="hero invtop"><div><span class="sub">${esc(p.c)} · ${esc(p.j)}</span><h1>${esc(p.n)}</h1></div>${coins(s.vales,3)}</div>
+   <section class="block"><header><span class="tab-label">Equipo</span><p>Se cambia en la entrega de equipo de la Tienda de las Tres Agujas.</p></header>
+    <div class="cards">${slot("Arma principal",s.arma,s.arma&&weaponCard(WEAPON[s.arma]))}${slot("Arma secundaria",s.sec,s.sec&&weaponCard(WEAPON[s.sec]))}${slot("Armadura",s.armadura,s.armadura&&armorCard(ARMOR[s.armadura]))}</div></section>
+   <section class="block"><header><span class="tab-label">Mochila</span><p>Usa consumibles, prepara recetas o pasa objetos a otro PJ.</p></header>
+    ${ids.length?`<div class="rows">${ids.map(id=>{const it=ITEM[id];return `<div class="row"><div class="l"><b>${esc(it.n)}</b>${s.inv[id]>1?` <span class="num">×${s.inv[id]}</span>`:""}<small>${esc(it.k==="rec"?`Ingrediente: ${it.ing} ${it.t}`:it.t)}</small></div>
+     <div class="btns">${it.k==="cons"?`<button class="btn ghost" data-use="${id}" ${dis()}>Usar</button>`:""}${it.k==="rec"?`<button class="btn ghost" data-brew="${id}" ${dis()}>Preparar</button>`:""}
+     ${it.k!=="rec"?`<select id="to-${id}" aria-label="Dar a">${PJS.filter(x=>x.id!==ui.me).map(x=>`<option value="${x.id}">${esc(x.n)}</option>`).join("")}</select><button class="btn ghost" data-pass="${id}" ${dis()}>Dar</button>`:""}</div></div>`}).join("")}</div>`
+    :`<p class="empty">La mochila está vacía.</p>`}</section>`;
+}
+
+/* ---------- Mesa del DM ---------- */
+function viewDM(st){
+  return `<div class="hero"><span class="tab-label">Solo para el DM</span><h1>Mesa del DM</h1><p>Lo que cambies aquí lo ven los jugadores al momento.</p></div>
+   ${LUGARES.map(l=>{const m=st.mundo.lugares[l.id];return `<section class="block deco"><header><h2>${esc(l.n)}</h2>
+     <label class="toggle"><input type="checkbox" data-lvis="${l.id}" ${m.visible?"checked":""} ${dis()}> Visible para los jugadores</label></header>
+     <label class="note" for="ln-${l.id}">Aviso del lugar</label><textarea id="ln-${l.id}" placeholder="Por ejemplo: esta noche hay toque de queda">${esc(m.nota)}</textarea>
+     <div class="btns"><button class="btn ghost" data-lnota="${l.id}" ${dis()}>Guardar aviso</button></div>
+     ${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];return `<div class="dmgrid" style="border-top:1px solid var(--line);padding-top:14px">
+      <div class="btns" style="justify-content:space-between"><h3>${esc(t.n)}</h3><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span></div>
+      <div class="btns"><button class="btn${s.abierta?" warn":""}" data-topen="${t.id}" data-v="${s.abierta?0:1}" ${dis()}>${s.abierta?"Cerrar tienda":"Abrir tienda"}</button></div>
+      <label class="note" for="tn-${t.id}">Aviso de la tienda</label><textarea id="tn-${t.id}" placeholder="Por ejemplo: abierta hasta el final de la sesión 10">${esc(s.nota)}</textarea>
+      <div class="btns"><button class="btn ghost" data-tnota="${t.id}" ${dis()}>Guardar aviso</button></div></div>`}).join("")}</section>`}).join("")}
+   <section class="block deco"><header><h2>Vales</h2></header><div class="rows">${PJS.map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j)}</small></div>${coins(st.pjs[p.id].vales)}
+     <div class="btns"><button class="btn ghost" data-vales="${p.id}" data-d="-1" ${dis()}>−1</button><button class="btn ghost" data-vales="${p.id}" data-d="1" ${dis()}>+1</button></div></div>`).join("")}</div>
+    <div class="btns"><button class="btn" data-valesall="3" ${dis()}>Dar 3 vales a cada PJ</button>
+     <button class="btn warn" data-reset ${dis()}>${ui.confirmReset?"Pulsa otra vez para vaciarlo todo":"Reiniciar existencias e inventarios"}</button></div>
+    <p class="note">Reiniciar devuelve existencias, armas y armaduras, borra inventarios y deja 3 vales por PJ. Lugares y tiendas se quedan como estén.</p></section>`;
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const st=Store.state,app=$("#app");
+  let body;
+  if(Store.mode==="wait")body=`<div class="deco" style="margin-top:24px"><h2>Abriendo la puerta…</h2><p class="note">Cargando el estado de la partida.</p></div>`;
+  else if(Store.mode==="error"&&!st)body=`<div class="deco" style="margin-top:24px"><h2>No hay conexión</h2><p class="note">Recarga la página. Si sigue igual, avisa al DM.</p></div>`;
+  else if(!st)body=`<div class="deco" style="margin-top:24px"><h2>La partida aún no ha empezado</h2><p class="note">El DM tiene que prepararla: cinco PJs con 3 vales y la tienda llena.</p>
+    ${ui.canDM?`<div class="btns" style="margin-top:12px"><button class="btn" data-start ${dis()}>Empezar partida</button></div>`:""}</div>`;
+  else if(!ui.me)body=viewPick();
+  else{
+    if(ui.view==="dm"&&!ui.canDM)ui.view="lugares";
+    const V={lugares:viewLugares,inventario:viewInventario,dm:viewDM}[ui.view]||viewLugares;
+    body=nav()+V(st);
+  }
+  const keep=document.activeElement?.tagName==="TEXTAREA"?{id:document.activeElement.id,v:document.activeElement.value}:null;
+  app.innerHTML=header(st)+body;
+  if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus()}}
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+  if(b.hasAttribute("data-home"))return go({view:"lugares",lugar:null,tienda:null});
+  if(b.hasAttribute("data-switch")){ui.me=null;ls.set("v-pj",null);render();return}
+  if(d.me){ui.me=d.me;ls.set("v-pj",d.me);return go({view:"lugares"})}
+  if(d.view)return go({view:d.view});
+  if(d.lugar!==undefined)return go({lugar:d.lugar||null,tienda:null});
+  if(d.tienda)return go({tienda:d.tienda});
+  if(d.stab)return go({stab:d.stab});
+  if(d.filt){ui.filt=d.filt;render();return}
+  if(d.wf){ui.wf=d.wf;render();return}
+  if(b.hasAttribute("data-start"))return act(st=>{if(st)no("La partida ya ha empezado.");return freshState()},"Partida preparada.");
+  if(b.hasAttribute("data-pickno")){ui.pick=null;render();return}
+  if(b.hasAttribute("data-pickok")){const {id,mode,para}=ui.pick,it=ITEM[id];ui.pick=null;
+    if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
+    return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
+  if(d.buy)return picker(d.buy,"buy");
+  if(d.pot)return picker(d.pot,"pot");
+  if(d.equip)return act(st=>A.equip(st,ui.me,d.equip,d.id||null));
+  if(d.give)return act(st=>A.give(st,ui.me,d.give,+d.d));
+  if(d.cancel)return act(st=>A.cancelPot(st,ui.me,d.cancel),"Bote cancelado.");
+  if(d.use)return act(st=>A.use(st,ui.me,d.use),"Usado.");
+  if(d.brew)return act(st=>A.brew(st,ui.me,d.brew),"Poción preparada.");
+  if(d.pass){const to=$("#to-"+d.pass).value;return act(st=>A.pass(st,ui.me,d.pass,to),"Entregado.")}
+  if(d.vales)return act(st=>A.vales(st,d.vales,+d.d));
+  if(d.valesall)return act(st=>A.valesAll(st,+d.valesall),"Vales repartidos.");
+  if(d.topen)return act(st=>A.tienda(st,d.topen,{abierta:d.v==="1"}),d.v==="1"?"Tienda abierta.":"Tienda cerrada.");
+  if(d.tnota){const v=$("#tn-"+d.tnota).value.trim().slice(0,300);return act(st=>A.tienda(st,d.tnota,{nota:v}),"Aviso guardado.")}
+  if(d.lnota){const v=$("#ln-"+d.lnota).value.trim().slice(0,300);return act(st=>A.lugar(st,d.lnota,{nota:v}),"Aviso guardado.")}
+  if(b.hasAttribute("data-reset")){if(!ui.confirmReset){ui.confirmReset=true;render();return}ui.confirmReset=false;return act(st=>A.reset(st),"Partida reiniciada.")}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
+  if(t.dataset?.lvis)act(st=>A.lugar(st,t.dataset.lvis,{visible:t.checked}),t.checked?"Lugar visible.":"Lugar oculto.");
+});
+
+// La mesa del DM se abre con #dm al final de la dirección (o siempre en modo prueba)
+ui.canDM=location.hash==="#dm";
+addEventListener("hashchange",()=>{ui.canDM=location.hash==="#dm"||Store.mode==="local";render()});
+Store.subs.push(render);
+render();
+Store.init(Nope).then(()=>{if(Store.mode==="local")ui.canDM=true;render()});
+</script>
 </body>
 </html>

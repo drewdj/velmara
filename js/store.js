@@ -11,6 +11,13 @@ const Store={
     st.botes=st.botes||{};st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.stock=st.stock||{};st.pjs=st.pjs||{};
     for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.vales=p.vales||0}
     for(const k in st.botes){st.botes[k].aportes=st.botes[k].aportes||{}}
+    // Lugares y tiendas nuevos aparecen con sus valores iniciales sin tocar los ya guardados
+    if(typeof mundoInicial==="function"){
+      const base=mundoInicial(),m=st.mundo||{};
+      st.mundo={lugares:{...base.lugares,...(m.lugares||{})},tiendas:{...base.tiendas,...(m.tiendas||{})}};
+      for(const k in st.mundo.lugares)st.mundo.lugares[k].nota=st.mundo.lugares[k].nota||"";
+      for(const k in st.mundo.tiendas)st.mundo.tiendas[k].nota=st.mundo.tiendas[k].nota||"";
+    }
     return st;
   },
   async init(RuleError){
