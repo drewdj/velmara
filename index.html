@@ -242,6 +242,108 @@ tr:last-child td{border-bottom:0}
 .exp input{flex:1 1 200px}
 @media (prefers-reduced-motion:no-preference){.pjcard,.place,.btn{transition:border-color .15s,filter .15s,opacity .15s}}
 
+
+/* ---------- DM, modos y Mundo ---------- */
+.dmtag{font-family:var(--cond);font-weight:700;letter-spacing:.12em;background:linear-gradient(100deg,var(--gold-hi),var(--gold-lo));color:var(--violet);padding:2px 10px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+#dm-pj{font-size:.9rem;padding:3px 6px}
+nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-left:6px;vertical-align:middle;box-shadow:0 0 0 3px rgb(143 209 158 / .25)}
+.seg{display:inline-flex;border:1px solid var(--gold);align-self:end}
+.seg button{background:none;border:0;padding:6px 18px;font-family:var(--cond);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-hi)}
+.seg button[aria-selected="true"]{background:linear-gradient(100deg,var(--gold-hi),var(--gold-lo));color:var(--violet)}
+.dmcard{border-style:dashed;padding:0}
+.dmopen{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:6px;align-content:end;padding:22px 20px 20px;min-height:170px;position:relative;width:100%}
+.dmopen:focus-visible{outline:2px solid var(--gold)}
+.dmform{display:grid;gap:8px;padding:18px 20px}
+.dmform input{width:100%;box-sizing:border-box;font:inherit;padding:6px 8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.err{margin:0;color:var(--bad);font-size:.9rem}
+.now{margin-bottom:18px}
+.nowcard{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 28px rgb(249 167 43 / .18)}
+.nowcard>div{display:grid;gap:4px;flex:1 1 240px;min-width:0}
+.nowcard h2{font-size:1.8rem;text-transform:uppercase;letter-spacing:.04em}
+.avisos{display:grid;gap:8px;margin-bottom:18px}
+.lore{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px}
+.loreitem{display:grid;gap:8px;align-content:start;text-align:left;color:inherit;width:100%;padding:18px 20px}
+.loreitem .black-label{justify-self:start;font-size:.8rem}
+.loreitem h3{font-size:1.45rem;text-transform:uppercase;letter-spacing:.03em}
+.loreitem p{margin:0;color:var(--muted);font-size:.92rem;line-height:1.4}
+.loreitem:hover,.loreitem:focus-visible{border-color:var(--gold)}
+.sees{font-family:var(--cond);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sees.on{color:var(--ok)}
+.prose{max-width:72ch;line-height:1.6}
+.prose h2,.prose h3,.prose h4{text-transform:uppercase;letter-spacing:.05em;color:var(--gold-hi);margin:22px 0 8px}
+.prose h2{font-size:1.6rem}.prose h3{font-size:1.3rem}
+.prose p{margin:0 0 12px}
+.prose ul,.prose ol{margin:0 0 12px;padding-left:22px}
+.prose li{margin-bottom:4px}
+.prose b{color:var(--paper)}
+.prose blockquote{margin:0 0 12px;border-left:3px solid var(--line);padding-left:12px;color:var(--lilac)}
+.callout{border:1px solid var(--line);background:var(--violet-2);padding:10px 14px;margin:0 0 12px}
+.callout>b{display:block;font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--gold-hi);margin-bottom:6px}
+.callout.secret{border-color:var(--bad);background:rgb(255 138 112 / .08)}
+.callout.secret>b{color:var(--bad)}
+.lk{all:unset;cursor:pointer;color:var(--gold-hi);text-decoration:underline;text-underline-offset:3px}
+.lk.off{cursor:default;text-decoration:none;color:inherit}
+.dmlore{display:grid;gap:22px}
+.share{display:grid;gap:10px}
+.share .chips{margin:0}
+.shtxt{min-height:180px;font-size:.92rem;line-height:1.45}
+/* ---------- Hoja: vista ---------- */
+.stats{display:grid;gap:12px}
+.defs{display:flex;flex-wrap:wrap;gap:10px}
+.def{display:grid;gap:4px;align-content:start;background:var(--violet);border:1px solid var(--line);padding:10px 16px;min-width:110px}
+.def b{font-family:var(--cond);font-size:2.2rem;line-height:1}
+.def.wide{flex:1 1 300px}
+.res{display:grid;gap:14px}
+.rrow{display:grid;grid-template-columns:180px minmax(0,1fr) auto;gap:8px 14px;align-items:center}
+.rl{display:grid}.rl b{font-family:var(--cond);font-size:1.15rem;text-transform:uppercase;letter-spacing:.05em}.rl span{color:var(--muted);font-size:.9rem}
+.rrow .track button{width:30px;height:30px}
+.rrow .track.hope button{width:24px;height:24px;margin:3px}
+.track.armor button{border-color:#8FB6E8}.track.armor button.on{background:#8FB6E8}
+.rbtn{display:inline-flex;gap:6px}
+.rbtn button{width:40px;height:40px;font-size:1.4rem;font-weight:700;border:1px solid var(--gold);background:var(--night);color:var(--gold-hi);padding:0}
+.rbtn button:disabled{opacity:.35}
+@media (max-width:600px){.rrow{grid-template-columns:minmax(0,1fr) auto}.rrow .track{grid-column:1/-1;grid-row:2}}
+.xps{display:flex;flex-wrap:wrap;gap:8px}
+.xp{background:var(--lilac);color:var(--ink);padding:4px 12px;font-weight:600}
+.xp b{color:var(--violet)}
+.pre{white-space:pre-wrap;margin:0}
+.erow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.clist{display:grid;gap:6px}
+.crow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;border-bottom:1px solid var(--line);padding:6px 0}
+.crow small{color:var(--muted);flex:1 1 120px}
+.cdot{width:12px;height:12px;border-radius:50%;flex:none}
+/* ---------- Inventario ---------- */
+.invhelp{margin:-6px 0 14px}
+.invgrid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:820px){.invgrid{grid-template-columns:minmax(0,1fr)}}
+.eslots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.eslot{display:grid;gap:6px;align-content:start;padding:8px;border:1px solid var(--line);background:var(--night);min-width:0}
+.elab{font-family:var(--cond);font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-hi);text-align:center;line-height:1.1;min-height:2.2em;display:grid;place-content:center}
+.eslot.can,.tiles.can{outline:2px dashed var(--gold);outline-offset:2px;background:rgb(249 167 43 / .08);cursor:pointer}
+.eslot.over,.tiles.over{outline-style:solid;background:rgb(249 167 43 / .18)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;padding:8px;border:1px solid var(--line);background:var(--night);min-height:120px;align-content:start}
+.tile{position:relative;display:grid;gap:0;padding:0;border:1px solid rgb(249 167 43 / .5);background:#140D24;color:var(--paper);text-align:center;overflow:hidden;min-width:0;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.tile[data-drag]{cursor:grab}
+.tile .tart{display:block;width:100%;height:auto;aspect-ratio:1;pointer-events:none}
+.tile .tn{font-family:var(--cond);font-weight:700;font-size:.85rem;line-height:1.1;padding:5px 4px 6px;background:var(--violet);min-height:2.2em;display:grid;place-content:center;overflow-wrap:anywhere}
+.tile .qty{position:absolute;top:4px;right:4px;background:var(--ink);color:var(--paper);font-size:.8rem;padding:0 6px}
+.tile.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 16px rgb(249 167 43 / .5)}
+.tile.empty{aspect-ratio:1/1.25;border-style:dashed;border-color:var(--line);background:transparent;color:var(--muted)}
+.tile.empty .tn{background:none;font-weight:600}
+.tile.ghost{position:fixed;left:0;top:0;z-index:50;pointer-events:none;opacity:.9;box-shadow:0 10px 30px rgb(0 0 0 / .5)}
+.invdet{margin-top:18px;display:grid;gap:10px;max-width:320px}
+.detcard{container-type:inline-size}
+.pcard{display:grid;gap:8px}
+.pcard h3{font-size:1.5rem;text-transform:uppercase}
+.irow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;border-bottom:1px solid var(--line);padding:8px 0}
+.irow small{color:var(--muted);flex:1 1 160px}
+.irow select{font-size:.85rem;padding:3px 6px}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto auto;gap:6px 8px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.prow textarea{grid-column:1/-1;min-height:48px}
+@media (max-width:600px){.prow{grid-template-columns:minmax(0,1fr) auto}.prow input[type=text]{grid-column:1/-1}}
+.padd{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.padd input{flex:1 1 220px}
+
 /* ---------- Mapa ---------- */
 #maproot{max-width:1600px;margin:0 auto}
 .map-shell{display:grid;grid-template-columns:auto minmax(0,1fr) 300px;height:calc(100dvh - 150px);min-height:420px;border:1px solid var(--line);background:var(--violet)}
@@ -312,22 +414,26 @@ tr:last-child td{border-bottom:0}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=5"></script>
-<script src="js/datos.js?v=5"></script>
-<script src="js/dominios.js?v=5"></script>
-<script src="js/reglas.js?v=5"></script>
-<script src="js/store.js?v=5"></script>
-<script src="js/cartas.js?v=5"></script>
-<script src="js/mapa.js?v=5"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="js/firebase-config.js?v=6"></script>
+<script src="js/datos.js?v=6"></script>
+<script src="js/dominios.js?v=6"></script>
+<script src="js/reglas.js?v=6"></script>
+<script src="js/store.js?v=6"></script>
+<script src="js/cartas.js?v=6"></script>
+<script src="js/mapa.js?v=6"></script>
+<script src="js/saber.js?v=6"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
-const ui={me:ls.get("v-pj"),view:ls.get("v-view")||"lugares",lugar:ls.get("v-lugar"),tienda:ls.get("v-tienda"),
-  stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false};
+const ui={me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
+  stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,
+  edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
+if(ui.view==="lugares")ui.view="mundo";
 if(!PJ[ui.me])ui.me=null;
-function go(patch){Object.assign(ui,patch);["view","lugar","tienda","stab"].forEach(k=>ls.set("v-"+k,ui[k]));ui.confirmReset=false;render();scrollTo({top:0})}
+function go(patch){Object.assign(ui,patch);["view","ent","cat","tienda","stab"].forEach(k=>ls.set("v-"+k,ui[k]));ui.confirmReset=false;render();scrollTo({top:0})}
 
 let toastT;
 function toast(m,err){const t=$("#toast");t.textContent=m;t.className="toast"+(err?" err":"");t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3800)}
@@ -345,48 +451,90 @@ const MARK=`<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id
 function header(st){
   const me=ui.me&&st?.pjs?.[ui.me];
   const lt={live:"En vivo",local:"Modo prueba",wait:"Conectando…",error:"Sin conexión",offline:"Reconectando…"}[Store.mode];
+  const inShop=ui.view==="mundo"&&ui.tienda&&me; // los vales solo pintan algo dentro de la tienda
+  const who=ui.canDM?`<span class="dmtag">DM</span><select id="dm-pj" aria-label="Ver la hoja de"><option value="">Ver la hoja de…</option>${PJS.map(p=>`<option value="${p.id}" ${p.id===ui.me?"selected":""}>${esc(p.n)}</option>`).join("")}</select>${inShop?coins(me.vales,3):""}<button class="linkbtn" data-logout>Salir</button>`
+    :ui.me?`<span class="nm">${esc(PJ[ui.me].n)}</span>${inShop?coins(me.vales,3):""}<button class="linkbtn" data-switch>Cambiar personaje</button>`:"";
   return `<header class="top"><button class="brand" data-home>${MARK}<span>Velmara</span></button>
-   <div class="who">${ui.me?`<span class="nm">${esc(PJ[ui.me].n)}</span>${me?coins(me.vales,3):""}<button class="linkbtn" data-switch>Cambiar personaje</button>`:""}
-   <span class="live${Store.mode==="live"?" on":""}"><i></i>${lt}</span></div></header>`;
+   <div class="who">${who}<span class="live${Store.mode==="live"?" on":""}"><i></i>${lt}</span></div></header>`;
 }
-function nav(){
-  const T=[["lugares","Lugares"],["mapa","Mapa"],["personaje","Personaje"],["inventario","Inventario"]];if(ui.canDM)T.push(["dm","Mesa del DM"]);
-  return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}</button>`).join("")}</nav>`;
+const openShops=st=>LUGARES.flatMap(l=>st.mundo.lugares[l.id]?.visible?l.tiendas.filter(t=>st.mundo.tiendas[t.id]?.abierta).map(t=>({l,t})):[]);
+function nav(st){
+  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
+  const dot=openShops(st).length?`<i class="dot" title="Hay algo abierto"></i>`:"";
+  return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="mundo"?dot:""}</button>`).join("")}</nav>`;
 }
+const seg=k=>`<div class="seg" role="tablist" aria-label="Modo"><button role="tab" data-mode="${k}" data-v="0" aria-selected="${!ui.edit[k]}">Ver</button><button role="tab" data-mode="${k}" data-v="1" aria-selected="${!!ui.edit[k]}">Editar</button></div>`;
 
-/* ---------- Elegir personaje ---------- */
+/* ---------- Elegir personaje (o entrar como DM) ---------- */
 function viewPick(){
   return `<div class="pick"><header><span class="tab-label">Antes de entrar</span><h1>¿Quién eres?</h1>
-   <p>Elige tu personaje. Se queda guardado en este dispositivo para todo lo que hagas: compras, equipo e inventario.</p></header>
+   <p>Elige tu personaje. Se queda guardado en este dispositivo para todo lo que hagas: hoja, inventario y compras.</p></header>
    <div class="pjs">${PJS.map(p=>`<button class="pjcard deco" data-me="${p.id}"><span class="init" aria-hidden="true">${esc(p.n[0])}</span>
-     <span class="nm">${esc(p.n)}</span><span class="cl">${esc(p.c)}<br>Jugador: ${esc(p.j)}</span></button>`).join("")}</div></div>`;
+     <span class="nm">${esc(p.n)}</span><span class="cl">${esc(p.c)}<br>Jugador: ${esc(p.j)}</span></button>`).join("")}
+    <div class="pjcard deco dmcard">${ui.login?`<form id="dmform" class="dmform"><span class="nm">DM</span><label class="note" for="dm-pw">Contraseña</label>
+      <input type="password" id="dm-pw" autocomplete="current-password" required><div class="btns"><button class="btn" type="submit" ${dis()}>Entrar</button><button class="btn ghost" type="button" data-login="0">Cancelar</button></div>
+      ${ui.loginErr?`<p class="err">${esc(ui.loginErr)}</p>`:""}</form>`
+     :`<button class="dmopen" data-login="1"><span class="init" aria-hidden="true">✦</span><span class="nm">Soy el DM</span><span class="cl">Pide contraseña</span></button>`}</div></div></div>`;
 }
 
-/* ---------- Lugares ---------- */
-function viewLugares(st){
-  if(ui.tienda&&TIENDA[ui.tienda]&&st.mundo.lugares[TIENDA[ui.tienda].lugar]?.visible)return viewTienda(st,ui.tienda);
-  if(ui.lugar&&st.mundo.lugares[ui.lugar]?.visible)return viewLugar(st,LUGARES.find(l=>l.id===ui.lugar));
-  const vis=LUGARES.filter(l=>st.mundo.lugares[l.id]?.visible),hidden=LUGARES.length-vis.length;
-  return `<div class="hero"><span class="tab-label">Mapa</span><h1>Lugares</h1><p>Los sitios que el grupo puede visitar entre sesiones. Se irán abriendo a medida que los descubráis.</p></div>
-   <div class="places">${vis.map(l=>{const m=st.mundo.lugares[l.id];const open=l.tiendas.filter(t=>st.mundo.tiendas[t.id]?.abierta).length;
-     return `<button class="place deco" data-lugar="${l.id}"><span class="black-label">${esc(l.sub)}</span><h2>${esc(l.n)}</h2><p>${esc(l.desc)}</p>
-      ${m.nota?`<div class="notice"><b>Aviso</b>${esc(m.nota)}</div>`:""}
-      <p>${open?`${open} tienda${open>1?"s":""} abierta${open>1?"s":""}`:"Ninguna tienda abierta ahora"}</p></button>`}).join("")}
-    ${hidden||!vis.length?`<div class="place deco locked"><span class="black-label">Por descubrir</span><h2>???</h2><p>Más lugares aparecerán aquí cuando el DM los desvele.</p></div>`:""}</div>`;
+/* ---------- Mundo: lo que sabe cada personaje ---------- */
+// Entradas que ve quien mira: el DM todas (notas del vault y lugares); un PJ, lo compartido con él y los lugares abiertos
+function loreFor(st){
+  const E={};
+  if(ui.canDM){for(const [id,e] of Object.entries(Saber.dm))E[id]={...e,dm:true}}
+  else for(const [id,e] of Object.entries(Saber.visibleFor(ui.me)))E[id]={...e};
+  for(const l of LUGARES)if(ui.canDM||st.mundo.lugares[l.id]?.visible)E[l.id]=E[l.id]||{n:l.n,cat:"lugares",sub:l.sub,txt:l.desc,pub:l.desc};
+  return E;
 }
-function viewLugar(st,l){
-  const m=st.mundo.lugares[l.id];
-  return `<div class="crumbs"><button data-lugar="">Lugares</button><i>/</i><span>${esc(l.n)}</span></div>
-   <div class="hero"><span class="sub">${esc(l.sub)}</span><h1>${esc(l.n)}</h1><p>${esc(l.desc)}</p>${m.nota?`<div class="notice"><b>Aviso</b>${esc(m.nota)}</div>`:""}</div>
-   <section class="block"><header><span class="tab-label">Tiendas</span></header><div class="shops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
+const plain=s=>String(s||"").replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,a,b)=>b||a).replace(/[*#>_]/g,"").replace(/(^|\n)\s*([-•]|\d+\.)\s+/g,"$1").replace(/\s+/g," ").trim();
+function whoSees(id){const p=Saber.pub[id]?.para;if(!p)return "Nadie";if(p.todos)return "Todos";const n=PJS.filter(x=>p[x.id]).map(x=>x.n);return n.length?n.join(", "):"Nadie"}
+function viewMundo(st){
+  if(ui.tienda&&TIENDA[ui.tienda]&&st.mundo.lugares[TIENDA[ui.tienda].lugar]?.visible)return viewTienda(st,ui.tienda);
+  const E=loreFor(st);
+  if(ui.ent&&E[ui.ent])return viewEntrada(st,ui.ent,E);
+  const open=openShops(st);
+  const now=open.length?`<section class="block now"><header><span class="tab-label">Ahora mismo</span></header>${open.map(({l,t})=>{const s=st.mundo.tiendas[t.id];
+    return `<div class="nowcard deco"><div><span class="live on"><i></i>Abierta</span><h2>${esc(t.n)}</h2><span class="note">${esc(l.n)} · ${esc(t.sub)}</span>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>
+     <button class="btn" data-tienda="${t.id}">Entrar</button></div>`}).join("")}</section>`:"";
+  const avisos=LUGARES.filter(l=>st.mundo.lugares[l.id]?.visible&&st.mundo.lugares[l.id].nota).map(l=>`<div class="notice"><b>${esc(l.n)}</b>${esc(st.mundo.lugares[l.id].nota)}</div>`).join("");
+  const counts=Object.fromEntries(CATS.map(([k])=>[k,Object.values(E).filter(e=>e.cat===k).length]));
+  let cat=ui.cat&&counts[ui.cat]?ui.cat:(CATS.find(([k])=>counts[k])||["lugares"])[0];
+  const list=Object.entries(E).filter(([,e])=>e.cat===cat).sort((a,b)=>cat==="cronica"?(a[1].orden||0)-(b[1].orden||0):a[1].n.localeCompare(b[1].n,"es"));
+  const total=Object.keys(E).length;
+  return `<div class="hero"><span class="tab-label">${ui.canDM?"Todo el vault":"Lo que sabe "+esc(PJ[ui.me].n)}</span><h1>Mundo</h1>
+    <p>${ui.canDM?"Las notas completas del vault. Abre una para decidir quién la ve y qué texto le llega.":"Personas, lugares y organizaciones que has conocido. El DM irá añadiendo lo que descubráis."}</p></div>
+   ${now}${avisos?`<div class="avisos">${avisos}</div>`:""}
+   ${total?`<div class="chips">${CATS.filter(([k])=>counts[k]).map(([k,l])=>`<button class="chip" data-cat="${k}" aria-pressed="${k===cat}">${l} <span class="num">${counts[k]}</span></button>`).join("")}</div>
+   <div class="lore">${list.map(([id,e])=>`<button class="loreitem deco" data-ent="${id}"><span class="black-label">${esc(e.sub||CATS.find(c=>c[0]===e.cat)[1])}</span><h3>${esc(e.n)}</h3>
+     <p>${esc(plain(ui.canDM?e.pub||e.txt:e.txt).slice(0,140))}…</p>${ui.canDM?`<span class="sees${Saber.pub[id]?" on":""}">Lo ve: ${esc(whoSees(id))}</span>`:""}</button>`).join("")}</div>`
+   :`<div class="deco"><h2>${ui.canDM?"Aún no hay notas":"Todavía no sabes nada"}</h2><p class="note">${ui.canDM?"Importa el archivo del vault desde la Mesa del DM.":"Cuando el DM comparta algo contigo aparecerá aquí."}</p></div>`}`;
+}
+function viewEntrada(st,id,E){
+  const e=E[id],catN=CATS.find(c=>c[0]===e.cat)?.[1]||"Mundo";
+  const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
+  const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i><button data-ent="" data-cat="${e.cat}">${catN}</button><i>/</i><span>${esc(e.n)}</span></div>`;
+  const l=LUGARES.find(x=>x.id===id),lm=l&&st.mundo.lugares[id];
+  const shops=l&&(lm?.visible||ui.canDM)?`${lm.nota?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:""}<section class="block"><header><span class="tab-label">Tiendas</span></header><div class="shops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
      return `<div class="shop deco"><div class="l"><h3>${esc(t.n)}</h3><span class="note">${esc(t.sub)}</span>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>
-      <div class="btns"><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div></div>`}).join("")}</div></section>`;
+      <div class="btns"><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div></div>`}).join("")}</div></section>`:"";
+  const head=`<div class="hero"><span class="sub">${esc(e.sub||catN)}${e.estado?` · ${esc(e.estado)}`:""}</span><h1>${esc(e.n)}</h1></div>`;
+  if(!ui.canDM)return crumbs+head+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
+  const pub=Saber.pub[id],para=pub?.para||{};
+  const share=e.dm?`<section class="block deco share"><span class="tab-label">Quién lo ve</span>
+     <div class="chips"><button class="chip" data-para="todos" aria-pressed="${!!para.todos}">Todo el grupo</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
+     <label class="lab" for="sh-txt">Texto que les llega</label>
+     <textarea id="sh-txt" class="shtxt">${esc(pub?pub.txt:e.pub||"")}</textarea>
+     <div class="btns"><button class="btn" data-shsave="${id}" ${dis()}>Guardar texto</button><button class="btn ghost" data-shreset="${id}">Volver al texto de la nota</button>
+      ${pub?`<button class="btn warn" data-shoff="${id}">Ocultar a todos</button>`:""}</div>
+     <p class="note">Por defecto el texto es la nota sin los bloques «Solo DM» ni lo pendiente. Si cambias la nota en Obsidian, vuelve a importar el vault.</p></section>`:"";
+  return crumbs+head+`<div class="dmlore">${share}<article class="prose">${mdHTML(e.txt||"",link)}</article></div>`+shops;
 }
 
 /* ---------- Tienda ---------- */
 function viewTienda(st,id){
   const t=TIENDA[id],l=LUGARES.find(x=>x.id===t.lugar),s=st.mundo.tiendas[id];
-  const crumbs=`<div class="crumbs"><button data-lugar="">Lugares</button><i>/</i><button data-lugar="${l.id}">${esc(l.n)}</button><i>/</i><span>${esc(t.n)}</span></div>`;
+  const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i><button data-ent="${l.id}">${esc(l.n)}</button><i>/</i><span>${esc(t.n)}</span></div>`;
+  if(!ui.me)return crumbs+`<div class="deco"><h2>Elige un PJ</h2><p class="note">Arriba, en «Ver la hoja de…», elige por quién quieres mirar o comprar.</p></div>`;
   const hero=`<div class="hero"><span class="sub">${esc(t.sub)}</span><h1>${esc(t.n)}</h1><p>${esc(t.desc)}</p><p class="quote">«${esc(t.cita)}»</p>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>`;
   if(!s.abierta)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">La encargada ha echado el cierre. Volved cuando el DM la abra.</p></div>`;
   const nb=Object.keys(st.botes).length;
@@ -396,12 +544,12 @@ function viewTienda(st,id){
 }
 function gearSlot(st,slot,g){
   const h=holderOf(st,slot,g.id),mine=h===ui.me,me=st.pjs[ui.me];
-  const twoBlock=slot==="sec"&&me.arma&&WEAPON[me.arma].h===2;
+  const twoBlock=slot==="sec"&&me.arma&&gearInfo(st,ui.me,me.arma)?.h===2;
   const card=(slot==="armadura"?armorCard(g):weaponCard(g)).replace('class="dh-card"',`class="dh-card${h&&!mine?" gone":""}${mine?" mine":""}"`);
   let btn="";
-  if(mine)btn=`<button class="btn ghost" data-equip="${slot}" data-id="" ${dis()}>Devolver</button>`;
+  if(mine)btn=`<button class="btn ghost" data-devolver="${g.id}" ${dis()}>Devolver</button>`;
   else if(!h)btn=`<button class="btn" data-equip="${slot}" data-id="${g.id}" ${dis(twoBlock)}>${me[slot]?"Cambiar":"Elegir"}</button>`;
-  const who=h?(mine?"<b>La llevas tú</b>":`La lleva <b>${esc(PJ[h].n)}</b>`):twoBlock?"Tu arma es a dos manos":"Libre";
+  const who=h?(mine?(me[slot]===g.id?"<b>La llevas tú</b>":"<b>En tu bolsa</b>"):`La lleva <b>${esc(PJ[h].n)}</b>`):twoBlock?"Tu arma es a dos manos":"Libre";
   return `<div class="slotcard">${card}<div class="under"><span class="holder">${who}</span>${btn}</div></div>`;
 }
 function tabEquipo(st){
@@ -447,8 +595,8 @@ function tabBotes(st){
 function tabLibro(st){
   const fmt=t=>new Date(t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
   const rows=PJS.map(p=>{const s=st.pjs[p.id];return `<tr><td><b>${esc(p.n)}</b></td><td class="num">${s.vales}</td>
-    <td>${s.arma?esc(WEAPON[s.arma].n):'<span class="empty">la suya</span>'}${s.sec?`<br>${esc(WEAPON[s.sec].n)}`:""}</td>
-    <td>${s.armadura?esc(ARMOR[s.armadura].n):'<span class="empty">la suya</span>'}</td>
+    <td>${s.arma?esc(gearInfo(st,p.id,s.arma)?.n||"?"):'<span class="empty">—</span>'}${s.sec?`<br>${esc(gearInfo(st,p.id,s.sec)?.n||"?")}`:""}</td>
+    <td>${s.armadura?esc(gearInfo(st,p.id,s.armadura)?.n||"?"):'<span class="empty">—</span>'}</td>
     <td>${Object.keys(s.inv).length?Object.entries(s.inv).map(([k,q])=>esc(ITEM[k].n)+(q>1?` ×${q}`:"")).join(", "):'<span class="empty">—</span>'}</td></tr>`}).join("");
   return `<section class="block"><header><span class="tab-label">El grupo</span></header><div class="tbl"><table><thead><tr><th>PJ</th><th>Vales</th><th>Armas</th><th>Armadura</th><th>Mochila</th></tr></thead><tbody>${rows}</tbody></table></div></section>
    <section class="block"><header><span class="tab-label">Movimientos</span></header><ul class="log">${st.log.map(l=>`<li><time class="num">${fmt(l.t)}</time><span>${esc(l.x)}</span></li>`).join("")}</ul></section>`;
@@ -470,75 +618,157 @@ const track=(path,marked,max,cls,lab)=>`<div class="track ${cls||""}" role="grou
 function armorOf(st,id){const h=st.hojas[id],a=st.pjs[id].armadura&&ARMOR[st.pjs[id].armadura];
   if(!a)return {shop:false,pts:h.arm.pts,mayor:h.arm.mayor,grave:h.arm.grave};
   const [m,g]=a.u.split("/").map(x=>+x.trim());return {shop:a.n,pts:a.sc,mayor:m+h.nivel,grave:g+h.nivel}}
+const sgn=n=>(n>0?"+":"")+n;
 function viewPersonaje(st){
   const p=PJ[ui.me],h=st.hojas[ui.me],c=CLASES[h.clase],ar=armorOf(st,ui.me);
+  const top=`<div class="hero idrow"><div><span class="sub">${esc(c.n)} · ${esc(h.sub)} · Nivel ${h.nivel}</span><h1>${esc(p.n)}</h1>
+    <span class="note">${esc(h.asc)} · ${esc(h.com)} · Jugador: ${esc(p.j)}</span></div>${seg("hoja")}</div>`;
+  if(ui.edit.hoja)return `<div class="sheet">${top}${hojaEditar(st,h,c,ar)}</div>`;
+  const res=(lab,path,v,max,cls)=>`<div class="rrow ${cls||""}"><div class="rl"><b>${lab}</b><span class="num">${v} / ${max}</span></div>
+    ${track(path,v,max,cls,lab)}<span class="rbtn"><button data-hres="${path}" data-d="-1" data-max="${max}" aria-label="${lab}: quitar uno" ${dis(v<=0)}>−</button><button data-hres="${path}" data-d="1" data-max="${max}" aria-label="${lab}: marcar uno" ${dis(v>=max)}>+</button></span></div>`;
+  const exps=h.exp.filter(e=>e.n.trim());
+  return `<div class="sheet">${top}
+   <section class="stats">
+    <div class="traits">${RASGOS.map(([k,n])=>`<div class="trait"><span class="black-label">${n}</span><span class="val num">${sgn(h.rasgos[k])}</span></div>`).join("")}</div>
+    <div class="defs"><div class="def"><span class="lab">Evasión</span><b class="num">${h.evasion}</b></div>
+     <div class="def"><span class="lab">Armadura</span><b class="num">${ar.pts}</b></div>
+     <div class="def wide"><span class="lab">Umbrales de daño</span><div class="thresh"><span>Menor</span><span class="n num">${ar.mayor}</span><span>Mayor</span><span class="n num">${ar.grave}</span><span>Grave</span></div></div>
+     <div class="def"><span class="lab">Competencia</span><b class="num">${h.competencia}</b></div></div>
+   </section>
+   <section class="block deco res"><span class="tab-label">Recursos</span>
+    ${res("Puntos de golpe","pg.marc",h.pg.marc,h.pg.max,"")}${res("Estrés","estres.marc",h.estres.marc,h.estres.max,"stress")}
+    ${res("Esperanza","esperanza",h.esperanza,6,"hope")}${ar.pts?res("Armadura","armMarc",h.armMarc,ar.pts,"armor"):""}</section>
+   <section class="block"><span class="tab-label">Experiencias</span>${exps.length?`<div class="xps">${exps.map(e=>`<span class="xp">${esc(e.n)} <b class="num">+${e.b}</b></span>`).join("")}</div>`:`<p class="empty">Ninguna todavía. Añádelas en Editar.</p>`}</section>
+   <section class="block"><header><span class="tab-label">En la mano</span><p>${h.cartas.length} de 5. Toca una carta para leerla entera.</p></header>
+    ${h.cartas.length?`<div class="cards">${h.cartas.map(id=>CARTA[id]?`<div class="slotcard">${domainCard(CARTA[id])}</div>`:"").join("")}</div>`:`<p class="empty">Ninguna carta en la mano.</p>`}</section>
+   <section class="block"><header><span class="tab-label">Baúl</span><p>Pasarlas a la mano cuesta su coste de recuperación en Estrés (salvo en un descanso).</p></header>
+    ${h.baul.length?`<div class="cards">${h.baul.map(id=>CARTA[id]?`<div class="slotcard">${domainCard(CARTA[id])}</div>`:"").join("")}</div>`:`<p class="empty">El baúl está vacío.</p>`}</section>
+   ${h.notas.trim()?`<section class="block deco"><span class="tab-label">Notas</span><p class="pre">${esc(h.notas)}</p></section>`:""}
+  </div>`;
+}
+function hojaEditar(st,h,c,ar){
   const fld=(k,lab,v)=>`<div class="field"><label for="hf-${k}">${lab}</label><input type="text" id="hf-${k}" data-hfield="${k}" value="${esc(v)}" maxlength="60"></div>`;
   const known=new Set([...h.cartas,...h.baul]);
   const doms=[...c.dom,...Object.keys(DOMINIOS).filter(d=>!c.dom.includes(d))];
   const opts=doms.filter(d=>ui.allDoms||c.dom.includes(d)).map(d=>`<optgroup label="${esc(DOMINIOS[d].n)} (${d})">${CARTAS_DOMINIO.filter(x=>x.d===d&&!known.has(x.id)&&(ui.allDoms||x.lv<=h.nivel)).map(x=>`<option value="${x.id}">${x.lv} · ${esc(x.n)}</option>`).join("")}</optgroup>`).join("");
-  const dslot=(id,where)=>{const x=CARTA[id];if(!x)return "";return `<div class="slotcard">${domainCard(x)}<div class="under"><span class="btns">
-    ${where==="uso"?`<button class="btn ghost" data-cmove="${id}" data-to="baul" ${dis()}>Al baúl</button>`:`<button class="btn ghost" data-cmove="${id}" data-to="uso" ${dis(h.cartas.length>=5)}>A la mano</button>`}
-    <button class="btn warn" data-cdel="${id}" ${dis()}>Quitar</button></span></div></div>`};
-  return `<div class="sheet">
-   <div class="hero idrow"><div><span class="sub">${esc(c.n)} · ${esc(h.sub)} · Jugador: ${esc(p.j)}</span><h1>${esc(p.n)}</h1></div>
-    <div class="stat"><span class="lab">Nivel</span>${step("nivel",h.nivel,"Nivel")}</div></div>
-   <section class="block deco"><header><span class="tab-label">Origen</span><p>Clase, subclase, ascendencia y comunidad.</p></header>
+  const crow=(id,where)=>{const x=CARTA[id];if(!x)return "";return `<div class="crow"><span class="cdot" style="background:${DOMINIOS[x.d].c}"></span><b>${esc(x.n)}</b><small>${esc(DOMINIOS[x.d].n)} · nivel ${x.lv}</small>
+    <span class="btns">${where==="uso"?`<button class="btn ghost" data-cmove="${id}" data-to="baul" ${dis()}>Al baúl</button>`:`<button class="btn ghost" data-cmove="${id}" data-to="uso" ${dis(h.cartas.length>=5)}>A la mano</button>`}
+    <button class="btn warn" data-cdel="${id}" ${dis()}>Quitar</button></span></div>`};
+  return `<section class="block deco"><header><span class="tab-label">Origen</span></header>
     <div class="fields"><div class="field"><label for="hf-clase">Clase</label><select id="hf-clase" data-hfield="clase">${Object.entries(CLASES).map(([k,v])=>`<option value="${k}" ${k===h.clase?"selected":""}>${v.n}</option>`).join("")}</select></div>
     ${fld("sub","Subclase",h.sub)}${fld("asc","Ascendencia",h.asc)}${fld("com","Comunidad",h.com)}</div>
-    <p class="note">Dominios de ${esc(c.n)}: ${c.dom.map(d=>esc(DOMINIOS[d].n)).join(" y ")}.</p></section>
+    <div class="btns"><span class="lab">Nivel</span>${step("nivel",h.nivel,"Nivel")}</div></section>
    <section class="block"><header><span class="tab-label">Rasgos</span><p>Al crear el personaje se reparten +2, +1, +1, +0, +0, −1.</p></header>
-    <div class="traits">${RASGOS.map(([k,n,v])=>`<div class="trait"><span class="black-label">${n}</span><span class="val num">${h.rasgos[k]>0?"+":""}${h.rasgos[k]}</span>${step("rasgos."+k,"",n).replace('<span class="v num"></span>',"")}<small>${v}</small></div>`).join("")}</div></section>
+    <div class="traits">${RASGOS.map(([k,n,v])=>`<div class="trait"><span class="black-label">${n}</span><span class="val num">${sgn(h.rasgos[k])}</span>${step("rasgos."+k,"",n).replace('<span class="v num"></span>',"")}<small>${v}</small></div>`).join("")}</div></section>
    <div class="cols">
-    <section class="block deco stat"><span class="tab-label">Defensa</span>
-     <div class="btns" style="gap:24px"><div class="stat"><span class="lab">Evasión</span><span class="big num">${h.evasion}</span>${step("evasion","",'Evasión').replace('<span class="v num"></span>',"")}</div>
-     <div class="stat"><span class="lab">Armadura</span><span class="big num">${ar.pts}</span>${ar.shop?`<span class="note">${esc(ar.shop)}</span>`:step("arm.pts","","Armadura").replace('<span class="v num"></span>',"")}</div></div>
-     <span class="lab">Espacios de armadura marcados</span>${ar.pts?track("armMarc",h.armMarc,ar.pts,"","Armadura"):`<span class="note">Sin armadura.</span>`}
-     <span class="lab">Umbrales de daño</span>
-     <div class="thresh"><span>Menor</span><span class="n num">${ar.mayor}</span><span>Mayor</span><span class="n num">${ar.grave}</span><span>Grave</span></div>
-     ${ar.shop?`<p class="note">Armadura de la tienda: umbrales base + nivel.</p>`:`<div class="btns"><span class="lab">Mayor</span>${step("arm.mayor",h.arm.mayor,"Umbral mayor")}<span class="lab">Grave</span>${step("arm.grave",h.arm.grave,"Umbral grave")}</div>`}</section>
-    <section class="block deco stat"><span class="tab-label">Salud</span>
-     <div class="btns" style="justify-content:space-between"><span class="lab">Puntos de golpe</span><span class="note">máx. ${step("pg.max",h.pg.max,"PG máximos")}</span></div>${track("pg.marc",h.pg.marc,h.pg.max,"","PG")}
-     <div class="btns" style="justify-content:space-between"><span class="lab">Estrés</span><span class="note">máx. ${step("estres.max",h.estres.max,"Estrés máximo")}</span></div>${track("estres.marc",h.estres.marc,h.estres.max,"stress","Estrés")}
-     <span class="lab">Esperanza</span>${track("esperanza",h.esperanza,6,"hope","Esperanza")}
-     <div class="btns"><span class="lab">Competencia</span>${step("competencia",h.competencia,"Competencia")}</div></section>
+    <section class="block deco"><span class="tab-label">Defensa</span>
+     <div class="erow"><span class="lab">Evasión</span>${step("evasion",h.evasion,"Evasión")}</div>
+     ${ar.shop?`<p class="note">Llevas ${esc(ar.shop)}: puntuación ${ar.pts}, umbrales ${ar.mayor} / ${ar.grave} (base + nivel).</p>`
+      :`<div class="erow"><span class="lab">Puntuación de armadura</span>${step("arm.pts",h.arm.pts,"Armadura")}</div>
+        <div class="erow"><span class="lab">Umbral mayor</span>${step("arm.mayor",h.arm.mayor,"Umbral mayor")}</div><div class="erow"><span class="lab">Umbral grave</span>${step("arm.grave",h.arm.grave,"Umbral grave")}</div>`}
+     <div class="erow"><span class="lab">Competencia</span>${step("competencia",h.competencia,"Competencia")}</div></section>
+    <section class="block deco"><span class="tab-label">Máximos</span>
+     <div class="erow"><span class="lab">Puntos de golpe</span>${step("pg.max",h.pg.max,"PG máximos")}</div>
+     <div class="erow"><span class="lab">Estrés</span>${step("estres.max",h.estres.max,"Estrés máximo")}</div>
+     <p class="note">Lo que tienes marcado ahora se cambia en la vista normal, en Recursos.</p></section>
    </div>
-   <div class="cols">
-    <section class="block deco"><span class="tab-label">Experiencias</span><div class="exps">${h.exp.map((e,i)=>`<div class="exp"><input type="text" id="hx-${i}" data-hexp="${i}" value="${esc(e.n)}" placeholder="Por ejemplo: Marinero curtido" maxlength="60" aria-label="Experiencia ${i+1}">
+   <section class="block deco"><span class="tab-label">Experiencias</span><div class="exps">${h.exp.map((e,i)=>`<div class="exp"><input type="text" id="hx-${i}" data-hexp="${i}" value="${esc(e.n)}" placeholder="Por ejemplo: Marinero curtido" maxlength="60" aria-label="Experiencia ${i+1}">
       ${step(`exp.${i}.b`,"+"+e.b,"Bono")}<button class="btn warn" data-hexpdel="${i}" ${dis()} aria-label="Quitar experiencia">×</button></div>`).join("")}</div>
      <div class="btns"><button class="btn ghost" data-hexpadd ${dis(h.exp.length>=8)}>Añadir experiencia</button></div></section>
-    <section class="block deco"><span class="tab-label">Oro</span><div class="btns" style="gap:22px">
-     <div class="stat"><span class="lab">Puñados</span>${step("oro.p",h.oro.p,"Puñados")}</div><div class="stat"><span class="lab">Bolsas</span>${step("oro.b",h.oro.b,"Bolsas")}</div><div class="stat"><span class="lab">Cofres</span>${step("oro.c",h.oro.c,"Cofres")}</div></div>
-     <p class="note">10 puñados son una bolsa; 10 bolsas, un cofre.</p></section>
-   </div>
-   <section class="block"><header><span class="tab-label">Cartas de dominio en la mano</span><p>${h.cartas.length} de 5. Toca una carta para leerla entera (texto del SRD, en inglés).</p></header>
-    ${h.cartas.length?`<div class="cards">${h.cartas.map(id=>dslot(id,"uso")).join("")}</div>`:`<p class="empty">Ninguna carta en la mano.</p>`}</section>
-   ${h.baul.length?`<section class="block"><header><span class="tab-label">Baúl</span><p>Cartas guardadas. Pasarlas a la mano cuesta su coste de recuperación en Estrés (salvo en un descanso).</p></header><div class="cards">${h.baul.map(id=>dslot(id,"baul")).join("")}</div></section>`:""}
-   <section class="block deco"><span class="tab-label">Añadir carta</span>
+   <section class="block deco"><span class="tab-label">Cartas</span>
+    <div class="clist"><span class="lab">En la mano (${h.cartas.length}/5)</span>${h.cartas.map(id=>crow(id,"uso")).join("")||`<p class="empty">Ninguna.</p>`}
+     <span class="lab">Baúl</span>${h.baul.map(id=>crow(id,"baul")).join("")||`<p class="empty">Vacío.</p>`}</div>
     <div class="btns"><select id="add-card" aria-label="Carta de dominio">${opts}</select><button class="btn" data-cadd ${dis()}>Añadir</button></div>
     <label class="toggle"><input type="checkbox" id="all-doms" ${ui.allDoms?"checked":""}> Mostrar todos los dominios y niveles</label></section>
    <section class="block deco"><span class="tab-label">Notas</span><label class="note" for="hf-notas">Rasgo de clase, rasgo de Esperanza, conexiones o lo que quieras recordar.</label>
-    <textarea id="hf-notas" data-hfield="notas" maxlength="2000">${esc(h.notas)}</textarea></section>
-  </div>`;
+    <textarea id="hf-notas" data-hfield="notas" maxlength="2000">${esc(h.notas)}</textarea></section>`;
 }
 
-/* ---------- Inventario ---------- */
+/* ---------- Inventario: huecos de equipo, bolsa y objetos ---------- */
+const PTIPO={obj:"Objeto",cons:"Consumible",pri:"Arma principal",sec:"Arma secundaria",arm:"Armadura"};
+const SLOTN={arma:"Arma principal",sec:"Arma secundaria",armadura:"Armadura"};
+// Todo lo que lleva un PJ como fichas: piezas (ref) y objetos de la tienda (inv)
+function owned(st,pj){
+  const s=st.pjs[pj],eq=new Set([s.arma,s.sec,s.armadura]),L=[];
+  s.bolsa.forEach(r=>L.push({ref:r,g:gearInfo(st,pj,r),q:1}));
+  Object.entries(s.propios).forEach(([id,o])=>{const r="p:"+id;if(!eq.has(r))L.push({ref:r,g:gearInfo(st,pj,r),q:o.q||1,o})});
+  Object.keys(s.inv).sort((a,b)=>ITEMS.indexOf(ITEM[a])-ITEMS.indexOf(ITEM[b])).forEach(id=>L.push({ref:"i:"+id,it:ITEM[id],q:s.inv[id]}));
+  return L;
+}
+function tileArt(x){
+  let glyph,tint;
+  if(x.it){glyph=glyphFor("item",x.it.id,x.it);tint=TINT[x.it.r]}
+  else if(x.g?.w){glyph=glyphFor("arma",x.g.w.id);tint=TINT[x.g.w.d.includes("mág")?"mag":"fis"]}
+  else if(x.g?.a){glyph="armadura";tint=TINT.arm}
+  else{const t=x.o?.tipo;glyph={pri:"espada",sec:"daga",arm:"armadura",cons:"pocion"}[t]||"objeto";tint=TINT[{pri:"fis",sec:"fis",arm:"arm",cons:"c"}[t]||"pc"]}
+  return `<svg class="tart" viewBox="0 0 120 120" aria-hidden="true">${scene(120,120,tint,glyph,x.it?ARTE[x.it.id]:x.g?.w?ARTE[x.g.w.id]:null,{cy:58,size:70})}</svg>`;
+}
+const nameOf=x=>x.it?cap(x.it.n.replace("Receta: ","")):x.g?.n||x.o?.n||"?";
+function tile(x,where){
+  const fits=x.g?.slot||"",sel=ui.sel===x.ref;
+  return `<button class="tile${sel?" sel":""}" data-ref="${esc(x.ref)}" data-fits="${fits}" data-where="${where}" ${fits?"data-drag":""} aria-pressed="${sel}">
+    ${tileArt(x)}${x.q>1?`<span class="qty num">×${x.q}</span>`:""}<span class="tn">${esc(nameOf(x))}</span></button>`;
+}
+function fullCard(st,pj,x){
+  if(x.it)return itemCard(x.it);
+  if(x.g?.w)return weaponCard(x.g.w);
+  if(x.g?.a)return armorCard(x.g.a);
+  const o=x.o||st.pjs[pj].propios[x.ref.slice(2)];
+  return `<div class="pcard deco"><span class="black-label">${PTIPO[o.tipo]||"Objeto"}${o.h===2?" · dos manos":""}</span><h3>${esc(o.n)}</h3>${o.d?`<p class="pre">${esc(o.d)}</p>`:`<p class="empty">Sin descripción.</p>`}</div>`;
+}
 function viewInventario(st){
-  const p=PJ[ui.me],s=st.pjs[ui.me];
-  const slot=(label,obj,html)=>`<div class="slotcard">${obj?html:`<div class="ph"><b>${label}</b><span>Conserva la suya</span></div>`}<div class="under"><span class="holder">${label}</span></div></div>`;
-  const ids=Object.keys(s.inv).sort((a,b)=>ITEMS.indexOf(ITEM[a])-ITEMS.indexOf(ITEM[b]));
-  return `<div class="hero invtop"><div><span class="sub">${esc(p.c)} · ${esc(p.j)}</span><h1>${esc(p.n)}</h1></div>${coins(s.vales,3)}</div>
-   <section class="block"><header><span class="tab-label">Equipo</span><p>Se cambia en la entrega de equipo de la Tienda de las Tres Agujas.</p></header>
-    <div class="cards">${slot("Arma principal",s.arma,s.arma&&weaponCard(WEAPON[s.arma]))}${slot("Arma secundaria",s.sec,s.sec&&weaponCard(WEAPON[s.sec]))}${slot("Armadura",s.armadura,s.armadura&&armorCard(ARMOR[s.armadura]))}</div></section>
-   <section class="block"><header><span class="tab-label">Mochila</span><p>Usa consumibles, prepara recetas o pasa objetos a otro PJ.</p></header>
-    ${ids.length?`<div class="minis">${ids.map(id=>{const it=ITEM[id];return `<div class="minislot">${miniCard(it,s.inv[id])}
-     <div class="btns">${it.k==="cons"?`<button class="btn ghost" data-use="${id}" ${dis()}>Usar</button>`:""}${it.k==="rec"?`<button class="btn ghost" data-brew="${id}" ${dis()}>Preparar</button>`:""}
-     ${it.k!=="rec"?`<select id="to-${id}" aria-label="Dar a">${PJS.filter(x=>x.id!==ui.me).map(x=>`<option value="${x.id}">${esc(x.n)}</option>`).join("")}</select><button class="btn ghost" data-pass="${id}" ${dis()}>Dar</button>`:""}</div></div>`}).join("")}</div>`
-    :`<p class="empty">La mochila está vacía.</p>`}</section>`;
+  const p=PJ[ui.me],s=st.pjs[ui.me],h=st.hojas[ui.me];
+  const top=`<div class="hero idrow"><div><span class="sub">${esc(CLASES[h.clase].n)} · ${esc(p.j)}</span><h1>${esc(p.n)}</h1></div>${seg("inv")}</div>`;
+  const L=owned(st,ui.me);
+  if(ui.edit.inv)return top+invEditar(st,s,L);
+  const all=[...L];["arma","sec","armadura"].forEach(k=>{if(s[k])all.push({ref:s[k],g:gearInfo(st,ui.me,s[k]),q:1,o:s[k].startsWith("p:")?s.propios[s[k].slice(2)]:null})});
+  const selX=ui.sel&&all.find(x=>x.ref===ui.sel);if(ui.sel&&!selX)ui.sel=null;
+  const eslot=k=>{const r=s[k],x=r&&all.find(y=>y.ref===r),can=selX&&selX.g?.slot===k&&selX.ref!==r;
+    return `<div class="eslot${can?" can":""}" data-drop="${k}"><span class="elab">${SLOTN[k]}</span>${x?tile(x,k):`<button class="tile empty" data-slotpick="${k}" ${can?"":"tabindex=\"-1\""}><span class="tn">Vacío</span></button>`}</div>`};
+  const bolsaN=s.bolsa.length;
+  let det="";
+  if(selX){const eqd=["arma","sec","armadura"].find(k=>s[k]===selX.ref),btn=[];
+    if(selX.g?.slot&&!eqd)btn.push(`<button class="btn" data-eq="${esc(selX.ref)}" data-slot="${selX.g.slot}" ${dis()}>Equipar como ${SLOTN[selX.g.slot].toLowerCase()}</button>`);
+    if(eqd)btn.push(`<button class="btn ghost" data-eq="${esc(selX.ref)}" data-slot="" ${dis()}>Quitar del hueco</button>`);
+    if(selX.it?.k==="cons")btn.push(`<button class="btn ghost" data-use="${selX.it.id}" ${dis()}>Usar uno</button>`);
+    if(selX.it?.k==="rec")btn.push(`<button class="btn ghost" data-brew="${selX.it.id}" ${dis()}>Preparar</button>`);
+    if(selX.o?.tipo==="cons")btn.push(`<button class="btn ghost" data-puse="${selX.ref.slice(2)}" ${dis()}>Usar uno</button>`);
+    det=`<section class="block invdet"><div class="detcard">${fullCard(st,ui.me,selX)}</div><div class="btns">${btn.join("")}<button class="btn ghost" data-sel="">Cerrar</button></div></section>`}
+  return top+`<p class="note invhelp">Arrastra un arma o armadura a su hueco, o tócala y luego toca el hueco. Para quitarla, arrástrala a la lista.</p>
+   <div class="invgrid"><section class="block equip"><span class="tab-label">Equipado</span><div class="eslots">${eslot("arma")}${eslot("sec")}${eslot("armadura")}</div>
+     <p class="note">Bolsa de armas: ${bolsaN} de ${BOLSA_MAX}.</p></section>
+    <section class="block bag"><span class="tab-label">Lo que llevas</span><div class="tiles" data-drop="lista">${L.length?L.map(x=>tile(x,"lista")).join(""):`<p class="empty">Nada por ahora. Añade tus cosas en Editar.</p>`}</div></section></div>${det}`;
+}
+function invEditar(st,s,L){
+  const others=PJS.filter(x=>x.id!==ui.me);
+  const rows=L.map(x=>{
+    if(x.it){const id=x.it.id;return `<div class="irow"><b>${esc(nameOf(x))}</b><small>${x.it.k==="rec"?"Receta":x.it.k==="cons"?"Consumible":"Objeto"} de la tienda · ×${x.q}</small>
+      <span class="btns">${x.it.k==="cons"?`<button class="btn ghost" data-use="${id}" ${dis()}>Usar</button>`:""}${x.it.k==="rec"?`<button class="btn ghost" data-brew="${id}" ${dis()}>Preparar</button>`:""}
+      ${x.it.k!=="rec"?`<select id="to-${id}" aria-label="Dar a">${others.map(o=>`<option value="${o.id}">${esc(o.n)}</option>`).join("")}</select><button class="btn ghost" data-pass="${id}" ${dis()}>Dar</button>`:""}</span></div>`}
+    if(!x.ref.startsWith("p:"))return `<div class="irow"><b>${esc(x.g.n)}</b><small>De la armería, en tu bolsa</small><span class="btns"><button class="btn warn" data-devolver="${x.ref}" ${dis()}>Devolver a la armería</button></span></div>`;
+    return "";}).join("");
+  const P=Object.entries(s.propios);
+  return `<section class="block deco"><span class="tab-label">Objetos de la tienda y la armería</span>${rows||`<p class="empty">Ninguno.</p>`}</section>
+   <section class="block deco"><header><span class="tab-label">Tus cosas</span><p>Lo que traía tu personaje o habéis encontrado. Si es un arma o armadura, se puede equipar.</p></header>
+    ${P.map(([id,o])=>`<div class="prow"><input type="text" data-pf="${id}.n" id="pn-${id}" value="${esc(o.n)}" maxlength="60" aria-label="Nombre">
+      <select data-pf="${id}.tipo" aria-label="Tipo">${Object.entries(PTIPO).map(([k,v])=>`<option value="${k}" ${o.tipo===k?"selected":""}>${v}</option>`).join("")}</select>
+      ${o.tipo==="pri"?`<select data-pf="${id}.h" aria-label="Manos"><option value="1" ${o.h!==2?"selected":""}>Una mano</option><option value="2" ${o.h===2?"selected":""}>Dos manos</option></select>`:""}
+      <span class="step"><button data-pq="${id}" data-d="-1" aria-label="Uno menos" ${dis()}>−</button><span class="v num">${o.q||1}</span><button data-pq="${id}" data-d="1" aria-label="Uno más" ${dis()}>+</button></span>
+      <button class="btn warn" data-pdel="${id}" ${dis()}>Borrar</button>
+      <textarea data-pf="${id}.d" id="pd-${id}" maxlength="400" placeholder="Daño, rasgo, alcance o lo que haga" aria-label="Descripción">${esc(o.d||"")}</textarea></div>`).join("")||`<p class="empty">Todavía nada.</p>`}
+    <form id="padd" class="padd"><input type="text" id="pa-n" placeholder="Nombre, por ejemplo: Arco de mi padre" maxlength="60" required aria-label="Nombre del objeto">
+     <select id="pa-t" aria-label="Tipo">${Object.entries(PTIPO).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><button class="btn" type="submit" ${dis()}>Añadir</button></form></section>`;
 }
 
 /* ---------- Mesa del DM ---------- */
 function viewDM(st){
+  const nNotas=Object.keys(Saber.dm).length,nComp=Object.keys(Saber.pub).length;
   return `<div class="hero"><span class="tab-label">Solo para el DM</span><h1>Mesa del DM</h1><p>Lo que cambies aquí lo ven los jugadores al momento.</p></div>
+   <section class="block deco"><header><h2>Notas del vault</h2></header>
+    <p class="note">${nNotas?`${nNotas} notas cargadas; ${nComp} compartidas con algún PJ.`:"Todavía no hay notas."} Las notas completas solo las puede leer tu cuenta de DM. En <b>Mundo</b> eliges quién ve cada una.</p>
+    <div class="btns"><button class="btn" data-import ${dis()}>${nNotas?"Volver a importar el vault":"Importar el vault"}</button><button class="btn ghost" data-view="mundo">Ir a Mundo</button></div>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+    <p class="note">Usa el archivo <b>velmara-saber.json</b>. Reimportar actualiza las notas sin tocar lo ya compartido.</p></section>
    ${LUGARES.map(l=>{const m=st.mundo.lugares[l.id];return `<section class="block deco"><header><h2>${esc(l.n)}</h2>
      <label class="toggle"><input type="checkbox" data-lvis="${l.id}" ${m.visible?"checked":""} ${dis()}> Visible para los jugadores</label></header>
      <label class="note" for="ln-${l.id}">Aviso del lugar</label><textarea id="ln-${l.id}" placeholder="Por ejemplo: esta noche hay toque de queda">${esc(m.nota)}</textarea>
@@ -562,7 +792,7 @@ function showMap(on){
   r.hidden=!on;if(!on)return;
   if(!mapMounted){mapMounted=true;Mapa.mount(r,{me:()=>ui.me,isDM:()=>ui.canDM,pjName:id=>PJ[id]?.n,
     lugares:()=>LUGARES.filter(l=>Store.state?.mundo?.lugares?.[l.id]?.visible||ui.canDM),
-    goLugar:id=>go({view:"lugares",lugar:id,tienda:null}),toast})}
+    goLugar:id=>go({view:"mundo",ent:id,tienda:null}),toast})}
   else Mapa.refresh();
 }
 
@@ -572,37 +802,100 @@ function render(){
   let body;
   if(Store.mode==="wait")body=`<div class="deco" style="margin-top:24px"><h2>Abriendo la puerta…</h2><p class="note">Cargando el estado de la partida.</p></div>`;
   else if(Store.mode==="error"&&!st)body=`<div class="deco" style="margin-top:24px"><h2>No hay conexión</h2><p class="note">Recarga la página. Si sigue igual, avisa al DM.</p></div>`;
+  else if(!ui.me&&!ui.canDM)body=viewPick();
   else if(!st)body=`<div class="deco" style="margin-top:24px"><h2>La partida aún no ha empezado</h2><p class="note">El DM tiene que prepararla: cinco PJs con 3 vales y la tienda llena.</p>
     ${ui.canDM?`<div class="btns" style="margin-top:12px"><button class="btn" data-start ${dis()}>Empezar partida</button></div>`:""}</div>`;
-  else if(!ui.me)body=viewPick();
   else{
-    if(ui.view==="dm"&&!ui.canDM)ui.view="lugares";
-    const V={lugares:viewLugares,personaje:viewPersonaje,inventario:viewInventario,dm:viewDM,mapa:()=>""}[ui.view]||viewLugares;
-    body=nav()+V(st);
+    if(!ui.me&&["personaje","inventario"].includes(ui.view))ui.view="mundo";
+    if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
+    if(ui.tienda&&!ui.me&&ui.view==="mundo")ui.tienda=null;
+    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
+    body=nav(st)+V(st);
   }
-  showMap(!!(st&&ui.me&&ui.view==="mapa"));
-  const keep=["TEXTAREA","INPUT"].includes(document.activeElement?.tagName)&&document.activeElement.type!=="checkbox"?{id:document.activeElement.id,v:document.activeElement.value}:null;
+  showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
+  const keep=["TEXTAREA","INPUT"].includes(document.activeElement?.tagName)&&document.activeElement.type!=="checkbox"&&document.activeElement.id?{id:document.activeElement.id,v:document.activeElement.value}:null;
   app.innerHTML=header(st)+body;
   if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus()}}
 }
 
+/* Arrastrar fichas del inventario a los huecos (ratón y dedo). En táctil hay que mantener pulsado un momento,
+   para que deslizar siga moviendo la página. */
+let drag=null,noClick=false;
+document.addEventListener("pointerdown",e=>{
+  const t=e.target.closest(".tile[data-drag]");if(!t||ui.busy)return;
+  drag={t,ref:t.dataset.ref,fits:t.dataset.fits,where:t.dataset.where,x:e.clientX,y:e.clientY,on:false,id:e.pointerId,
+    timer:e.pointerType==="touch"?setTimeout(()=>{if(drag&&!drag.on)startDrag(drag.x,drag.y)},260):0,touch:e.pointerType==="touch"};
+});
+function startDrag(x,y){
+  drag.on=true;const r=drag.t.getBoundingClientRect(),g=drag.t.cloneNode(true);
+  g.className="tile ghost";g.style.width=r.width+"px";document.body.appendChild(g);drag.g=g;drag.ox=r.width/2;drag.oy=r.height/2;moveGhost(x,y);
+  document.querySelectorAll(`.eslot[data-drop="${drag.fits}"]`).forEach(s=>s.classList.add("can"));
+  if(drag.where!=="lista")document.querySelector('.tiles[data-drop="lista"]')?.classList.add("can");
+}
+function moveGhost(x,y){drag.g.style.transform=`translate(${x-drag.ox}px,${y-drag.oy}px)`;drag.x=x;drag.y=y;
+  document.querySelectorAll("[data-drop].over").forEach(z=>z.classList.remove("over"));
+  drag.g.hidden=true;const z=document.elementFromPoint(x,y)?.closest("[data-drop].can");drag.g.hidden=false;if(z)z.classList.add("over")}
+document.addEventListener("pointermove",e=>{
+  if(!drag||e.pointerId!==drag.id)return;
+  if(!drag.on){const far=Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6;
+    if(drag.touch){if(far){clearTimeout(drag.timer);drag=null}return}
+    if(far)startDrag(e.clientX,e.clientY);else return}
+  moveGhost(e.clientX,e.clientY);
+});
+document.addEventListener("touchmove",e=>{if(drag?.on)e.preventDefault()},{passive:false});
+function endDrag(e){
+  if(!drag||(e&&e.pointerId!==drag.id))return;clearTimeout(drag.timer);const d=drag;drag=null;
+  if(!d.on)return;noClick=true;setTimeout(()=>noClick=false,50);
+  d.g.hidden=true;const z=document.elementFromPoint(d.x,d.y)?.closest("[data-drop].can");d.g.remove();
+  document.querySelectorAll(".can,.over").forEach(x=>x.classList.remove("can","over"));
+  if(!z)return;const to=z.dataset.drop;
+  if(to==="lista"){if(d.where!=="lista")act(st=>A.slot(st,ui.me,d.ref,null))}
+  else if(to!==d.where)act(st=>A.slot(st,ui.me,d.ref,to));
+}
+document.addEventListener("pointerup",endDrag);document.addEventListener("pointercancel",e=>{if(drag&&!drag.on)endDrag(e)});
+
 document.addEventListener("click",e=>{
+  if(noClick){e.preventDefault();return}
+  if(e.target.closest("#maproot"))return;
   const card=e.target.closest(".dh-card,.mini");if(card&&!e.target.closest("button")){card.classList.toggle("open");return}
+  // Inventario: con una ficha elegida, tocar un hueco que la acepta la equipa
+  const dz=e.target.closest(".eslot.can");if(dz&&ui.sel){const r=ui.sel;ui.sel=null;return act(st=>A.slot(st,ui.me,r,dz.dataset.drop))}
   const b=e.target.closest("button");if(!b)return;const d=b.dataset;
-  if(b.hasAttribute("data-home"))return go({view:"lugares",lugar:null,tienda:null});
+  if(b.hasAttribute("data-home"))return go({view:ui.me?"personaje":"mundo",ent:null,tienda:null});
   if(b.hasAttribute("data-switch")){ui.me=null;ls.set("v-pj",null);render();return}
-  if(d.me){ui.me=d.me;ls.set("v-pj",d.me);return go({view:"lugares"})}
-  if(d.view)return go({view:d.view});
-  if(d.lugar!==undefined)return go({lugar:d.lugar||null,tienda:null});
-  if(d.tienda)return go({tienda:d.tienda});
+  if(d.login!==undefined){ui.login=d.login==="1";ui.loginErr="";render();if(ui.login)$("#dm-pw")?.focus();return}
+  if(b.hasAttribute("data-logout")){Saber.logout();ui.me=ls.get("v-pj-own")||null;if(!PJ[ui.me])ui.me=null;ls.set("v-pj",ui.me);return go({view:"personaje"})}
+  if(d.me){ui.me=d.me;ls.set("v-pj",d.me);ls.set("v-pj-own",d.me);return go({view:"personaje"})}
+  if(d.view)return go({view:d.view,...(d.view==="mundo"?{tienda:null,ent:null}:{}),sel:null});
+  if(d.mode){ui.edit[d.mode]=d.v==="1";ui.sel=null;render();return}
+  if(d.ent!==undefined)return go({ent:d.ent||null,tienda:null,cat:d.cat||ui.cat});
+  if(d.cat){ui.cat=d.cat;ls.set("v-cat",d.cat);render();return}
+  if(d.lugar!==undefined)return go({ent:d.lugar||null,tienda:null});
+  if(d.tienda)return go({view:"mundo",tienda:d.tienda});
   if(d.stab)return go({stab:d.stab});
   if(d.filt){ui.filt=d.filt;render();return}
   if(d.wf){ui.wf=d.wf;render();return}
+  if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;render();if(ui.sel&&innerWidth<820)$(".invdet")?.scrollIntoView({block:"nearest",behavior:"smooth"});return}
+  if(d.sel!==undefined){ui.sel=null;render();return}
+  if(d.eq!==undefined){const r=d.eq,to=d.slot||null;ui.sel=null;return act(st=>A.slot(st,ui.me,r,to))}
+  if(d.devolver)return act(st=>A.devolver(st,ui.me,d.devolver),"Devuelta a la armería.");
+  if(d.pq)return act(st=>{const o=st.pjs[ui.me].propios[d.pq];if(!o)no("Ya no existe.");return A.propio(st,ui.me,d.pq,{q:Math.min(99,(o.q||1)+(+d.d))})});
+  if(d.puse)return act(st=>{const o=st.pjs[ui.me].propios[d.puse];if(!o)no("Ya no existe.");return A.propio(st,ui.me,d.puse,{q:(o.q||1)-1})},"Usado.");
+  if(d.pdel)return act(st=>A.propio(st,ui.me,d.pdel,null),"Borrado.");
   if(b.hasAttribute("data-start"))return act(st=>{if(st)no("La partida ya ha empezado.");return freshState()},"Partida preparada.");
   if(b.hasAttribute("data-pickno")){ui.pick=null;render();return}
   if(b.hasAttribute("data-pickok")){const {id,mode,para}=ui.pick,it=ITEM[id];ui.pick=null;
     if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
     return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
+  // Saber: el DM decide quién ve cada nota y qué texto le llega
+  if(d.para){const id=ui.ent,cur={...(Saber.pub[id]?.para||{})};
+    if(d.para==="todos"){if(cur.todos)delete cur.todos;else{for(const k in cur)delete cur[k];cur.todos=true}}else cur[d.para]=!cur[d.para];
+    for(const k in cur)if(!cur[k])delete cur[k];
+    return dmSave(id,cur,$("#sh-txt").value,"Visibilidad guardada.")}
+  if(d.shsave)return dmSave(d.shsave,Saber.pub[d.shsave]?.para||{},$("#sh-txt").value,Saber.pub[d.shsave]?"Texto guardado.":"Guardado. Aún no lo ve nadie: elige a quién.");
+  if(d.shreset){$("#sh-txt").value=Saber.dm[d.shreset]?.pub||"";toast("Texto de la nota puesto. Pulsa Guardar texto para enviarlo.");return}
+  if(d.shoff)return dmSave(d.shoff,{},"","Oculto a todos.");
+  if(b.hasAttribute("data-import")){$("#import-file").click();return}
 
   if(d.hstep){const [path,dd]=[d.hstep,+d.d];return act(st=>A.hoja(st,ui.me,h=>{const ks=path.split("."),last=ks.pop();let o=h;ks.forEach(k=>o=o[k]);
     const lim={nivel:[1,10],evasion:[0,30],competencia:[1,6],"pg.max":[1,12],"estres.max":[1,12],"arm.pts":[0,12]}[path]||(path.startsWith("rasgos")?[-5,9]:path.startsWith("exp.")?[1,6]:[0,99]);
@@ -610,6 +903,7 @@ document.addEventListener("click",e=>{
     if(path==="pg.max")h.pg.marc=Math.min(h.pg.marc,h.pg.max);if(path==="estres.max")h.estres.marc=Math.min(h.estres.marc,h.estres.max);
     if(path==="arm.pts")h.armMarc=Math.min(h.armMarc,h.arm.pts)}))}
   if(d.htrack){const path=d.htrack,i=+d.i;return act(st=>A.hoja(st,ui.me,h=>{const ks=path.split("."),last=ks.pop();let o=h;ks.forEach(k=>o=o[k]);o[last]=o[last]===i?i-1:i}))}
+  if(d.hres){const path=d.hres,dd=+d.d,max=+d.max;return act(st=>A.hoja(st,ui.me,h=>{const ks=path.split("."),last=ks.pop();let o=h;ks.forEach(k=>o=o[k]);o[last]=Math.max(0,Math.min(max,(o[last]||0)+dd))}))}
   if(b.hasAttribute("data-hexpadd"))return act(st=>A.hoja(st,ui.me,h=>{h.exp.push({n:"",b:2})}));
   if(d.hexpdel)return act(st=>A.hoja(st,ui.me,h=>{h.exp.splice(+d.hexpdel,1)}));
   if(b.hasAttribute("data-cadd")){const id=$("#add-card")?.value;if(!id)return;return act(st=>A.hoja(st,ui.me,h=>{if(h.cartas.includes(id)||h.baul.includes(id))no("Ya tienes esa carta.");(h.cartas.length<5?h.cartas:h.baul).push(id)}),"Carta añadida.")}
@@ -617,7 +911,7 @@ document.addEventListener("click",e=>{
   if(d.cdel)return act(st=>A.hoja(st,ui.me,h=>{h.cartas=h.cartas.filter(x=>x!==d.cdel);h.baul=h.baul.filter(x=>x!==d.cdel)}),"Carta quitada.");
   if(d.buy)return picker(d.buy,"buy");
   if(d.pot)return picker(d.pot,"pot");
-  if(d.equip)return act(st=>A.equip(st,ui.me,d.equip,d.id||null));
+  if(d.equip)return act(st=>A.equip(st,ui.me,d.equip,d.id));
   if(d.give)return act(st=>A.give(st,ui.me,d.give,+d.d));
   if(d.cancel)return act(st=>A.cancelPot(st,ui.me,d.cancel),"Bote cancelado.");
   if(d.use)return act(st=>A.use(st,ui.me,d.use),"Usado.");
@@ -630,20 +924,37 @@ document.addEventListener("click",e=>{
   if(d.lnota){const v=$("#ln-"+d.lnota).value.trim().slice(0,300);return act(st=>A.lugar(st,d.lnota,{nota:v}),"Aviso guardado.")}
   if(b.hasAttribute("data-reset")){if(!ui.confirmReset){ui.confirmReset=true;render();return}ui.confirmReset=false;return act(st=>A.reset(st),"Partida reiniciada.")}
 });
+async function dmSave(id,para,txt,ok){
+  if(ui.busy)return;ui.busy=true;render();
+  try{await Saber.share(id,para,txt);toast(ok)}catch(e){console.error(e);toast("No se pudo guardar. ¿Sigue abierta la sesión de DM?",true)}
+  finally{ui.busy=false;render()}
+}
+document.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(e.target.id==="dmform"){const pw=$("#dm-pw").value;ui.busy=true;render();
+    try{await Saber.login(pw);ui.login=false;ui.loginErr="";ui.busy=false;go({view:"dm"})}
+    catch(err){ui.busy=false;ui.loginErr=err.message;render();$("#dm-pw")?.focus()}}
+  if(e.target.id==="padd"){const n=$("#pa-n").value.trim().slice(0,60),tipo=$("#pa-t").value;if(!n)return;
+    act(st=>A.propio(st,ui.me,Date.now().toString(36)+TAB.slice(0,3),{n,tipo,q:1,d:"",h:1}),"Añadido a tus cosas.")}
+});
 document.addEventListener("change",e=>{
-  const t=e.target;if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
+  const t=e.target;if(t.closest("#maproot"))return;
+  if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
+  if(t.id==="dm-pj"){ui.me=t.value||null;ui.sel=null;render();return}
   if(t.id==="all-doms"){ui.allDoms=t.checked;render();return}
+  if(t.id==="import-file"){const f=t.files[0];t.value="";if(!f)return;
+    f.text().then(x=>Saber.importar(JSON.parse(x))).then(n=>toast(`${n} notas importadas.`)).catch(err=>{console.error(err);toast(err instanceof SyntaxError?"Ese archivo no es el del vault.":err.message||"No se pudo importar.",true)});return}
+  if(t.dataset?.pf){const [id,k]=t.dataset.pf.split("."),v=k==="h"?+t.value:t.value.slice(0,k==="d"?400:60);act(st=>A.propio(st,ui.me,id,{[k]:v}),"Guardado.");return}
   if(t.dataset?.hfield){const k=t.dataset.hfield,v=t.value.slice(0,k==="notas"?2000:60);act(st=>A.hoja(st,ui.me,h=>{h[k]=v}),"Guardado.");return}
   if(t.dataset?.hexp!==undefined){const i=+t.dataset.hexp,v=t.value.slice(0,60);act(st=>A.hoja(st,ui.me,h=>{if(h.exp[i])h.exp[i].n=v}),"Guardado.");return}
   if(t.dataset?.lvis)act(st=>A.lugar(st,t.dataset.lvis,{visible:t.checked}),t.checked?"Lugar visible.":"Lugar oculto.");
 });
 
-// La mesa del DM se abre con #dm al final de la dirección (o siempre en modo prueba)
-ui.canDM=location.hash==="#dm";
-addEventListener("hashchange",()=>{ui.canDM=location.hash==="#dm"||Store.mode==="local";render();if(mapMounted)Mapa.refresh()});
+// El DM entra con su contraseña; la sesión la guarda Firebase en este navegador
+Saber.subs.push(()=>{const was=ui.canDM;ui.canDM=Saber.isDM;if(was!==ui.canDM&&mapMounted)Mapa.refresh();render()});
 Store.subs.push(render);
 render();
-Store.init(Nope).then(()=>{if(Store.mode==="local")ui.canDM=true;render()});
+Store.init(Nope).then(()=>{Saber.init();render()});
 </script>
 </body>
 </html>

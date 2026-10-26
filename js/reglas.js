@@ -2,7 +2,7 @@
 class Nope extends Error{}
 const no=m=>{throw new Nope(m)};
 function freshState(){
-  const pjs={};PJS.forEach(p=>pjs[p.id]={vales:3,arma:null,sec:null,armadura:null,inv:{}});
+  const pjs={};PJS.forEach(p=>pjs[p.id]={vales:3,arma:null,sec:null,armadura:null,bolsa:[],inv:{},propios:{}});
   const stock={};ITEMS.forEach(i=>{if(i.s!=null)stock[i.id]=i.s});
   return {v:2,mundo:mundoInicial(),pjs,stock,botes:{},log:[{t:Date.now(),x:"Empieza la partida. Tres vales por cabeza."}]};
 }
@@ -16,7 +16,18 @@ const SHOP="tres-agujas";
 function shopOpen(st,id){if(!st.mundo?.tiendas?.[id]?.abierta)no(`${TIENDA[id].n} está cerrada ahora mismo.`)}
 function log(st,x){st.log=[{t:Date.now(),x},...(st.log||[])].slice(0,60)}
 function need(st){if(!st||!st.pjs)no("La partida todavía no ha empezado. Avisa al DM.");return st}
-const holderOf=(st,slot,id)=>PJS.find(p=>st.pjs[p.id][slot]===id)?.id;
+// Quién tiene una pieza de la armería: equipada en cualquier hueco o guardada en su bolsa
+const holderOf=(st,slot,id)=>PJS.find(p=>{const s=st.pjs[p.id];return s.arma===id||s.sec===id||s.armadura===id||(s.bolsa||[]).includes(id)})?.id;
+const BOLSA_MAX=2; // armas de inventario, como en la hoja de Daggerheart
+// Una referencia de equipo es el id de la armería o "p:<id>" para un objeto propio del jugador
+function gearInfo(st,pj,ref){
+  if(!ref)return null;
+  if(ref.startsWith("p:")){const o=st.pjs[pj].propios[ref.slice(2)];if(!o)return null;
+    return {ref,n:o.n,slot:{pri:"arma",sec:"sec",arm:"armadura"}[o.tipo]||null,h:o.h===2?2:1,propio:true,o}}
+  if(WEAPON[ref])return {ref,n:WEAPON[ref].n,slot:WEAPON[ref].g==="sec"?"sec":"arma",h:WEAPON[ref].h,w:WEAPON[ref]};
+  if(ARMOR[ref])return {ref,n:ARMOR[ref].n,slot:"armadura",h:0,a:ARMOR[ref]};
+  return null;
+}
 function pending(st,para,itemId){return Object.values(st.botes||{}).filter(b=>b.para===para&&b.item===itemId).length}
 function checkCanReceive(st,para,it){
   const have=st.pjs[para].inv[it.id]||0, pend=pending(st,para,it.id);
@@ -29,20 +40,24 @@ function reserve(st,it){
   st.stock[it.id]--;
 }
 const A={
+  // Coger una pieza de la armería. Lo que hubiera en ese hueco vuelve a la armería (o a la lista, si es propio).
   equip(st,pj,slot,id){
     need(st);shopOpen(st,SHOP);const me=st.pjs[pj];
-    if(id){
-      const other=holderOf(st,slot,id);
-      if(other&&other!==pj)no(`Esa ya la ha cogido ${PJ[other].n}.`);
-      if(slot==="sec"&&me.arma&&WEAPON[me.arma].h===2)no("Tu arma principal es a dos manos: no te deja llevar secundaria.");
-      if(slot==="arma"&&WEAPON[id].h===2&&me.sec){log(st,`${PJ[pj].n} deja su ${WEAPON[me.sec].n} para usar un arma a dos manos.`);me.sec=null}
-      me[slot]=id;
-      log(st,`${PJ[pj].n} se lleva ${slot==="armadura"?ARMOR[id].n:WEAPON[id].n}.`);
-    }else{
-      const old=me[slot];me[slot]=null;
-      if(old)log(st,`${PJ[pj].n} devuelve ${slot==="armadura"?ARMOR[old].n:WEAPON[old].n} a la armería.`);
-    }
+    const other=holderOf(st,slot,id);
+    if(other&&other!==pj)no(`Esa ya la ha cogido ${PJ[other].n}.`);
+    if(other===pj)return A.slot(st,pj,id,slot);
+    const main=slot==="sec"&&me.arma&&gearInfo(st,pj,me.arma);
+    if(main&&main.h===2)no("Tu arma principal es a dos manos: no te deja llevar secundaria.");
+    const back=r=>{if(r&&!r.startsWith("p:"))log(st,`${PJ[pj].n} devuelve ${(WEAPON[r]||ARMOR[r]).n} a la armería.`)};
+    if(slot==="arma"&&WEAPON[id].h===2&&me.sec){back(me.sec);me.sec=null}
+    back(me[slot]);me[slot]=id;
+    log(st,`${PJ[pj].n} se lleva ${slot==="armadura"?ARMOR[id].n:WEAPON[id].n}.`);
     return st;
+  },
+  devolver(st,pj,id){
+    need(st);const me=st.pjs[pj];
+    ["arma","sec","armadura"].forEach(k=>{if(me[k]===id)me[k]=null});me.bolsa=me.bolsa.filter(x=>x!==id);
+    log(st,`${PJ[pj].n} devuelve ${(WEAPON[id]||ARMOR[id]).n} a la armería.`);return st;
   },
   buy(st,pj,itemId,para){
     need(st);shopOpen(st,SHOP);const it=ITEM[itemId],p=price(it),me=st.pjs[pj];
@@ -104,7 +119,33 @@ const A={
   },
   vales(st,pj,d){need(st);const me=st.pjs[pj];if(me.vales+d<0)no("No puede quedar en negativo.");me.vales+=d;log(st,`El DM ${d>0?"da":"quita"} ${Math.abs(d)} vale a ${PJ[pj].n}.`);return st},
   valesAll(st,n){need(st);PJS.forEach(p=>st.pjs[p.id].vales+=n);log(st,`El DM reparte ${n} vales a cada PJ.`);return st},
-  reset(st){const n=freshState();if(st?.mundo)n.mundo=st.mundo;if(st?.hojas)n.hojas=st.hojas;return n},
+  reset(st){const n=freshState();if(st?.mundo)n.mundo=st.mundo;if(st?.hojas)n.hojas=st.hojas;
+    if(st?.pjs)PJS.forEach(p=>{n.pjs[p.id].propios=st.pjs[p.id]?.propios||{}});return n},
+  // Inventario: mover una pieza a un hueco (arma, sec, armadura) o quitarla (slot null)
+  slot(st,pj,ref,slot){
+    need(st);const me=st.pjs[pj],g=gearInfo(st,pj,ref);if(!g)no("No tienes esa pieza.");
+    const from=["arma","sec","armadura"].find(k=>me[k]===ref)||(me.bolsa.includes(ref)?"bolsa":ref.startsWith("p:")?"lista":null);
+    if(!from)no("No tienes esa pieza.");
+    const stash=r=>{if(!r||r.startsWith("p:"))return;
+      if(ARMOR[r])no("Una armadura de la armería no cabe en la bolsa: devuélvela en la tienda.");
+      if(me.bolsa.length>=BOLSA_MAX)no(`La bolsa ya lleva ${BOLSA_MAX} armas. Suelta o devuelve una antes.`);
+      me.bolsa.push(r)};
+    const take=()=>{if(from==="bolsa")me.bolsa=me.bolsa.filter(x=>x!==ref);else if(from!=="lista")me[from]=null};
+    if(!slot){if(from==="bolsa"||from==="lista")return st;take();stash(ref);return st}
+    if(g.slot!==slot)no(`${g.n} no va en ese hueco.`);
+    if(from===slot)return st;
+    const main=slot==="sec"&&me.arma&&gearInfo(st,pj,me.arma);
+    if(main&&main.h===2)no("Tu arma principal es a dos manos: no te deja llevar secundaria.");
+    take();const old=me[slot];me[slot]=ref;stash(old);
+    if(slot==="arma"&&g.h===2&&me.sec){const s2=me.sec;me.sec=null;stash(s2)}
+    return st;
+  },
+  propio(st,pj,id,obj){need(st);const me=st.pjs[pj];
+    if(obj===null){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});delete me.propios[id];return st}
+    if(!me.propios[id]&&Object.keys(me.propios).length>=40)no("Demasiados objetos propios.");
+    me.propios[id]={...(me.propios[id]||{}),...obj};
+    if(me.propios[id].q<=0){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});delete me.propios[id]}
+    return st},
   // Hoja de personaje: el jugador cambia su propia hoja (mut recibe la hoja y la modifica)
   hoja(st,pj,mut){need(st);mut(st.hojas[pj]);return st},
   lugar(st,id,patch){need(st);Object.assign(st.mundo.lugares[id],patch);

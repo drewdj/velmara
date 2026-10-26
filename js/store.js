@@ -9,7 +9,7 @@ const Store={
   fix(st){
     if(!st)return null;
     st.botes=st.botes||{};st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.stock=st.stock||{};st.pjs=st.pjs||{};
-    for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.vales=p.vales||0}
+    for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.vales=p.vales||0;p.bolsa=Array.isArray(p.bolsa)?p.bolsa:Object.values(p.bolsa||{});p.propios=p.propios||{}}
     for(const k in st.botes){st.botes[k].aportes=st.botes[k].aportes||{}}
     // Hojas de personaje: lo que falte (o Firebase haya borrado por vacío) vuelve a su valor inicial
     if(typeof hojaInicial==="function"){
