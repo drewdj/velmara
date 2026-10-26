@@ -3,11 +3,11 @@
     "tienda": { ".read": true, ".write": true },
     "saber": {
       ".read": true,
-      ".write": "auth != null && auth.token.email == 'dm@velmara.app'"
+      ".write": "auth != null && ((auth.token.email == 'TU_CORREO@gmail.com' && auth.token.email_verified == true) || auth.token.email == 'dm@velmara.app')"
     },
     "dm": {
-      ".read": "auth != null && auth.token.email == 'dm@velmara.app'",
-      ".write": "auth != null && auth.token.email == 'dm@velmara.app'"
+      ".read": "auth != null && ((auth.token.email == 'TU_CORREO@gmail.com' && auth.token.email_verified == true) || auth.token.email == 'dm@velmara.app')",
+      ".write": "auth != null && ((auth.token.email == 'TU_CORREO@gmail.com' && auth.token.email_verified == true) || auth.token.email == 'dm@velmara.app')"
     },
     "$other": { ".read": false, ".write": false }
   }
