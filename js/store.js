@@ -16,7 +16,9 @@ const Store={
   async init(RuleError){
     this.RuleError=RuleError;
     const cfg=window.FIREBASE_CONFIG;
-    if(!cfg||!cfg.databaseURL||!window.firebase){this.mode="local";this.state=null;this.emit();return}
+    if(!cfg||!cfg.databaseURL){this.mode="local";this.state=null;this.emit();return}
+    // Hay configuración pero la librería de Firebase no cargó (bloqueador, red): mejor avisar que fingir
+    if(!window.firebase){console.error("No se pudo cargar Firebase");this.mode="error";this.emit();return}
     try{
       const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
       this.ref=app.database().ref(this.path);
