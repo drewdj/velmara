@@ -189,6 +189,10 @@ tr:last-child td{border-bottom:0}
 .clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .open .clamp{-webkit-line-clamp:unset;display:block}
 .clamp.en{font-size:.92em}
+.spells{display:grid;gap:4px;font-size:.92em}
+.spell b{display:block;font-family:var(--cond);font-size:1.05em;letter-spacing:.03em;text-transform:uppercase;color:var(--dom,#281C45)}
+.spell .sd{display:none}
+.open .spells{gap:10px}.open .spell .sd{display:block;margin-top:2px}
 .dh-card.dom{box-shadow:0 0 0 2px var(--dom),0 10px 28px rgb(0 0 0 / .4)}
 .dh-card.dom .ctype{color:var(--dom)}
 .d-lv{font-family:var(--cond);font-weight:700;font-size:96px;fill:#fff}
@@ -553,16 +557,16 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=15"></script>
-<script src="js/datos.js?v=15"></script>
-<script src="js/dominios.js?v=15"></script>
-<script src="js/reglas.js?v=15"></script>
-<script src="js/store.js?v=15"></script>
-<script src="js/cartas.js?v=15"></script>
-<script src="js/mapa.js?v=15"></script>
-<script src="js/contenido.js?v=15"></script>
-<script src="js/saber.js?v=15"></script>
-<script src="js/mundo.js?v=15"></script>
+<script src="js/firebase-config.js?v=16"></script>
+<script src="js/datos.js?v=16"></script>
+<script src="js/dominios.js?v=16"></script>
+<script src="js/reglas.js?v=16"></script>
+<script src="js/store.js?v=16"></script>
+<script src="js/cartas.js?v=16"></script>
+<script src="js/mapa.js?v=16"></script>
+<script src="js/contenido.js?v=16"></script>
+<script src="js/saber.js?v=16"></script>
+<script src="js/mundo.js?v=16"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));

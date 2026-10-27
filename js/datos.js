@@ -90,7 +90,21 @@ const ARMORS=[
  {id:"tunica",n:"Túnica de mago mejorada",u:"6 / 15",sc:3,f:"Encantada: suma tu rasgo de lanzamiento a tus umbrales.",hf:1},
  {id:"brigantina",n:"Brigantina mejorada",u:"9 / 19",sc:4,f:"Forrada: marca 1 Estrés para anular daño Menor.",hf:1},
  {id:"escamas",n:"Escamas mejoradas",u:"11 / 23",sc:4,f:"Engorrosa: −1 a Fineza.",hf:1},
- {id:"bandas",n:"Bandas mejoradas",u:"13 / 27",sc:5,f:"Voluminosa: −1 a Evasión; al recibir daño Grave, marca 1 Estrés.",hf:1}
+ {id:"bandas",n:"Bandas mejoradas",u:"13 / 27",sc:5,f:"Voluminosa: −1 a Evasión; al recibir daño Grave, marca 1 Estrés.",hf:1},
+ // Especiales: SRD y Hope & Fear
+ {id:"elundria",n:"Cota de Elundria",u:"9 / 21",sc:4,f:"Protegida: reduces el daño mágico que recibes en tu puntuación de Armadura antes de compararlo con tus umbrales."},
+ {id:"hueso-harrow",n:"Armadura de hueso de Harrow",u:"9 / 21",sc:4,f:"Resistente: antes de marcar tu última casilla de Armadura, tira 1d6; con un 6, reduce la gravedad un umbral sin marcar la casilla."},
+ {id:"peto-hierrarbol",n:"Peto de hierrárbol",u:"9 / 20",sc:4,f:"Reforzado: al marcar tu última casilla de Armadura, tus umbrales suben +2 hasta que limpies al menos una casilla."},
+ {id:"runetan-flotante",n:"Armadura flotante runetana",u:"9 / 20",sc:4,f:"Cambiante: cuando te atacan, puedes marcar una casilla de Armadura para dar desventaja a la tirada de ataque."},
+ {id:"tyris-blanda",n:"Armadura blanda de Tyris",u:"8 / 18",sc:5,f:"Silenciosa: +2 a las tiradas para moverte sin hacer ruido."},
+ {id:"rosasalvaje",n:"Armadura de rosa salvaje",u:"11 / 23",sc:5,f:"Esperanzada: cuando fueras a gastar 1 Esperanza, puedes marcar una casilla de Armadura en su lugar."},
+ {id:"tunica-encantador",n:"Túnica del encantador",u:"9 / 20",sc:4,f:"Mnemónica: una vez por escena, recuperas una carta de dominio del baúl sin pagar su coste.",hf:1},
+ {id:"manto-halcon",n:"Manto del guardián halcón",u:"9 / 20",sc:4,f:"Planeo: planeas hasta Lejana y no recibes daño por caídas.",hf:1},
+ {id:"tunica-ara\u00f1a",n:"Túnica de seda de araña",u:"9 / 20",sc:4,f:"Trepamuros: +1 a Evasión; caminas por las paredes como por el suelo.",hf:1},
+ {id:"habito-tormenta",n:"Hábito de hilo de tormenta",u:"9 / 20",sc:4,f:"Absorbente: una vez por escena, al recibir daño mágico, limpias una casilla de Armadura.",hf:1},
+ {id:"tablillas-raromadera",n:"Tablillas de raromadera",u:"10 / 21",sc:5,f:"Zancada: no te pueden Inmovilizar y puedes moverte hasta Lejana como parte de una tirada de acción.",hf:1},
+ {id:"coraza-trol",n:"Coraza de piel de trol",u:"11 / 23",sc:5,f:"Autocurativa: al descansar, limpias una casilla de Armadura.",hf:1},
+ {id:"placas-sol",n:"Placas de sol doradas",u:"12 / 26",sc:5,f:"Resplandeciente: una vez por escena, al gastar Esperanza, limpias una casilla de Armadura.",hf:1}
 ];
 const W=(g,id,n,tr,a,d,h,f)=>({g,id,n,tr,a,d,h,f:f||""});
 const WEAPONS=[
@@ -146,7 +160,42 @@ const WEAPONS=[
  W("sec","ballesta-mano","Ballesta de mano mejorada","Fineza","Lejana","d6+3 fís",1),
  W("sec","escudo-pinchos","Escudo con pinchos","Fuerza","Cuerpo a cuerpo","d6+2 fís",1,"Doble función: +1 a la puntuación de Armadura; +1 al daño del arma principal en Cuerpo a cuerpo."),
  W("sec","daga-parada","Daga de parada","Fineza","Cuerpo a cuerpo","d6+2 fís",1,"Parada: cuando te atacan, tira los dados de daño de esta arma; los dados del atacante que coincidan con los tuyos se descartan."),
- W("sec","hacha-retornante","Hacha retornante","Agilidad","Cercana","d6+4 fís",1,"Retornante: al lanzarla dentro de su alcance, vuelve a tu mano tras el ataque.")
+ W("sec","hacha-retornante","Hacha retornante","Agilidad","Cercana","d6+4 fís",1,"Retornante: al lanzarla dentro de su alcance, vuelve a tu mano tras el ataque."),
+ // Hope & Fear (tier 2)
+ {...W("fis","katana-mejorada","Katana mejorada","Agilidad","Cuerpo a cuerpo","d10+6 fís",2,"Rápida: al atacar, puedes marcar 1 Estrés para atacar también a otra criatura dentro del alcance."),hf:1},
+ {...W("fis","nudilleras-mejoradas","Nudilleras de latón mejoradas","Fuerza","Cuerpo a cuerpo","d8+4 fís",1,""),hf:1},
+ {...W("fis","cimitarra-mejorada","Cimitarra mejorada","Presencia","Cuerpo a cuerpo","d8+4 fís",1,""),hf:1},
+ {...W("fis","daga-retorcida-mejorada","Daga retorcida mejorada","Conocimiento","Cuerpo a cuerpo","d8+3 fís",1,"Perforante: con el daño de esta arma, el umbral Mayor del objetivo cuenta con −2."),hf:1},
+ {...W("fis","espada-latigo-mejorada","Espada látigo mejorada","Fineza","Muy Cercana","d8+3 fís",1,"Versátil: también se puede usar con Fineza, Cuerpo a cuerpo, d10+3."),hf:1},
+ {...W("fis","dardo-cuerda-mejorado","Dardo de cuerda mejorado","Instinto","Cercana","d6+4 fís",2,""),hf:1},
+ {...W("fis","pico-guerra","Pico de guerra","Fuerza","Cuerpo a cuerpo","d8+3 fís",1,"Letal: cuando haces daño Grave, el objetivo marca 1 PG adicional."),hf:1},
+ {...W("fis","baston-estoque","Bastón estoque","Fineza","Cuerpo a cuerpo","d8+4 fís",1,"Retráctil: la hoja se esconde en el bastón para que no la detecten."),hf:1},
+ {...W("fis","abanico-cuchillas","Abanico de cuchillas","Presencia","Cuerpo a cuerpo","d8+3 fís",1,"Parada: cuando te atacan, tira los dados de daño de esta arma; los dados del atacante que coincidan con los tuyos se descartan."),hf:1},
+ {...W("fis","escalpelo-cirujano","Escalpelo de cirujano","Conocimiento","Cuerpo a cuerpo","d8+3 fís",1,"Aterrador: al acertar, el objetivo marca 1 Estrés."),hf:1},
+ {...W("fis","lanza-justa","Lanza de justa","Instinto","Muy Cercana","d10+5 fís",2,"Engorrosa: −1 a Fineza."),hf:1},
+ {...W("fis","jabalinas","Jabalinas","Agilidad","Muy Cercana","d6+6 fís",1,"Acopio: puedes lanzarla a un objetivo a Lejana con una tirada de Agilidad sin ir a por ella; siempre tienes otra a mano."),hf:1},
+ {...W("mag","espada-brillante-mejorada","Espada brillante mejorada","Fuerza","Cuerpo a cuerpo","d10+6 mág",2,""),hf:1},
+ {...W("mag","hoja-sombria-mejorada","Hoja sombría mejorada","Presencia","Cuerpo a cuerpo","d8+3 fís/mág",1,"De otro mundo: al acertar, eliges si el daño es físico o mágico."),hf:1},
+ {...W("mag","chakram-mejorado","Chakram encantado mejorado","Fineza","Cercana","d6+4 mág",1,"Rebote: al lanzarlo vuelve a tu mano. Al atacar, puedes marcar 1 Estrés para atacar también a otra criatura a Muy Cercana del primer objetivo."),hf:1},
+ {...W("mag","daga-conjuro-mejorada","Daga de conjuro mejorada","Instinto","Cercana","d6+3 mág",1,"Versátil: también se puede usar con Instinto, Cuerpo a cuerpo, d8+3."),hf:1},
+ {...W("mag","pistola-runica-mejorada","Pistola rúnica mejorada","Conocimiento","Lejana","d6+6 mág",1,"Recarga: tras atacar, tira 1d6; con un 1, tienes que marcar 1 Estrés para recargarla antes de volver a disparar."),hf:1},
+ {...W("mag","rifle-arcano-mejorado","Rifle arcano mejorado","Agilidad","Muy Lejana","d10+6 mág",2,"Apuntado: desventaja si el objetivo está a Muy Cercana de ti o en Cuerpo a cuerpo de un aliado; puedes marcar 1 Estrés para ignorarlo."),hf:1},
+ {...W("mag","garrote-encantado","Garrote encantado","Fuerza","Cuerpo a cuerpo","d8+3 mág",1,"Protector: +1 a tu puntuación de Armadura."),hf:1},
+ {...W("mag","cuchilla-desplazamiento","Cuchilla de desplazamiento","Fineza","Cuerpo a cuerpo","d8+3 mág",2,"Omnipresente: puedes atacar a objetivos a Muy Lejana, pero con desventaja."),hf:1},
+ {...W("mag","brazaletes-hechizados","Brazaletes hechizados","Conocimiento","Cuerpo a cuerpo","d10+6 mág",2,""),hf:1},
+ {...W("mag","gema-furia","Gema de furia","Instinto","Cercana","d8+3 mág",1,"Ardiente: si sacas el máximo en un dado de daño, el objetivo marca 1 Estrés."),hf:1},
+ {...W("mag","laud-encantado","Laúd encantado","Presencia","Cercana","d8+3 mág",2,"Vigorizante: al acertar, tira 1d4; con un 4, limpias 1 Estrés."),hf:1},
+ {...W("mag","arco-astillas","Arco de astillas","Agilidad","Lejana","d6+6 mág",2,"Andanada: gasta 1 Esperanza para atacar a un grupo dentro del alcance; los objetivos que superes reciben la mitad del daño."),hf:1},
+ {...W("sec","hachuela-mejorada","Hachuela mejorada","Agilidad","Cuerpo a cuerpo","d8+2 fís",1,"Remate: al acertar con tu arma principal en Cuerpo a cuerpo, puedes marcar 1 Estrés para +1 a tu Competencia en ese ataque."),hf:1},
+ {...W("sec","nudilleras-torpe-mejoradas","Nudilleras de mano torpe mejoradas","Fuerza","Cuerpo a cuerpo","d8+2 fís",1,"Emparejada: +3 al daño del arma principal contra objetivos en Cuerpo a cuerpo."),hf:1},
+ {...W("sec","cuchillos-arrojadizos-mejorados","Cuchillos arrojadizos mejorados","Fineza","Cuerpo a cuerpo","d8+2 fís",1,"Acopio: puedes lanzarlos a Cercana con una tirada de Fineza sin ir a por ellos; siempre tienes otro a mano."),hf:1},
+ {...W("sec","capa-combate-mejorada","Capa de combate mejorada","Presencia","Cuerpo a cuerpo","d4+2 fís",1,"Acolchada: +3 a tus umbrales de daño."),hf:1},
+ {...W("sec","escudo-runico-mejorado","Escudo rúnico mejorado","Conocimiento","Cuerpo a cuerpo","d4+2 mág",1,"Protector: +2 a la puntuación de Armadura."),hf:1},
+ {...W("sec","runas-foco-mejoradas","Runas de foco mejoradas","Instinto","Muy Cercana","d6+2 mág",1,"Enfocadas: +1 al daño del arma principal contra objetivos a Muy Cercana."),hf:1},
+ {...W("sec","porra-plegable","Porra plegable","Fuerza","Cuerpo a cuerpo","d8 fís",1,"No letal: cuando un objetivo fuera a marcar PG por un ataque con esta arma, marca esa misma cantidad de Estrés."),hf:1},
+ {...W("sec","brazal-sobrenatural","Brazal sobrenatural","Instinto","Cuerpo a cuerpo","d8 mág",1,"Desvío: cuando te atacan, puedes marcar una casilla de Armadura para sumar tu puntuación de Armadura a tu Evasión contra ese ataque."),hf:1},
+ {...W("sec","baston-segmentado","Bastón segmentado","Agilidad","Muy Cercana","d6+4 fís",1,"Doble función: +1 a la puntuación de Armadura; +1 al daño del arma principal en Cuerpo a cuerpo."),hf:1},
+ {...W("sec","alambre-cuchillas","Alambre de cuchillas","Fineza","Muy Cercana","d6+3 fís",1,"Enredo: al acertar con tu arma principal a un objetivo a Muy Cercana, puedes gastar 1 Esperanza para dejarlo temporalmente Vulnerable."),hf:1}
 ];
 const ARMOR=Object.fromEntries(ARMORS.map(a=>[a.id,a]));
 const WEAPON=Object.fromEntries(WEAPONS.map(w=>[w.id,w]));

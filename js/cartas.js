@@ -43,7 +43,8 @@ const GLYPH={
 function glyphFor(kind,id,it){
   if(kind==="armadura")return "armadura";
   if(kind==="item"){if(it.k==="rec")return "receta";if(it.k==="cons")return "pocion";return it.r==="r"?"gema":"objeto"}
-  const m=[["escudo","escudo"],["daga","daga"],["hacha","hacha"],["martillo|maza","martillo"],["baston","baston"],
+  const m=[["escudo","escudo"],["gema","gema"],["pistola|rifle","ballesta"],["chakram|abanico|brazal|nudilleras","anillos"],["porra|garrote|pico","martillo"],
+    ["cuchillos|escalpelo|alambre","daga"],["jabalinas|justa","asta"],["capa","armadura"],["dardo","latigo"],["daga","daga"],["hacha","hacha"],["martillo|maza","martillo"],["baston","baston"],
     ["ballesta|trabuco","ballesta"],["arco","arco"],["alabarda|lanza|guadana","asta"],["varita|cetro","varita"],
     ["latigo|garfio","latigo"],["anillos|runas|guanteletes|nudillos","anillos"],["espada|sable|estoque|falcata|urok|hoja","espada"]];
   for(const [re,g] of m)if(new RegExp(re).test(id))return g;
@@ -145,6 +146,14 @@ function domainCard(c){
    <path d="M646 46 L622 86 H642 L636 114 L662 74 H642Z" fill="${D.c}"/><text x="676" y="112" class="d-rc" text-anchor="middle">${c.rc}</text>
    <rect y="596" width="740" height="44" fill="#FBF7EE"/><path d="M0 600 H740" stroke="${D.c}" stroke-width="12"/><path d="M0 612 H740" stroke="#F9A72B" stroke-width="4"/>
   </svg><div class="cbody"><h4>${escC(c.n)}</h4><div class="ctype">Nivel ${c.lv} · ${escC(D.n)} · ${TIPO_CARTA[c.ty]}</div>
-   <p class="clamp en" lang="en">${escC(c.t).replace(/\n/g,"<br>")}</p></div></div>`;
+   ${c.ty==="Grimoire"&&spells(c.t).length>1?`<div class="spells en" lang="en">${spells(c.t).map(([n,d])=>`<div class="spell"><b>${escC(n)}</b><span class="sd">${escC(d)}</span></div>`).join("")}</div>`
+     :`<p class="clamp en" lang="en">${escC(c.t).replace(/\n/g,"<br>")}</p>`}</div></div>`;
+}
+// Un grimorio trae varios hechizos seguidos ("Nombre: efecto. Nombre: efecto."): los separamos
+function spells(t){
+  const re=/(?:^|(?<=[.!)”"]\s))([A-Z][^.:]{1,30}):\s/g,out=[];let m,last=null;
+  while((m=re.exec(t))){if(last)last[1]=t.slice(last.end,m.index).trim();last={0:m[1],1:"",end:re.lastIndex};out.push(last)}
+  if(last)last[1]=t.slice(last.end).trim();
+  return out.map(x=>[x[0],x[1]]);
 }
 function mix(a,b){const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16));const A=p(a),B=p(b);return "#"+A.map((v,i)=>Math.round(v*.45+B[i]*.55).toString(16).padStart(2,"0")).join("")}
