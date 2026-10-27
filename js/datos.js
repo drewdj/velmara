@@ -91,7 +91,13 @@ const ARMORS=[
  {id:"brigantina",n:"Brigantina mejorada",u:"9 / 19",sc:4,f:"Forrada: marca 1 Estrés para anular daño Menor.",hf:1},
  {id:"escamas",n:"Escamas mejoradas",u:"11 / 23",sc:4,f:"Engorrosa: −1 a Fineza.",hf:1},
  {id:"bandas",n:"Bandas mejoradas",u:"13 / 27",sc:5,f:"Voluminosa: −1 a Evasión; al recibir daño Grave, marca 1 Estrés.",hf:1},
- // Especiales de Hope & Fear
+ // Especiales de tier 2: 6 del manual básico y 7 de Hope & Fear
+ {id:"elundria",n:"Cota de Elundria",u:"9 / 21",sc:4,f:"Protegida: reduces el daño mágico que recibes en tu puntuación de Armadura antes de compararlo con tus umbrales."},
+ {id:"hueso-harrow",n:"Armadura de hueso de Harrow",u:"9 / 21",sc:4,f:"Resistente: antes de marcar tu última casilla de Armadura, tira 1d6; con un 6, reduce la gravedad un umbral sin marcar la casilla."},
+ {id:"peto-hierrarbol",n:"Peto de hierrárbol",u:"9 / 20",sc:4,f:"Reforzado: al marcar tu última casilla de Armadura, tus umbrales suben +2 hasta que limpies al menos una casilla."},
+ {id:"runetan-flotante",n:"Armadura flotante runetana",u:"9 / 20",sc:4,f:"Cambiante: cuando te atacan, puedes marcar una casilla de Armadura para dar desventaja a la tirada de ataque."},
+ {id:"tyris-blanda",n:"Armadura blanda de Tyris",u:"8 / 18",sc:5,f:"Silenciosa: +2 a las tiradas para moverte sin hacer ruido."},
+ {id:"rosasalvaje",n:"Armadura de rosa salvaje",u:"11 / 23",sc:5,f:"Esperanzada: cuando fueras a gastar 1 Esperanza, puedes marcar una casilla de Armadura en su lugar."},
  {id:"tunica-encantador",n:"Túnica del encantador",u:"9 / 20",sc:4,f:"Mnemónica: una vez por escena, recuperas una carta de dominio del baúl sin pagar su coste.",hf:1},
  {id:"manto-halcon",n:"Manto del guardián halcón",u:"9 / 20",sc:4,f:"Planeo: planeas hasta Lejana y no recibes daño por caídas.",hf:1},
  {id:"tunica-ara\u00f1a",n:"Túnica de seda de araña",u:"9 / 20",sc:4,f:"Trepamuros: +1 a Evasión; caminas por las paredes como por el suelo.",hf:1},
@@ -180,16 +186,6 @@ const WEAPONS=[
  {...W("mag","gema-furia","Gema de furia","Instinto","Cercana","d8+3 mág",1,"Ardiente: si sacas el máximo en un dado de daño, el objetivo marca 1 Estrés."),hf:1},
  {...W("mag","laud-encantado","Laúd encantado","Presencia","Cercana","d8+3 mág",2,"Vigorizante: al acertar, tira 1d4; con un 4, limpias 1 Estrés."),hf:1},
  {...W("mag","arco-astillas","Arco de astillas","Agilidad","Lejana","d6+6 mág",2,"Andanada: gasta 1 Esperanza para atacar a un grupo dentro del alcance; los objetivos que superes reciben la mitad del daño."),hf:1},
- {...W("sec","hachuela-mejorada","Hachuela mejorada","Agilidad","Cuerpo a cuerpo","d8+2 fís",1,"Remate: al acertar con tu arma principal en Cuerpo a cuerpo, puedes marcar 1 Estrés para +1 a tu Competencia en ese ataque."),hf:1},
- {...W("sec","nudilleras-torpe-mejoradas","Nudilleras de mano torpe mejoradas","Fuerza","Cuerpo a cuerpo","d8+2 fís",1,"Emparejada: +3 al daño del arma principal contra objetivos en Cuerpo a cuerpo."),hf:1},
- {...W("sec","cuchillos-arrojadizos-mejorados","Cuchillos arrojadizos mejorados","Fineza","Cuerpo a cuerpo","d8+2 fís",1,"Acopio: puedes lanzarlos a Cercana con una tirada de Fineza sin ir a por ellos; siempre tienes otro a mano."),hf:1},
- {...W("sec","capa-combate-mejorada","Capa de combate mejorada","Presencia","Cuerpo a cuerpo","d4+2 fís",1,"Acolchada: +3 a tus umbrales de daño."),hf:1},
- {...W("sec","escudo-runico-mejorado","Escudo rúnico mejorado","Conocimiento","Cuerpo a cuerpo","d4+2 mág",1,"Protector: +2 a la puntuación de Armadura."),hf:1},
- {...W("sec","runas-foco-mejoradas","Runas de foco mejoradas","Instinto","Muy Cercana","d6+2 mág",1,"Enfocadas: +1 al daño del arma principal contra objetivos a Muy Cercana."),hf:1},
- {...W("sec","porra-plegable","Porra plegable","Fuerza","Cuerpo a cuerpo","d8 fís",1,"No letal: cuando un objetivo fuera a marcar PG por un ataque con esta arma, marca esa misma cantidad de Estrés."),hf:1},
- {...W("sec","brazal-sobrenatural","Brazal sobrenatural","Instinto","Cuerpo a cuerpo","d8 mág",1,"Desvío: cuando te atacan, puedes marcar una casilla de Armadura para sumar tu puntuación de Armadura a tu Evasión contra ese ataque."),hf:1},
- {...W("sec","baston-segmentado","Bastón segmentado","Agilidad","Muy Cercana","d6+4 fís",1,"Doble función: +1 a la puntuación de Armadura; +1 al daño del arma principal en Cuerpo a cuerpo."),hf:1},
- {...W("sec","alambre-cuchillas","Alambre de cuchillas","Fineza","Muy Cercana","d6+3 fís",1,"Enredo: al acertar con tu arma principal a un objetivo a Muy Cercana, puedes gastar 1 Esperanza para dejarlo temporalmente Vulnerable."),hf:1}
 ];
 const ARMOR=Object.fromEntries(ARMORS.map(a=>[a.id,a]));
 const WEAPON=Object.fromEntries(WEAPONS.map(w=>[w.id,w]));
