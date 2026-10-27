@@ -345,6 +345,20 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .padd input{flex:1 1 220px}
 
 
+/* ---------- Mano y baúl: arrastrar cartas ---------- */
+.handgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:20px;align-items:start}
+@media (max-width:820px){.handgrid{grid-template-columns:minmax(0,1fr)}}
+.cdrop{min-height:150px;padding:6px;outline-offset:4px}
+.cdrop.small{border:1px dashed var(--line)}
+.cdrop.small{grid-template-columns:repeat(auto-fill,minmax(min(100%,130px),1fr));gap:12px}
+@media (max-width:820px){.cdrop.small{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}}
+.cdrop.can{outline:2px dashed var(--gold);background:rgb(249 167 43 / .06)}
+.cdrop.over{outline-style:solid;background:rgb(249 167 43 / .16)}
+[data-cdrag]{cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+[data-cdrag].lifted{opacity:.35}
+.slotcard.ghost{position:fixed;left:0;top:0;z-index:50;pointer-events:none;opacity:.92;box-shadow:0 14px 34px rgb(0 0 0 / .55);cursor:grabbing}
+/* Mapas: arrastrar y pellizcar no selecciona texto ni abre el menú de copiar */
+#msvg,#wsvg,#msvg *,#wsvg *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 /* ---------- Compendio ---------- */
 .cgrid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
 @media (max-width:820px){.cgrid{grid-template-columns:minmax(0,1fr)}}
@@ -539,16 +553,16 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=14"></script>
-<script src="js/datos.js?v=14"></script>
-<script src="js/dominios.js?v=14"></script>
-<script src="js/reglas.js?v=14"></script>
-<script src="js/store.js?v=14"></script>
-<script src="js/cartas.js?v=14"></script>
-<script src="js/mapa.js?v=14"></script>
-<script src="js/contenido.js?v=14"></script>
-<script src="js/saber.js?v=14"></script>
-<script src="js/mundo.js?v=14"></script>
+<script src="js/firebase-config.js?v=15"></script>
+<script src="js/datos.js?v=15"></script>
+<script src="js/dominios.js?v=15"></script>
+<script src="js/reglas.js?v=15"></script>
+<script src="js/store.js?v=15"></script>
+<script src="js/cartas.js?v=15"></script>
+<script src="js/mapa.js?v=15"></script>
+<script src="js/contenido.js?v=15"></script>
+<script src="js/saber.js?v=15"></script>
+<script src="js/mundo.js?v=15"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -780,10 +794,12 @@ function viewPersonaje(st){
     ${res("Puntos de golpe","pg.marc",h.pg.marc,h.pg.max,"")}${res("Estrés","estres.marc",h.estres.marc,h.estres.max,"stress")}
     ${res("Esperanza","esperanza",h.esperanza,6,"hope")}${ar.pts?res("Armadura","armMarc",h.armMarc,ar.pts,"armor"):""}</section>
    <section class="block"><span class="tab-label">Experiencias</span>${exps.length?`<div class="xps">${exps.map(e=>`<span class="xp">${esc(e.n)} <b class="num">+${e.b}</b></span>`).join("")}</div>`:`<p class="empty">Ninguna todavía. Añádelas en Editar.</p>`}</section>
-   <section class="block"><header><span class="tab-label">En la mano</span><p>${h.cartas.length} de 5. Toca una carta para leerla entera.</p></header>
-    ${h.cartas.length?`<div class="cards">${h.cartas.map(id=>CARTA[id]?`<div class="slotcard">${domainCard(CARTA[id])}</div>`:"").join("")}</div>`:`<p class="empty">Ninguna carta en la mano.</p>`}</section>
-   <section class="block"><header><span class="tab-label">Baúl</span><p>Pasarlas a la mano cuesta su coste de recuperación en Estrés (salvo en un descanso).</p></header>
-    ${h.baul.length?`<div class="cards">${h.baul.map(id=>CARTA[id]?`<div class="slotcard">${domainCard(CARTA[id])}</div>`:"").join("")}</div>`:`<p class="empty">El baúl está vacío.</p>`}</section>
+   <div class="handgrid">
+   <section class="block"><header><span class="tab-label">En la mano</span><p>${h.cartas.length} de 5. Arrastra una carta al baúl para guardarla; tócala para leerla entera.</p></header>
+    <div class="cards cdrop" data-drop="uso">${h.cartas.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="uso">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Ninguna carta en la mano. Arrastra aquí una del baúl.</p>`}</div></section>
+   <section class="block baul"><header><span class="tab-label">Baúl</span><p>Pasarla a la mano cuesta su recuperación en Estrés (salvo en un descanso).</p></header>
+    <div class="cards cdrop small" data-drop="baul">${h.baul.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="baul">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Vacío. Arrastra aquí una carta de la mano.</p>`}</div></section>
+   </div>
    ${h.notas.trim()?`<section class="block deco"><span class="tab-label">Notas</span><p class="pre">${esc(h.notas)}</p></section>`:""}
   </div>`;
 }
@@ -1081,22 +1097,31 @@ function render(){
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
   showMundo(!!(st&&(ui.me||ui.canDM)&&ui.view==="mundo"&&!ui.tienda));
-  const keep=["TEXTAREA","INPUT"].includes(document.activeElement?.tagName)&&document.activeElement.type!=="checkbox"&&document.activeElement.id?{id:document.activeElement.id,v:document.activeElement.value}:null;
+  const ae=document.activeElement;let sel=null;try{sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}
+  const keep=["TEXTAREA","INPUT"].includes(ae?.tagName)&&ae.type!=="checkbox"&&ae.id?{id:ae.id,v:ae.value,sel}:null;
   app.innerHTML=header(st)+body;
-  if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus()}}
+  // Al redibujar, lo que se estaba escribiendo conserva el foco y la posición del cursor
+  if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus();if(keep.sel?.[0]!=null)try{el.setSelectionRange(keep.sel[0],keep.sel[1])}catch(e){}}}
 }
 
 /* Arrastrar fichas del inventario a los huecos (ratón y dedo). En táctil hay que mantener pulsado un momento,
    para que deslizar siga moviendo la página. */
+// En los mapas, arrastrar no debe seleccionar texto ni (en el móvil) abrir el menú de copiar/buscar
+const onMapSvg=t=>t.closest?.("#msvg,#wsvg");
+document.addEventListener("pointerdown",e=>{if(onMapSvg(e.target)){window.getSelection()?.removeAllRanges();if(e.pointerType==="mouse")e.preventDefault()}},true);
+document.addEventListener("contextmenu",e=>{if(onMapSvg(e.target)||e.target.closest?.("[data-cdrag],.tile[data-drag]"))e.preventDefault()});
+document.addEventListener("selectstart",e=>{if(onMapSvg(e.target))e.preventDefault()});
 let drag=null,noClick=false;
 document.addEventListener("pointerdown",e=>{
-  const t=e.target.closest(".tile[data-drag]");if(!t||ui.busy)return;
-  drag={t,ref:t.dataset.ref,fits:t.dataset.fits,where:t.dataset.where,x:e.clientX,y:e.clientY,on:false,id:e.pointerId,
+  const t=e.target.closest(".tile[data-drag],[data-cdrag]");if(!t||ui.busy||e.button>0)return;
+  const card=t.dataset.cdrag;
+  drag={t,card,ref:card||t.dataset.ref,fits:t.dataset.fits,where:t.dataset.where,x:e.clientX,y:e.clientY,on:false,id:e.pointerId,
     timer:e.pointerType==="touch"?setTimeout(()=>{if(drag&&!drag.on)startDrag(drag.x,drag.y)},260):0,touch:e.pointerType==="touch"};
 });
 function startDrag(x,y){
   drag.on=true;const r=drag.t.getBoundingClientRect(),g=drag.t.cloneNode(true);
-  g.className="tile ghost";g.style.width=r.width+"px";document.body.appendChild(g);drag.g=g;drag.ox=r.width/2;drag.oy=r.height/2;moveGhost(x,y);
+  g.className=(drag.card?"slotcard":"tile")+" ghost";g.style.width=r.width+"px";document.body.appendChild(g);drag.g=g;drag.ox=r.width/2;drag.oy=Math.min(r.height/2,60);moveGhost(x,y);
+  if(drag.card){document.querySelector(`.cdrop[data-drop="${drag.where==="uso"?"baul":"uso"}"]`)?.classList.add("can");drag.t.classList.add("lifted");return}
   document.querySelectorAll(`.eslot[data-drop="${drag.fits}"]`).forEach(s=>s.classList.add("can"));
   if(drag.where!=="lista")document.querySelector('.tiles[data-drop="lista"]')?.classList.add("can");
 }
@@ -1115,8 +1140,11 @@ function endDrag(e){
   if(!drag||(e&&e.pointerId!==drag.id))return;clearTimeout(drag.timer);const d=drag;drag=null;
   if(!d.on)return;noClick=true;setTimeout(()=>noClick=false,50);
   d.g.hidden=true;const z=document.elementFromPoint(d.x,d.y)?.closest("[data-drop].can");d.g.remove();
-  document.querySelectorAll(".can,.over").forEach(x=>x.classList.remove("can","over"));
+  document.querySelectorAll(".can,.over,.lifted").forEach(x=>x.classList.remove("can","over","lifted"));
   if(!z)return;const to=z.dataset.drop;
+  if(d.card){if(to!==d.where)act(st=>A.hoja(st,ui.me,h=>{const id=d.card;
+    if(to==="uso"){if(h.cartas.length>=5)no("Ya tienes 5 cartas en la mano: guarda antes una en el baúl.");h.baul=h.baul.filter(x=>x!==id);h.cartas.push(id)}
+    else{h.cartas=h.cartas.filter(x=>x!==id);h.baul.push(id)}}),to==="uso"?"A la mano.":"Al baúl.");return}
   if(to==="lista"){if(d.where!=="lista")act(st=>A.slot(st,ui.me,d.ref,null))}
   else if(to!==d.where)act(st=>A.slot(st,ui.me,d.ref,to));
 }
