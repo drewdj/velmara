@@ -4,7 +4,9 @@ const PJS=[
  {id:"chimpok",n:"Chimpok",j:"Andrés",c:"Explorador · Simiah"},
  {id:"fungrino",n:"Fungrino",j:"Quique",c:"Bardo · Fungril"},
  {id:"galeryon",n:"Galeryon",j:"Gabriel",c:"Guerrero · Drakona"},
- {id:"geliberto",n:"Geliberto",j:"Mateo",c:"Hechicero · Infernis"}
+ {id:"geliberto",n:"Geliberto",j:"Mateo",c:"Hechicero · Infernis"},
+ // Solo para el DM: no sale al elegir personaje y ve todo lo que hay, compartido o no
+ {id:"prueba",n:"PJ de prueba",j:"DM",c:"Lo ve todo",prueba:true}
 ];
 const RAR={c:{n:"Común",p:1},pc:{n:"Poco común",p:2},r:{n:"Raro",p:4},rec:{n:"Receta"}};
 const MAX_CONS=5;

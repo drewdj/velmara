@@ -539,25 +539,24 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=13"></script>
-<script src="js/datos.js?v=13"></script>
-<script src="js/dominios.js?v=13"></script>
-<script src="js/reglas.js?v=13"></script>
-<script src="js/store.js?v=13"></script>
-<script src="js/cartas.js?v=13"></script>
-<script src="js/mapa.js?v=13"></script>
-<script src="js/contenido.js?v=13"></script>
-<script src="js/saber.js?v=13"></script>
-<script src="js/mundo.js?v=13"></script>
+<script src="js/firebase-config.js?v=14"></script>
+<script src="js/datos.js?v=14"></script>
+<script src="js/dominios.js?v=14"></script>
+<script src="js/reglas.js?v=14"></script>
+<script src="js/store.js?v=14"></script>
+<script src="js/cartas.js?v=14"></script>
+<script src="js/mapa.js?v=14"></script>
+<script src="js/contenido.js?v=14"></script>
+<script src="js/saber.js?v=14"></script>
+<script src="js/mundo.js?v=14"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
-const ui={dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
-  stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,
+const ui={dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),lg:ls.get("v-lg"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
+  stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,confirmHide:false,
   edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
-if(ui.view==="lugares")ui.view="mundo";
 if(!PJ[ui.me])ui.me=null;
 function go(patch){Object.assign(ui,patch);["view","ent","cat","tienda","stab"].forEach(k=>ls.set("v-"+k,ui[k]));ui.confirmReset=false;render();scrollTo({top:0})}
 
@@ -585,7 +584,7 @@ function header(st){
 }
 const openShops=st=>LUGARES.flatMap(l=>st.mundo.lugares[l.id]?.visible?l.tiendas.filter(t=>st.mundo.tiendas[t.id]?.abierta).map(t=>({l,t})):[]);
 function nav(st){
-  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
+  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
   const dot=openShops(st).length?`<i class="dot" title="Hay algo abierto"></i>`:"";
   return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="mundo"?dot:""}</button>`).join("")}</nav>`;
 }
@@ -595,7 +594,7 @@ const seg=k=>`<div class="seg" role="tablist" aria-label="Modo"><button role="ta
 function viewPick(){
   return `<div class="pick"><header><span class="tab-label">Antes de entrar</span><h1>¿Quién eres?</h1>
    <p>Elige tu personaje. Se queda guardado en este dispositivo para todo lo que hagas: hoja, inventario y compras.</p></header>
-   <div class="pjs">${PJS.map(p=>`<button class="pjcard deco" data-me="${p.id}">${p.img?`<img class="init pimg" src="${p.img}" alt="">`:`<span class="init" aria-hidden="true">${esc(p.n[0])}</span>`}
+   <div class="pjs">${PJS.filter(p=>!p.prueba).map(p=>`<button class="pjcard deco" data-me="${p.id}">${p.img?`<img class="init pimg" src="${p.img}" alt="">`:`<span class="init" aria-hidden="true">${esc(p.n[0])}</span>`}
      <span class="nm">${esc(p.n)}</span><span class="cl">${esc(p.c)}<br>Jugador: ${esc(p.j)}</span></button>`).join("")}
     <div class="pjcard deco dmcard">${ui.login?`<form id="dmform" class="dmform"><span class="nm">DM</span><label class="note" for="dm-pw">Contraseña</label>
       <input type="password" id="dm-pw" autocomplete="current-password" required><div class="btns"><button class="btn" type="submit" ${dis()}>Entrar</button><button class="btn ghost" type="button" data-login="0">Cancelar</button></div>
@@ -644,7 +643,7 @@ function entryBody(id){
   if(!ui.canDM)return meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
   const pub=Saber.pub[id],para=pub?.para||{};
   const share=e.dm?`<details class="wshare" ${pub?"":"open"}><summary>Lo ve: <b>${esc(whoSees(id))}</b></summary>
-     <div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
+     <div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.filter(p=>!p.prueba).map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
      <label class="lab" for="sh-${id}">Texto que les llega</label><textarea id="sh-${id}" class="shtxt">${esc(pub?pub.txt:e.pub||"")}</textarea>
      <div class="btns"><button class="btn" data-shsave="${id}" ${dis()}>Guardar texto</button><button class="btn ghost" data-shreset="${id}">Texto de la nota</button>${pub?`<button class="btn warn" data-shoff="${id}">Ocultar</button>`:""}</div></details>`:"";
   const mk=`<div class="btns wmk">${e.pos?`<span class="note">Arrastra el marcador o</span><button class="btn ghost" data-wplace="${id}">Mover en el mapa</button><button class="btn ghost" data-wunplace="${id}">Quitar del mapa</button>`:`<button class="btn ghost" data-wplace="${id}">Poner en el mapa</button>`}</div>`;
@@ -725,7 +724,7 @@ function tabDM(st,id){
     <div class="btns"><button class="btn${s.abierta?" warn":""}" data-topen="${id}" data-v="${s.abierta?0:1}" ${dis()}>${s.abierta?"Cerrar tienda":"Abrir tienda"}</button></div>
     <label class="note" for="tn-${id}">Aviso de la tienda</label><textarea id="tn-${id}" placeholder="Por ejemplo: abierta hasta el final de la sesión 10">${esc(s.nota)}</textarea>
     <div class="btns"><button class="btn ghost" data-tnota="${id}" ${dis()}>Guardar aviso</button></div></section>
-   <section class="block deco"><header><h2>Vales</h2></header><div class="rows">${PJS.map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j||"")}</small></div>${coins(st.pjs[p.id]?.vales||0)}
+   <section class="block deco"><header><h2>Vales</h2></header><div class="rows">${PJS.filter(p=>!p.prueba).map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j||"")}</small></div>${coins(st.pjs[p.id]?.vales||0)}
      <div class="btns"><button class="btn ghost" data-vales="${p.id}" data-d="-1" ${dis()}>−1</button><button class="btn ghost" data-vales="${p.id}" data-d="1" ${dis()}>+1</button></div></div>`).join("")}</div>
     <div class="btns"><button class="btn" data-valesall="3" ${dis()}>Dar 3 vales a cada PJ</button></div></section>
    <section class="block deco"><header><h2>Existencias</h2></header><div class="rows">${stockRows}</div>
@@ -736,7 +735,7 @@ function tabDM(st,id){
 }
 function tabLibro(st){
   const fmt=t=>new Date(t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
-  const rows=PJS.map(p=>{const s=st.pjs[p.id];return `<tr><td><b>${esc(p.n)}</b></td><td class="num">${s.vales}</td>
+  const rows=PJS.filter(p=>!p.prueba).map(p=>{const s=st.pjs[p.id];return `<tr><td><b>${esc(p.n)}</b></td><td class="num">${s.vales}</td>
     <td>${s.arma?esc(gearInfo(st,p.id,s.arma)?.n||"?"):'<span class="empty">—</span>'}${s.sec?`<br>${esc(gearInfo(st,p.id,s.sec)?.n||"?")}`:""}</td>
     <td>${s.armadura?esc(gearInfo(st,p.id,s.armadura)?.n||"?"):'<span class="empty">—</span>'}</td>
     <td>${Object.keys(s.inv).length?Object.entries(s.inv).map(([k,q])=>esc(ITEM[k].n)+(q>1?` ×${q}`:"")).join(", "):'<span class="empty">—</span>'}</td></tr>`}).join("");
@@ -906,27 +905,48 @@ function invEditar(st,s,L){
 // Lo que el PJ sabe de cada PNJ es lo que el DM le ha compartido (saber/). El DM añade o quita contactos aquí mismo.
 const isNPC=e=>e&&e.cat==="personas"&&e.tipo!=="pj"&&e.sub!=="Personaje jugador";
 const ctTint=id=>{const T=Object.values(TINT);let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return T[h%T.length]};
-const ctArt=(id,w,h,img)=>`<svg class="ctart" viewBox="0 0 ${w} ${h}" aria-hidden="true">${scene(w,h,ctTint(id),"persona",img,{cy:h*.52,size:Math.min(w,h)*.62})}</svg>`;
-function viewContactos(st){
-  const K=Object.entries(Saber.visibleFor(ui.me)).filter(([,e])=>isNPC(e)).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
-  const cur=K.some(([id])=>id===ui.ct)?ui.ct:K[0]?.[0]||null; // ui.ct se respeta: un contacto recién añadido llega un instante después
+// Contactos y Lugares comparten la misma vista de cartas: lista a la izquierda, carta grande a la derecha
+const CARDV={
+  contactos:{t:"Contactos",lab:"Contacto",glyph:"persona",sel:"ct",ok:isNPC,what:"Persona",
+    none:"Aún no conoces a nadie. Cuando el DM te cuente de alguien, aparecerá aquí.",noneDM:"aún no conoce a nadie. Añade contactos abajo.",
+    addT:"Añadir contacto a",all:"Ya conoce a todas las personas del vault.",empty:"Solo sabéis su nombre.",forget:"ya no lo conoce"},
+  lugares:{t:"Lugares",lab:"Lugar",glyph:"lugar",sel:"lg",ok:e=>e&&e.cat==="lugares",what:"Lugar",
+    none:"Aún no conoces ningún lugar. Cuando el DM te hable de uno, aparecerá aquí.",noneDM:"aún no conoce ningún lugar. Añádelos abajo.",
+    addT:"Añadir lugar a",all:"Ya conoce todos los lugares del vault.",empty:"Solo sabéis que existe.",forget:"ya no lo conoce"}
+};
+const cardArt=(id,w,h,img,glyph)=>`<svg class="ctart" viewBox="0 0 ${w} ${h}" aria-hidden="true">${scene(w,h,ctTint(id),glyph,img,{cy:h*.52,size:Math.min(w,h)*.62})}</svg>`;
+function knownCards(st,kind){
+  const V=CARDV[kind],E=Object.fromEntries(Object.entries(Saber.visibleFor(ui.me)).filter(([,e])=>V.ok(e)));
+  // Los lugares de la tienda que el DM ha hecho visibles cuentan aunque no tengan nota compartida
+  if(kind==="lugares")for(const l of LUGARES)if(!E[l.id]&&(st.mundo.lugares[l.id]?.visible||PJ[ui.me]?.prueba))E[l.id]={n:l.n,cat:"lugares",sub:l.sub,txt:l.desc};
+  return Object.entries(E).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
+}
+function viewCartas(st,kind){
+  const V=CARDV[kind],K=knownCards(st,kind),sel=ui[V.sel];
+  const cur=K.some(([id])=>id===sel)?sel:K[0]?.[0]||null; // se respeta lo elegido: algo recién añadido llega un instante después
   const who=esc(PJ[ui.me].n);
-  const list=K.length?`<div class="ctlist">${K.map(([id,e])=>`<button class="ctmini${id===cur?" sel":""}" data-ct="${id}" aria-pressed="${id===cur}">${ctArt(id,120,130,e.img)}<span class="ctn">${esc(e.n)}</span>${e.sub?`<span class="cts">${esc(e.sub)}</span>`:""}</button>`).join("")}</div>`
-    :`<div class="deco"><p class="note">${ui.canDM?`${who} aún no conoce a nadie. Añade contactos abajo.`:"Aún no conoces a nadie. Cuando el DM te cuente de alguien, aparecerá aquí."}</p></div>`;
+  const list=K.length?`<div class="ctlist">${K.map(([id,e])=>`<button class="ctmini${id===cur?" sel":""}" data-card="${id}" aria-pressed="${id===cur}">${cardArt(id,120,130,e.img,V.glyph)}<span class="ctn">${esc(e.n)}</span>${e.sub?`<span class="cts">${esc(e.sub)}</span>`:""}</button>`).join("")}</div>`
+    :`<div class="deco"><p class="note">${ui.canDM?`${who} ${V.noneDM}`:V.none}</p></div>`;
   let det="";
   if(cur){const e=K.find(([id])=>id===cur)[1],E=mundoEntries();
     const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
-    det=`<article class="ctbig">${ctArt(cur,600,300,e.img)}
-      <div class="ctband"><span class="ctlab">Contacto</span><h2>${esc(e.n)}</h2>${e.sub?`<span class="ctsub">${link(slugN(e.sub),e.sub)}</span>`:""}</div>
-      <div class="ctbody">${e.estado?`<p class="ctest"><b>Estado:</b> ${esc(e.estado)}</p>`:""}<div class="prose">${mdHTML(e.txt||"",link)||`<p class="note">Solo sabéis su nombre.</p>`}</div>
-      ${ui.canDM?`<div class="btns ctdm"><button class="btn ghost" data-ent="${cur}">Abrir en el Mundo (texto y quién lo ve)</button><button class="btn warn" data-ctdel="${cur}" ${dis()}>${who} ya no lo conoce</button></div>`:""}</div></article>`}
+    const l=kind==="lugares"&&LUGARES.find(x=>x.id===cur),lm=l&&st.mundo.lugares[cur];
+    const shops=l&&(lm?.visible||ui.canDM)?`<div class="wshops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
+      return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub)}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`:"";
+    const shared=!!Saber.pub[cur]?.para?.[ui.me]||!!Saber.pub[cur]?.para?.todos;
+    det=`<article class="ctbig">${cardArt(cur,600,300,e.img,V.glyph)}
+      <div class="ctband"><span class="ctlab">${V.lab}</span><h2>${esc(e.n)}</h2>${e.sub?`<span class="ctsub">${link(slugN(e.sub),e.sub)}</span>`:""}</div>
+      <div class="ctbody">${e.estado?`<p class="ctest"><b>Estado:</b> ${esc(e.estado)}</p>`:""}<div class="prose">${mdHTML(e.txt||"",link)||`<p class="note">${V.empty}</p>`}</div>${shops}
+      ${ui.canDM?`<div class="btns ctdm"><button class="btn ghost" data-ent="${cur}">Ver en el Mundo</button>${Saber.dm[cur]?`<button class="btn ghost" data-cgo="${e.cat}" data-id="${cur}">Editar en el Compendio</button>`:""}${shared&&!PJ[ui.me]?.prueba?`<button class="btn warn" data-ctdel="${cur}" ${dis()}>${who} ${V.forget}</button>`:""}</div>`:""}</div></article>`}
   let add="";
-  if(ui.canDM){const known=new Set(K.map(([id])=>id));
-    const rest=Object.entries(Saber.dm).filter(([id,e])=>isNPC(e)&&!known.has(id)).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
-    add=`<div class="deco ctadd"><h3>Añadir contacto a ${who}</h3>${rest.length?`<div class="ctrow"><select id="ct-add" aria-label="Persona">${rest.map(([id,e])=>`<option value="${id}">${esc(e.n)}${e.sub?` · ${esc(e.sub)}`:""}</option>`).join("")}</select><button class="btn" data-ctadd ${dis()}>Añadir</button></div><p class="note">Le llega el texto para jugadores de la nota; lo puedes cambiar luego en el Mundo.</p>`
-      :`<p class="note">${Object.keys(Saber.dm).length?"Ya conoce a todas las personas del vault.":"Importa las notas del vault en la Mesa del DM para poder añadir gente."}</p>`}</div>`}
-  return `<div class="cthead"><span class="tab-label">${who}</span><h1>Contactos</h1></div><div class="ctgrid">${list}${det}</div>${add}`;
+  if(ui.canDM&&!PJ[ui.me]?.prueba){const known=new Set(K.map(([id])=>id));
+    const rest=Object.entries(Saber.dm).filter(([id,e])=>V.ok(e)&&!known.has(id)).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
+    add=`<div class="deco ctadd"><h3>${V.addT} ${who}</h3>${rest.length?`<div class="ctrow"><select id="ct-add" aria-label="${V.what}">${rest.map(([id,e])=>`<option value="${id}">${esc(e.n)}${e.sub?` · ${esc(e.sub)}`:""}</option>`).join("")}</select><button class="btn" data-ctadd ${dis()}>Añadir</button></div><p class="note">Le llega el texto para jugadores de la nota; lo cambias en el Compendio.</p>`
+      :`<p class="note">${Object.keys(Saber.dm).length?V.all:"Importa las notas del vault en la Mesa del DM (Partida)."}</p>`}</div>`}
+  const note=PJ[ui.me]?.prueba?`<div class="notice"><b>Prueba</b>Este personaje solo existe para el DM y lo ve todo, compartido o no, con el texto para jugadores.</div>`:"";
+  return `<div class="cthead"><span class="tab-label">${who}</span><h1>${V.t}</h1></div>${note}<div class="ctgrid">${list}${det}</div>${add}`;
 }
+const viewContactos=st=>viewCartas(st,"contactos"),viewLugares=st=>viewCartas(st,"lugares");
 
 /* ---------- Mesa del DM: Compendio (crear y editar todo) y Partida ---------- */
 function viewDM(st){
@@ -940,6 +960,8 @@ function dmPartida(st){
     <p class="note">${nNotas?`${nNotas} notas cargadas; ${nComp} compartidas con algún PJ.`:"Todavía no hay notas."} Las notas completas solo las puede leer tu cuenta de DM.</p>
     <div class="btns"><button class="btn" data-import ${dis()}>${nNotas?"Volver a importar el vault":"Importar el vault"}</button></div>
     <input type="file" id="import-file" accept=".json,application/json" hidden>
+    <div class="btns"><button class="btn warn" data-hideall ${dis(!nComp)}>${ui.confirmHide?"Pulsa otra vez: nadie verá nada":"Quitar a los jugadores todo lo compartido"}</button></div>
+    <p class="note">Importar ya no comparte nada: tú eliges en el Compendio o en Contactos y Lugares qué conoce cada PJ. Para ver la web como un jugador que lo sabe todo, elige «PJ de prueba» en «Ver la hoja de…».</p>
     <p class="note">Usa el archivo <b>velmara-saber.json</b>. Reimportar actualiza las notas del vault, salvo las que hayas creado o editado en el Compendio, y no toca lo ya compartido.</p></section>
    ${LUGARES.map(l=>{const m=st.mundo.lugares[l.id];return `<section class="block deco"><header><h2>${esc(l.n)}</h2>
      <label class="toggle"><input type="checkbox" data-lvis="${l.id}" ${m.visible?"checked":""} ${dis()}> Visible para los jugadores</label></header>
@@ -995,7 +1017,7 @@ function compEditor(col){
     if(t==="area")return `<label class="lab" for="${fid}">${l}</label><textarea id="${fid}" class="${k==="txt"||k==="pub"?"tall":""}">${esc(val(k))}</textarea>`;
     return `<label class="lab" for="${fid}">${l}</label><input id="${fid}" ${t==="num"?'type="number" inputmode="numeric"':""} value="${esc(val(k))}">`};
   const isNew=id==="__new",pub=lore&&!isNew?Saber.pub[id]:null,para=pub?.para||{};
-  const who=lore&&!isNew?`<div class="cwho"><span class="lab">Quién lo conoce</span><div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
+  const who=lore&&!isNew?`<div class="cwho"><span class="lab">Quién lo conoce</span><div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.filter(p=>!p.prueba).map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
      <div class="btns"><button class="btn ghost" data-cplace="${id}">${Saber.posOf(id)?"Mover en el mapa":"Poner en el mapa"}</button>${Saber.posOf(id)?`<button class="btn ghost" data-wunplace2="${id}">Quitar del mapa</button>`:""}<button class="btn ghost" data-ent="${id}">Ver en el Mundo</button></div></div>`:"";
   const retirado=r.borrado;
   return `<div class="deco cform"><header class="chead"><span class="tab-label">${isNew?"Nuevo":esc(CCOLS.find(c=>c[0]===col)[1])}</span><h2>${esc(val("n")||"Sin nombre")}</h2>${retirado?`<span class="state shut">Retirado</span>`:""}</header>
@@ -1052,9 +1074,9 @@ function render(){
   else if(!st)body=`<div class="deco" style="margin-top:24px"><h2>La partida aún no ha empezado</h2><p class="note">El DM tiene que prepararla: cinco PJs con 3 vales y la tienda llena.</p>
     ${ui.canDM?`<div class="btns" style="margin-top:12px"><button class="btn" data-start ${dis()}>Empezar partida</button></div>`:""}</div>`;
   else{
-    if(!ui.me&&["personaje","inventario","contactos"].includes(ui.view))ui.view="mundo";
+    if(!ui.me&&["personaje","inventario","contactos","lugares"].includes(ui.view))ui.view="mundo";
     if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
-    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
+    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
     body=nav(st)+V(st);
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
@@ -1135,8 +1157,9 @@ document.addEventListener("click",e=>{
     if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
     return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
   // Saber: el DM decide quién ve cada nota y qué texto le llega
-  if(d.ct){ui.ct=d.ct;ls.set("v-ct",d.ct);render();if(innerWidth<760)$(".ctbig")?.scrollIntoView({behavior:"smooth",block:"start"});return}
-  if(b.hasAttribute("data-ctadd")){const id=$("#ct-add")?.value;if(!id)return;const cur={...(Saber.pub[id]?.para||{})};cur[ui.me]=true;ui.ct=id;ls.set("v-ct",id);
+  if(d.card){const k=CARDV[ui.view]?.sel||"ct";ui[k]=d.card;ls.set("v-"+k,d.card);render();if(innerWidth<760)$(".ctbig")?.scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(d.cgo){ui.ccol=d.cgo;ls.set("v-ccol",d.cgo);ui.dtab="compendio";ui.cid=d.id;ui.cdraft=null;ui.cimg=undefined;return go({view:"dm"})}
+  if(b.hasAttribute("data-ctadd")){const id=$("#ct-add")?.value;if(!id)return;const cur={...(Saber.pub[id]?.para||{})};cur[ui.me]=true;const k=CARDV[ui.view]?.sel||"ct";ui[k]=id;ls.set("v-"+k,id);
     return dmSave(id,cur,Saber.pub[id]?.txt??(Saber.dm[id]?.pub||""),"Contacto añadido.")}
   if(d.ctdel){const id=d.ctdel,cur={...(Saber.pub[id]?.para||{})};
     if(cur.todos){delete cur.todos;for(const p of PJS)cur[p.id]=true}delete cur[ui.me];
@@ -1171,6 +1194,8 @@ document.addEventListener("click",e=>{
   if(d.brew)return act(st=>A.brew(st,ui.me,d.brew),"Poción preparada.");
   if(d.pass){const to=$("#to-"+d.pass).value;return act(st=>A.pass(st,ui.me,d.pass,to),"Entregado.")}
   if(d.vales)return act(st=>A.vales(st,d.vales,+d.d));
+  if(b.hasAttribute("data-hideall")){if(!ui.confirmHide){ui.confirmHide=true;render();return}ui.confirmHide=false;
+    Saber.ocultarTodo().then(()=>toast("Los jugadores ya no ven nada del lore.")).catch(e=>{console.error(e);toast("No se pudo.",true)});return}
   if(d.dtab){ui.dtab=d.dtab;ls.set("v-dtab",d.dtab);render();return}
   if(d.ccol){ui.ccol=d.ccol;ls.set("v-ccol",d.ccol);ui.cid=null;ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();return}
   if(d.cid){ui.cid=d.cid;ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();if(innerWidth<820)$(".cedit")?.scrollIntoView({behavior:"smooth",block:"start"});return}

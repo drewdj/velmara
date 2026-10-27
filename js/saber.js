@@ -45,7 +45,10 @@ const Saber={
   forget(){try{localStorage.removeItem("v-dmkey")}catch(e){}},
   async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.forget();this.emit()},
   // Lo que ve un PJ: entradas compartidas con todos o con él
-  visibleFor(pj){const o={};for(const [id,e] of Object.entries(this.pub))if(e&&(e.para?.todos||e.para?.[pj]))o[id]=e;return o},
+  visibleFor(pj){
+    // El PJ de prueba (solo DM) ve todas las notas con el texto que les llegaría a los jugadores
+    if(PJ[pj]?.prueba&&this.isDM){const o={};for(const [id,e] of Object.entries(this.dm))o[id]={...e,txt:this.pub[id]?.txt??e.pub??""};return o}
+    const o={};for(const [id,e] of Object.entries(this.pub))if(e&&(e.para?.todos||e.para?.[pj]))o[id]=e;return o},
   async share(id,para,txt,e=this.dm[id]){
     const any=para.todos||Object.values(para).some(Boolean);
     const pos=this.posOf(id);
@@ -73,13 +76,17 @@ const Saber={
     if(this.mode==="local"){delete this.dm[id];this.emit();return}
     await this.db.ref(`dm/${this.key}/lore/${id}`).set(null);
   },
+  // Quitar a los jugadores todo lo compartido (las notas del DM no se tocan)
+  async ocultarTodo(){
+    if(this.mode==="local"){this.pub={};this.emit();return}
+    await this.db.ref("saber").set(null);
+  },
   async importar(json){
     const E=json?.entradas;if(!E||typeof E!=="object")throw new Error("Ese archivo no tiene notas del vault.");
     // Lo creado o editado desde el Compendio (web) manda sobre el vault al reimportar
     for(const [id,e] of Object.entries(this.dm))if(e.web)E[id]=e;
     if(this.mode==="local")this.dm=E;else await this.db.ref(`dm/${this.key}/lore`).set(E);
-    // Lo que el archivo marca como sabido (para) se comparte, salvo lo que el DM ya haya compartido a mano
-    for(const [id,e] of Object.entries(E))if(e.para&&!this.pub[id])await this.share(id,e.para,e.pub||"",e);
+    // Ya no se comparte nada al importar: el DM decide qué ve cada PJ (e.para queda como sugerencia del vault)
     this.emit();return Object.keys(E).length;
   }
 };
