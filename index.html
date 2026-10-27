@@ -344,6 +344,57 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .padd{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .padd input{flex:1 1 220px}
 
+
+/* ---------- Mundo: mapa de fondo y ventanas ---------- */
+#mundoroot{max-width:1600px;margin:0 auto}
+.mundo-shell{border:1px solid var(--line);background:#33525F}
+.mundo-stage{position:relative;overflow:hidden;height:calc(100dvh - 150px);min-height:440px;touch-action:none}
+#wsvg{display:block;width:100%;height:100%;cursor:grab;background:#3E5F6C}
+.wmark{cursor:pointer}
+.wpin{fill:#F9A72B;stroke:#1B1230;stroke-width:2}
+.wmark.on .wpin{fill:#FAC472;filter:drop-shadow(0 0 6px #F9A72B)}
+.wmark.hid .wpin{fill:#B9AECF;stroke-dasharray:3 2}
+.wlabel{font-family:var(--cond);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;fill:#FDFCF7;paint-order:stroke;stroke:#1B1230;stroke-width:4px;stroke-linejoin:round}
+.mundo-stage .map-zoom{z-index:5}
+.wsearch{position:absolute;left:10px;top:10px;width:290px;max-height:calc(100% - 20px);display:flex;flex-direction:column;gap:8px;background:rgb(27 18 48 / .94);border:1px solid var(--line);padding:10px;z-index:6}
+.wsearch.shut{width:auto;background:none;border:0;padding:0}
+.wsearch-in{display:flex;gap:6px}
+.wsearch-in input{flex:1;min-width:0;font:inherit;padding:6px 8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.wcats{display:flex;flex-wrap:wrap;gap:4px}.wcats .chip{font-size:.8rem;padding:2px 8px}
+.wlist{overflow-y:auto;display:grid;gap:2px;align-content:start;min-height:0}
+.wrow{display:grid;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 4px;color:var(--paper)}
+.wrow:hover,.wrow:focus-visible{background:var(--violet-2)}
+.wrow b{font-family:var(--cond);font-size:1.05rem;letter-spacing:.03em;text-transform:uppercase}
+.wrow small{color:var(--muted);font-size:.8rem}
+.wrow.hid b{color:var(--muted)}
+.wnow{position:absolute;left:50%;transform:translateX(-50%);top:10px;display:grid;gap:6px;z-index:9}
+.wnowcard{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:rgb(27 18 48 / .94);border:1px solid var(--gold);padding:6px 10px;box-shadow:0 0 20px rgb(249 167 43 / .25)}
+.wnowcard b{font-family:var(--cond);text-transform:uppercase;letter-spacing:.04em}
+.whint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:rgb(27 18 48 / .94);border:1px solid var(--gold);padding:8px 12px;z-index:30}
+.whint[hidden]{display:none}
+.wlayer{position:absolute;inset:0;pointer-events:none;z-index:8}
+.win{position:absolute;pointer-events:auto;display:flex;flex-direction:column;background:var(--violet);border:1px solid var(--gold);box-shadow:0 14px 40px rgb(0 0 0 / .55);min-width:240px;min-height:160px}
+.whead{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;background:linear-gradient(100deg,#3A2A66,var(--violet));border-bottom:1px solid var(--gold);cursor:move;touch-action:none;user-select:none;-webkit-user-select:none}
+.wtitle{flex:1;min-width:0;font-family:var(--cond);font-weight:700;font-size:1.25rem;text-transform:uppercase;letter-spacing:.05em;line-height:1.1;overflow:hidden;text-overflow:ellipsis}
+.wtitle small{display:block;font-size:.75rem;color:var(--gold-hi);letter-spacing:.08em}
+.wx{width:32px;height:32px;flex:none;background:none;border:1px solid var(--line);color:var(--paper);font-size:1.3rem;line-height:1;padding:0}
+.wx:hover{border-color:var(--gold)}
+.wbody{flex:1;overflow:auto;padding:12px 14px 22px;display:grid;gap:10px;align-content:start}
+.wbody .prose{font-size:.95rem}
+.wbody .prose h2{font-size:1.25rem}.wbody .prose h3{font-size:1.1rem}
+.wgrip{position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 50%,var(--gold) 50%,var(--gold) 60%,transparent 60%,transparent 70%,var(--gold) 70%,var(--gold) 80%,transparent 80%)}
+.wshops{display:grid;gap:8px}
+.wshop{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border:1px solid var(--line);padding:8px 10px}
+.wshop>div{flex:1 1 160px;display:grid}
+.wshare{border:1px dashed var(--line);padding:8px 10px;display:grid;gap:8px}
+.wshare summary{cursor:pointer;font-family:var(--cond);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.wshare summary b{color:var(--gold-hi)}
+.wshare[open]{display:grid}
+.wshare .chips{margin:0}
+.wshare .shtxt{min-height:120px}
+.wmk{font-size:.9rem}
+@media (max-width:760px){.wsearch{width:calc(100% - 64px)}.wnow{top:auto;bottom:10px}.mundo-stage{height:calc(100dvh - 200px)}}
+
 /* ---------- Mapa ---------- */
 #maproot{max-width:1600px;margin:0 auto}
 .map-shell{display:grid;grid-template-columns:auto minmax(0,1fr) 300px;height:calc(100dvh - 150px);min-height:420px;border:1px solid var(--line);background:var(--violet)}
@@ -410,18 +461,20 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 <body>
 <div class="wrap" id="app"></div>
 <div id="maproot" hidden></div>
+<div id="mundoroot" hidden></div>
 <div id="toast" class="toast" hidden></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=9"></script>
-<script src="js/datos.js?v=9"></script>
-<script src="js/dominios.js?v=9"></script>
-<script src="js/reglas.js?v=9"></script>
-<script src="js/store.js?v=9"></script>
-<script src="js/cartas.js?v=9"></script>
-<script src="js/mapa.js?v=9"></script>
-<script src="js/saber.js?v=9"></script>
+<script src="js/firebase-config.js?v=10"></script>
+<script src="js/datos.js?v=10"></script>
+<script src="js/dominios.js?v=10"></script>
+<script src="js/reglas.js?v=10"></script>
+<script src="js/store.js?v=10"></script>
+<script src="js/cartas.js?v=10"></script>
+<script src="js/mapa.js?v=10"></script>
+<script src="js/saber.js?v=10"></script>
+<script src="js/mundo.js?v=10"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -487,46 +540,41 @@ function loreFor(st){
 }
 const plain=s=>String(s||"").replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,a,b)=>b||a).replace(/[*#>_]/g,"").replace(/(^|\n)\s*([-•]|\d+\.)\s+/g,"$1").replace(/\s+/g," ").trim();
 function whoSees(id){const p=Saber.pub[id]?.para;if(!p)return "Nadie";if(p.todos)return "Todos";const n=PJS.filter(x=>p[x.id]).map(x=>x.n);return n.length?n.join(", "):"Nadie"}
+// Mundo = mapa de Velmara de fondo (js/mundo.js). Aquí solo queda la tienda, que es una pantalla aparte.
 function viewMundo(st){
-  if(ui.tienda&&TIENDA[ui.tienda]&&st.mundo.lugares[TIENDA[ui.tienda].lugar]?.visible)return viewTienda(st,ui.tienda);
-  const E=loreFor(st);
-  if(ui.ent&&E[ui.ent])return viewEntrada(st,ui.ent,E);
-  const open=openShops(st);
-  const now=open.length?`<section class="block now"><header><span class="tab-label">Ahora mismo</span></header>${open.map(({l,t})=>{const s=st.mundo.tiendas[t.id];
-    return `<div class="nowcard deco"><div><span class="live on"><i></i>Abierta</span><h2>${esc(t.n)}</h2><span class="note">${esc(l.n)} · ${esc(t.sub)}</span>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>
-     <button class="btn" data-tienda="${t.id}">Entrar</button></div>`}).join("")}</section>`:"";
-  const avisos=LUGARES.filter(l=>st.mundo.lugares[l.id]?.visible&&st.mundo.lugares[l.id].nota).map(l=>`<div class="notice"><b>${esc(l.n)}</b>${esc(st.mundo.lugares[l.id].nota)}</div>`).join("");
-  const counts=Object.fromEntries(CATS.map(([k])=>[k,Object.values(E).filter(e=>e.cat===k).length]));
-  let cat=ui.cat&&counts[ui.cat]?ui.cat:(CATS.find(([k])=>counts[k])||["lugares"])[0];
-  const list=Object.entries(E).filter(([,e])=>e.cat===cat).sort((a,b)=>cat==="cronica"?(a[1].orden||0)-(b[1].orden||0):a[1].n.localeCompare(b[1].n,"es"));
-  const total=Object.keys(E).length;
-  return `<div class="hero"><span class="tab-label">${ui.canDM?"Todo el vault":"Lo que sabe "+esc(PJ[ui.me].n)}</span><h1>Mundo</h1>
-    <p>${ui.canDM?"Las notas completas del vault. Abre una para decidir quién la ve y qué texto le llega.":"Personas, lugares y organizaciones que has conocido. El DM irá añadiendo lo que descubráis."}</p></div>
-   ${now}${avisos?`<div class="avisos">${avisos}</div>`:""}
-   ${total?`<div class="chips">${CATS.filter(([k])=>counts[k]).map(([k,l])=>`<button class="chip" data-cat="${k}" aria-pressed="${k===cat}">${l} <span class="num">${counts[k]}</span></button>`).join("")}</div>
-   <div class="lore">${list.map(([id,e])=>`<button class="loreitem deco" data-ent="${id}"><span class="black-label">${esc(e.sub||CATS.find(c=>c[0]===e.cat)[1])}</span><h3>${esc(e.n)}</h3>
-     <p>${esc(plain(ui.canDM?e.pub||e.txt:e.txt).slice(0,140))}…</p>${ui.canDM?`<span class="sees${Saber.pub[id]?" on":""}">Lo ve: ${esc(whoSees(id))}</span>`:""}</button>`).join("")}</div>`
-   :`<div class="deco"><h2>${ui.canDM?"Aún no hay notas":"Todavía no sabes nada"}</h2><p class="note">${ui.canDM?"Importa el archivo del vault desde la Mesa del DM.":"Cuando el DM comparta algo contigo aparecerá aquí."}</p></div>`}`;
+  if(ui.tienda&&TIENDA[ui.tienda]&&(st.mundo.lugares[TIENDA[ui.tienda].lugar]?.visible||ui.canDM))return viewTienda(st,ui.tienda);
+  ui.tienda=null;return "";
 }
-function viewEntrada(st,id,E){
-  const e=E[id],catN=CATS.find(c=>c[0]===e.cat)?.[1]||"Mundo";
+// Lo que pinta el mapa: entradas con su marcador (pos) y, para el DM, si aún no lo ve nadie (oculto)
+function mundoEntries(){
+  const st=Store.state;if(!st)return {};
+  const E=loreFor(st);
+  for(const [id,e] of Object.entries(E)){
+    e.pos=ui.canDM?Saber.posOf(id):(e.pos||DEF_POS[id]||null);
+    if(ui.canDM)e.oculto=!Saber.pub[id]&&!(LUGARES.some(l=>l.id===id)&&st.mundo.lugares[id]?.visible);
+  }
+  return E;
+}
+function mundoNow(){
+  const st=Store.state;if(!st)return "";
+  return openShops(st).map(({l,t})=>`<div class="wnowcard"><span class="live on"><i></i>Abierta</span><b>${esc(t.n)}</b><span class="note">${esc(l.n)}</span><button class="btn" data-tienda="${t.id}">Entrar</button></div>`).join("");
+}
+// Contenido de una ventana: la nota (con enlaces que abren otras ventanas), sus tiendas y, para el DM, quién la ve
+function entryBody(id){
+  const st=Store.state,E=mundoEntries(),e=E[id];if(!e)return "";
   const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
-  const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i><button data-ent="" data-cat="${e.cat}">${catN}</button><i>/</i><span>${esc(e.n)}</span></div>`;
   const l=LUGARES.find(x=>x.id===id),lm=l&&st.mundo.lugares[id];
-  const shops=l&&(lm?.visible||ui.canDM)?`${lm.nota?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:""}<section class="block"><header><span class="tab-label">Tiendas</span></header><div class="shops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
-     return `<div class="shop deco"><div class="l"><h3>${esc(t.n)}</h3><span class="note">${esc(t.sub)}</span>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>
-      <div class="btns"><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div></div>`}).join("")}</div></section>`:"";
-  const head=`<div class="hero"><span class="sub">${esc(e.sub||catN)}${e.estado?` · ${esc(e.estado)}`:""}</span><h1>${esc(e.n)}</h1></div>`;
-  if(!ui.canDM)return crumbs+head+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
+  const shops=l&&(lm?.visible||ui.canDM)?`${lm.nota?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:""}<div class="wshops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
+     return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub)}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`:"";
+  const meta=e.estado?`<p class="note">${esc(e.estado)}</p>`:"";
+  if(!ui.canDM)return meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
   const pub=Saber.pub[id],para=pub?.para||{};
-  const share=e.dm?`<section class="block deco share"><span class="tab-label">Quién lo ve</span>
-     <div class="chips"><button class="chip" data-para="todos" aria-pressed="${!!para.todos}">Todo el grupo</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
-     <label class="lab" for="sh-txt">Texto que les llega</label>
-     <textarea id="sh-txt" class="shtxt">${esc(pub?pub.txt:e.pub||"")}</textarea>
-     <div class="btns"><button class="btn" data-shsave="${id}" ${dis()}>Guardar texto</button><button class="btn ghost" data-shreset="${id}">Volver al texto de la nota</button>
-      ${pub?`<button class="btn warn" data-shoff="${id}">Ocultar a todos</button>`:""}</div>
-     <p class="note">Por defecto el texto es la nota sin los bloques «Solo DM» ni lo pendiente. Si cambias la nota en Obsidian, vuelve a importar el vault.</p></section>`:"";
-  return crumbs+head+`<div class="dmlore">${share}<article class="prose">${mdHTML(e.txt||"",link)}</article></div>`+shops;
+  const share=e.dm?`<details class="wshare" ${pub?"":"open"}><summary>Lo ve: <b>${esc(whoSees(id))}</b></summary>
+     <div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
+     <label class="lab" for="sh-${id}">Texto que les llega</label><textarea id="sh-${id}" class="shtxt">${esc(pub?pub.txt:e.pub||"")}</textarea>
+     <div class="btns"><button class="btn" data-shsave="${id}" ${dis()}>Guardar texto</button><button class="btn ghost" data-shreset="${id}">Texto de la nota</button>${pub?`<button class="btn warn" data-shoff="${id}">Ocultar</button>`:""}</div></details>`:"";
+  const mk=`<div class="btns wmk">${e.pos?`<span class="note">Arrastra el marcador para moverlo.</span><button class="btn ghost" data-wunplace="${id}">Quitar del mapa</button>`:`<button class="btn ghost" data-wplace="${id}">Poner en el mapa</button>`}</div>`;
+  return share+mk+meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
 }
 
 /* ---------- Tienda ---------- */
@@ -798,6 +846,15 @@ function showMap(on){
   else Mapa.refresh();
 }
 
+/* ---------- Mundo (también fuera de #app: las ventanas abiertas sobreviven a cada render) ---------- */
+let mundoMounted=false;
+function showMundo(on){
+  const r=$("#mundoroot");r.hidden=!on;if(!on)return;
+  if(!mundoMounted){mundoMounted=true;Mundo.mount(r,{entries:mundoEntries,body:entryBody,nowHTML:mundoNow,isDM:()=>ui.canDM,
+    setPos:(id,x,y)=>Saber.setPos(id,x,y).catch(e=>{console.error(e);toast("No se pudo guardar el marcador.",true)})})}
+  else Mundo.refresh();
+}
+
 /* ---------- Render ---------- */
 function render(){
   const st=Store.state,app=$("#app");
@@ -814,6 +871,7 @@ function render(){
     body=nav(st)+V(st);
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
+  showMundo(!!(st&&(ui.me||ui.canDM)&&ui.view==="mundo"&&!ui.tienda));
   const keep=["TEXTAREA","INPUT"].includes(document.activeElement?.tagName)&&document.activeElement.type!=="checkbox"&&document.activeElement.id?{id:document.activeElement.id,v:document.activeElement.value}:null;
   app.innerHTML=header(st)+body;
   if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus()}}
@@ -869,7 +927,7 @@ document.addEventListener("click",e=>{
   if(d.me){ui.me=d.me;ls.set("v-pj",d.me);ls.set("v-pj-own",d.me);return go({view:"personaje"})}
   if(d.view)return go({view:d.view,...(d.view==="mundo"?{tienda:null,ent:null}:{}),sel:null});
   if(d.mode){ui.edit[d.mode]=d.v==="1";ui.sel=null;render();return}
-  if(d.ent!==undefined)return go({ent:d.ent||null,tienda:null,cat:d.cat||ui.cat});
+  if(d.ent!==undefined){go({view:"mundo",tienda:null,ent:null});if(d.ent)Mundo.open(d.ent);return}
   if(d.cat){ui.cat=d.cat;ls.set("v-cat",d.cat);render();return}
   if(d.lugar!==undefined)return go({ent:d.lugar||null,tienda:null});
   if(d.tienda)return go({view:"mundo",tienda:d.tienda});
@@ -889,12 +947,12 @@ document.addEventListener("click",e=>{
     if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
     return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
   // Saber: el DM decide quién ve cada nota y qué texto le llega
-  if(d.para){const id=ui.ent,cur={...(Saber.pub[id]?.para||{})};
+  if(d.para){const id=d.id,cur={...(Saber.pub[id]?.para||{})};
     if(d.para==="todos"){if(cur.todos)delete cur.todos;else{for(const k in cur)delete cur[k];cur.todos=true}}else cur[d.para]=!cur[d.para];
     for(const k in cur)if(!cur[k])delete cur[k];
-    return dmSave(id,cur,$("#sh-txt").value,"Visibilidad guardada.")}
-  if(d.shsave)return dmSave(d.shsave,Saber.pub[d.shsave]?.para||{},$("#sh-txt").value,Saber.pub[d.shsave]?"Texto guardado.":"Guardado. Aún no lo ve nadie: elige a quién.");
-  if(d.shreset){$("#sh-txt").value=Saber.dm[d.shreset]?.pub||"";toast("Texto de la nota puesto. Pulsa Guardar texto para enviarlo.");return}
+    return dmSave(id,cur,$("#sh-"+id)?.value??(Saber.pub[id]?.txt||Saber.dm[id]?.pub||""),"Visibilidad guardada.")}
+  if(d.shsave)return dmSave(d.shsave,Saber.pub[d.shsave]?.para||{},$("#sh-"+d.shsave).value,Saber.pub[d.shsave]?"Texto guardado.":"Guardado. Aún no lo ve nadie: elige a quién.");
+  if(d.shreset){$("#sh-"+d.shreset).value=Saber.dm[d.shreset]?.pub||"";toast("Texto de la nota puesto. Pulsa Guardar texto para enviarlo.");return}
   if(d.shoff)return dmSave(d.shoff,{},"","Oculto a todos.");
   if(b.hasAttribute("data-import")){$("#import-file").click();return}
 

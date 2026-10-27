@@ -5,10 +5,11 @@
      que se usa queda fijada (las reglas no dejan cambiarla; para cambiarla, borra dmcheck en Firebase).
    - Lo que el DM comparte se copia a saber/{id} con el texto para jugadores y a quién va (para).
    Sin Firebase (modo prueba) todo queda en memoria y cualquier contraseña vale. */
+const DEF_POS={lunaris:[400,305]}; // posición de partida; el DM la ajusta arrastrando el marcador
 const CATS=[["lugares","Lugares"],["personas","Personas"],["organizaciones","Organizaciones"],["mundo","Mundo"],["cronica","Crónica"]];
 const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
 const Saber={
-  dm:{},pub:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,key:null,
+  dm:{},pub:{},pos:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,posRef:null,key:null,
   emit(){this.subs.forEach(f=>f())},
   init(){
     const cfg=window.FIREBASE_CONFIG;
@@ -33,20 +34,31 @@ const Saber={
     const cur=(await this.db.ref("dmcheck").get()).val();
     if(!cur||cur!==await sha(k+":ok"))throw new Error("Contraseña incorrecta.");
     this.key=k;try{localStorage.setItem("v-dmkey",k)}catch(e){}
-    if(this.dmRef)this.dmRef.off();
+    if(this.dmRef)this.dmRef.off();if(this.posRef)this.posRef.off();
     this.dmRef=this.db.ref(`dm/${k}/lore`);
     this.dmRef.on("value",s=>{this.dm=s.val()||{};this.emit()},e=>console.error(e));
+    this.posRef=this.db.ref(`dm/${k}/pos`);
+    this.posRef.on("value",s=>{this.pos=s.val()||{};this.emit()},e=>console.error(e));
     this.isDM=true;this.emit();
   },
   forget(){try{localStorage.removeItem("v-dmkey")}catch(e){}},
-  async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}this.dm={};this.key=null;this.isDM=false;this.forget();this.emit()},
+  async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.forget();this.emit()},
   // Lo que ve un PJ: entradas compartidas con todos o con él
   visibleFor(pj){const o={};for(const [id,e] of Object.entries(this.pub))if(e&&(e.para?.todos||e.para?.[pj]))o[id]=e;return o},
   async share(id,para,txt){
     const e=this.dm[id],any=para.todos||Object.values(para).some(Boolean);
-    const val=any?{n:e.n,cat:e.cat,sub:e.sub||"",txt:String(txt).slice(0,20000),para,ts:Date.now()}:null;
+    const pos=this.posOf(id);
+    const val=any?{n:e.n,cat:e.cat,sub:e.sub||"",txt:String(txt).slice(0,20000),para,ts:Date.now(),...(pos?{pos}:{})}:null;
     if(this.mode==="local"){if(val)this.pub[id]=val;else delete this.pub[id];this.emit();return}
     await this.db.ref("saber/"+id).set(val);
+  },
+  // Marcadores del mapa del mundo: los coloca el DM; el jugador recibe la posición con lo compartido
+  posOf(id){const p=this.pos[id];return p===false?null:p||DEF_POS[id]||null},
+  async setPos(id,x,y){
+    const v=x==null?false:[x,y];
+    if(this.mode==="local"){this.pos[id]=v;if(this.pub[id]){if(v)this.pub[id].pos=v;else delete this.pub[id].pos}this.emit();return}
+    await this.db.ref(`dm/${this.key}/pos/${id}`).set(v);
+    if(this.pub[id])await this.db.ref(`saber/${id}/pos`).set(v||null);
   },
   async importar(json){
     const E=json?.entradas;if(!E||typeof E!=="object")throw new Error("Ese archivo no tiene notas del vault.");
