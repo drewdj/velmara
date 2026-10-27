@@ -91,13 +91,7 @@ const ARMORS=[
  {id:"brigantina",n:"Brigantina mejorada",u:"9 / 19",sc:4,f:"Forrada: marca 1 Estrés para anular daño Menor.",hf:1},
  {id:"escamas",n:"Escamas mejoradas",u:"11 / 23",sc:4,f:"Engorrosa: −1 a Fineza.",hf:1},
  {id:"bandas",n:"Bandas mejoradas",u:"13 / 27",sc:5,f:"Voluminosa: −1 a Evasión; al recibir daño Grave, marca 1 Estrés.",hf:1},
- // Especiales: SRD y Hope & Fear
- {id:"elundria",n:"Cota de Elundria",u:"9 / 21",sc:4,f:"Protegida: reduces el daño mágico que recibes en tu puntuación de Armadura antes de compararlo con tus umbrales."},
- {id:"hueso-harrow",n:"Armadura de hueso de Harrow",u:"9 / 21",sc:4,f:"Resistente: antes de marcar tu última casilla de Armadura, tira 1d6; con un 6, reduce la gravedad un umbral sin marcar la casilla."},
- {id:"peto-hierrarbol",n:"Peto de hierrárbol",u:"9 / 20",sc:4,f:"Reforzado: al marcar tu última casilla de Armadura, tus umbrales suben +2 hasta que limpies al menos una casilla."},
- {id:"runetan-flotante",n:"Armadura flotante runetana",u:"9 / 20",sc:4,f:"Cambiante: cuando te atacan, puedes marcar una casilla de Armadura para dar desventaja a la tirada de ataque."},
- {id:"tyris-blanda",n:"Armadura blanda de Tyris",u:"8 / 18",sc:5,f:"Silenciosa: +2 a las tiradas para moverte sin hacer ruido."},
- {id:"rosasalvaje",n:"Armadura de rosa salvaje",u:"11 / 23",sc:5,f:"Esperanzada: cuando fueras a gastar 1 Esperanza, puedes marcar una casilla de Armadura en su lugar."},
+ // Especiales de Hope & Fear
  {id:"tunica-encantador",n:"Túnica del encantador",u:"9 / 20",sc:4,f:"Mnemónica: una vez por escena, recuperas una carta de dominio del baúl sin pagar su coste.",hf:1},
  {id:"manto-halcon",n:"Manto del guardián halcón",u:"9 / 20",sc:4,f:"Planeo: planeas hasta Lejana y no recibes daño por caídas.",hf:1},
  {id:"tunica-ara\u00f1a",n:"Túnica de seda de araña",u:"9 / 20",sc:4,f:"Trepamuros: +1 a Evasión; caminas por las paredes como por el suelo.",hf:1},
