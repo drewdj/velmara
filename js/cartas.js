@@ -120,11 +120,12 @@ function armorCard(a){
    <div class="ctrait">Umbrales ${escC(a.u.replace(/ /g,""))}</div>${a.f?`<p class="clamp">${fmtFeature(a.f)}</p>`:""}</div>
    <span class="slots" aria-label="${a.sc} espacios de armadura">${`<svg viewBox="0 0 24 27">${SHIELD}</svg>`.repeat(a.sc)}</span></div>`;
 }
-function itemCard(it){
+// cost: {p, uno, varios} para mostrar el precio de una tienda concreta (si no, el de su rareza en vales)
+function itemCard(it,cost){
   const banner=it.k==="rec"?"RECETA":it.k==="cons"?"CONSUMIBLE":"BOTÍN";
-  const p=price(it);
-  const tipo=it.k==="rec"?"Receta permanente":`${RAR[it.r].n} · ${it.k==="cons"?"consumible":"reutilizable"}`;
-  return `<div class="dh-card r-${it.r}" tabindex="0">${cardSVG(glyphFor("item",it.id,it),ARTE[it.id],banner,{kind:"hex",big:p,small:p===1?"vale":"vales"},TINT[it.r])}
+  const p=cost?cost.p:price(it);
+  const tipo=it.k==="rec"?"Receta permanente":`${RAR[it.r]?.n||""} · ${it.k==="cons"?"consumible":"reutilizable"}`;
+  return `<div class="dh-card r-${it.r}" tabindex="0">${cardSVG(glyphFor("item",it.id,it),ARTE[it.id],banner,{kind:"hex",big:p,small:cost?(p===1?cost.uno:cost.varios):p===1?"vale":"vales"},TINT[it.r]||TINT.c)}
    <div class="cbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4><div class="ctype">${tipo}${it.hf?" · H&amp;F":""}</div>
    <p class="clamp">${it.k==="rec"?`<b>Ingrediente:</b> ${escC(it.ing)} `:""}${escC(it.t)}</p></div></div>`;
 }

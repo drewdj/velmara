@@ -202,17 +202,22 @@ const WEAPON=Object.fromEntries(WEAPONS.map(w=>[w.id,w]));
 const PJ=Object.fromEntries(PJS.map(p=>[p.id,p]));
 
 
-// Lugares que los jugadores pueden visitar. El DM decide cuáles se ven y qué tiendas abren.
+// Lugares con aviso propio que el DM hace visibles (el resto de lugares son notas del vault)
 const LUGARES=[
  {id:"aelrennor",n:"Aelrennor",sub:"Capital civil del norte",
-  desc:"Ciudad élfica entre árboles gigantes. Pasarelas y puentes entre ramas anchas como caminos, y un mercado en varias alturas que sube y baja con poleas.",
-  tiendas:[
-   {id:"tres-agujas",n:"Tienda de las Tres Agujas",sub:"Armería, botica y objetos recuperados",
-    desc:"Taller de confianza de los Disipadores. Tres plataformas unidas alrededor del mismo árbol: armas abajo, frascos y raíces en medio, una vitrina arriba.",
-    cita:"Tres vales por cabeza. Juntadlos o no, pero gastadlos con cabeza."}
-  ]}
+  desc:"Ciudad élfica entre árboles gigantes. Pasarelas y puentes entre ramas anchas como caminos, y un mercado en varias alturas que sube y baja con poleas."}
 ];
-const TIENDA=Object.fromEntries(LUGARES.flatMap(l=>l.tiendas.map(t=>[t.id,{...t,lugar:l.id}])));
+/* Tiendas. Cada una vive en un lugar (id de nota o de LUGARES) y tiene su catálogo y sus puntos:
+   items: {"w:<arma>"|"a:<armadura>"|"o:<objeto>": {p: precio (null = el del objeto), s: unidades (null = sin límite)}}
+   modo "pj": cada PJ tiene sus puntos; "grupo": una bolsa común. inicial: puntos al empezar. botes: juntar puntos.
+   Las armas y armaduras son piezas únicas: quien la coge la tiene hasta que la devuelve (y recupera lo pagado). */
+const TIENDAS=[
+ {id:"tres-agujas",n:"Tienda de las Tres Agujas",sub:"Armería, botica y objetos recuperados",lugar:"aelrennor",
+  desc:"Taller de confianza de los Disipadores. Tres plataformas unidas alrededor del mismo árbol: armas abajo, frascos y raíces en medio, una vitrina arriba.",
+  cita:"Tres vales por cabeza. Juntadlos o no, pero gastadlos con cabeza.",moneda:"vales",modo:"pj",inicial:3,botes:true,
+  items:Object.fromEntries([...WEAPONS.map(w=>["w:"+w.id,{p:0,s:null}]),...ARMORS.map(a=>["a:"+a.id,{p:0,s:null}]),...ITEMS.map(i=>["o:"+i.id,{p:null,s:i.s??null}])])}
+];
+const TIENDA=Object.fromEntries(TIENDAS.map(t=>[t.id,t]));
 
 // Hoja de personaje. Clases del SRD: dominios, PG y Evasión iniciales.
 const CLASES={

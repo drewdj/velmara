@@ -392,6 +392,25 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .cbtns{margin-top:14px}
 .wimg{display:block;width:100%;max-height:220px;object-fit:cover;border:1px solid var(--gold-lo)}
 .pjcard img.pimg{width:64px;height:64px;object-fit:cover;border:2px solid var(--gold);border-radius:50%}
+/* ---------- Catálogo de una tienda (Compendio) ---------- */
+.catalog{display:grid;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.cath{margin:10px 0 2px;font-size:1rem;color:var(--gold-hi);text-transform:uppercase;letter-spacing:.06em}.cath small{color:var(--muted)}
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) 92px 92px 32px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgb(74 59 115 / .5)}
+.catrow label{display:grid;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.catrow input{width:100%;padding:3px 6px}
+@media (max-width:600px){.catrow{grid-template-columns:minmax(0,1fr) 70px 70px 32px}}
+/* ---------- Avisos ---------- */
+.bellw{position:relative}
+.bell{position:relative;width:38px;height:38px;display:grid;place-items:center;background:none;border:1px solid var(--line);color:var(--muted);cursor:pointer;padding:0}
+.bell svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bell.on{color:var(--gold-hi);border-color:var(--gold-lo)}
+.bell i{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--gold);color:var(--violet);font-style:normal;font-weight:700;font-size:.75rem;display:grid;place-items:center}
+.bellp{position:absolute;right:0;top:calc(100% + 8px);z-index:60;width:min(320px,calc(100vw - 32px));display:grid;gap:8px;padding:12px;background:var(--violet);border:1px solid var(--gold);box-shadow:0 14px 40px rgb(0 0 0 / .55)}
+.belli{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.belli span{flex:1;min-width:160px}
+.notifpop{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:80;width:min(460px,calc(100vw - 32px));display:grid;gap:8px;padding:12px 14px;background:rgb(27 18 48 / .97);border:1px solid var(--gold);box-shadow:0 0 24px rgb(249 167 43 / .3);transition:opacity .4s,transform .4s;animation:popin .35s ease-out}
+.notifpop.out{opacity:0;transform:translate(-50%,-12px)}
+@keyframes popin{from{opacity:0;transform:translate(-50%,-12px)}}
 /* ---------- Contactos ---------- */
 .cthead{margin:6px 0 14px}.cthead h1{margin:2px 0 0}
 .ctgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:start}
@@ -553,26 +572,27 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 <div id="maproot" hidden></div>
 <div id="mundoroot" hidden></div>
 <div id="peeks"></div>
+<div id="notifpop" class="notifpop" role="status" hidden></div>
 <div id="toast" class="toast" hidden></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=19"></script>
-<script src="js/datos.js?v=19"></script>
-<script src="js/dominios.js?v=19"></script>
-<script src="js/reglas.js?v=19"></script>
-<script src="js/store.js?v=19"></script>
-<script src="js/cartas.js?v=19"></script>
-<script src="js/mapa.js?v=19"></script>
-<script src="js/contenido.js?v=19"></script>
-<script src="js/saber.js?v=19"></script>
-<script src="js/mundo.js?v=19"></script>
+<script src="js/firebase-config.js?v=20"></script>
+<script src="js/datos.js?v=20"></script>
+<script src="js/dominios.js?v=20"></script>
+<script src="js/reglas.js?v=20"></script>
+<script src="js/store.js?v=20"></script>
+<script src="js/cartas.js?v=20"></script>
+<script src="js/mapa.js?v=20"></script>
+<script src="js/contenido.js?v=20"></script>
+<script src="js/saber.js?v=20"></script>
+<script src="js/mundo.js?v=20"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
-const ui={dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),lg:ls.get("v-lg"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
+const ui={bell:false,dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),lg:ls.get("v-lg"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
   stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,confirmHide:false,
   edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
 if(!PJ[ui.me])ui.me=null;
@@ -586,7 +606,9 @@ async function act(fn,ok){
   catch(e){toast(e instanceof Nope?e.message:"No se pudo guardar. Revisa la conexión y prueba otra vez.",true);if(!(e instanceof Nope))console.error(e)}
   finally{ui.busy=false;render()}
 }
-const coins=(n,max)=>{let h="";const m=Math.max(n,max||0);for(let i=0;i<Math.min(m,8);i++)h+=`<span class="coin${i<n?"":" off"}"></span>`;return `<span class="coins">${h}<span class="n num">${n} vale${n===1?"":"s"}</span></span>`};
+const coins=(n,max,t)=>{let h="";const m=Math.max(n,max||0);for(let i=0;i<Math.min(m,8);i++)h+=`<span class="coin${i<n?"":" off"}"></span>`;return `<span class="coins">${h}<span class="n num">${t?mon(t,n):`${n} vale${n===1?"":"s"}`}</span></span>`};
+// Puntos que ve quien mira la tienda (los suyos o la bolsa común)
+const shopCoins=(st,tid)=>{const t=TIENDA[tid];return coins(pts(st,tid,ui.me),+t.inicial||0,t)+(t.modo==="grupo"?`<span class="note">bolsa común</span>`:"")};
 const dis=c=>c||ui.busy?"disabled":"";
 const MARK=`<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FAC472"/><stop offset="1" stop-color="#E08A1E"/></linearGradient></defs><path d="M20 2 L36 11 V29 L20 38 L4 29 V11Z" fill="none" stroke="url(#mg)" stroke-width="2.5"/><path d="M20 9 L28 20 L20 31 L12 20Z" fill="url(#mg)"/></svg>`;
 
@@ -594,13 +616,33 @@ const MARK=`<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id
 function header(st){
   const me=ui.me&&st?.pjs?.[ui.me];
   const lt={live:"En vivo",local:"Modo prueba",wait:"Conectando…",error:"Sin conexión",offline:"Reconectando…"}[Store.mode];
-  const inShop=ui.view==="mundo"&&ui.tienda&&me; // los vales solo pintan algo dentro de la tienda
-  const who=ui.canDM?`<span class="dmtag">DM</span><select id="dm-pj" aria-label="Ver la hoja de"><option value="">Ver la hoja de…</option>${PJS.map(p=>`<option value="${p.id}" ${p.id===ui.me?"selected":""}>${esc(p.n)}</option>`).join("")}</select>${inShop?coins(me.vales,3):""}<button class="linkbtn" data-logout>Salir</button>`
-    :ui.me?`<span class="nm">${esc(PJ[ui.me].n)}</span>${inShop?coins(me.vales,3):""}<button class="linkbtn" data-switch>Cambiar personaje</button>`:"";
+  const inShop=ui.view==="mundo"&&ui.tienda&&TIENDA[ui.tienda]&&me; // los puntos solo pintan algo dentro de la tienda
+  const who=ui.canDM?`<span class="dmtag">DM</span><select id="dm-pj" aria-label="Ver la hoja de"><option value="">Ver la hoja de…</option>${PJS.map(p=>`<option value="${p.id}" ${p.id===ui.me?"selected":""}>${esc(p.n)}</option>`).join("")}</select>${inShop?shopCoins(st,ui.tienda):""}<button class="linkbtn" data-logout>Salir</button>`
+    :ui.me?`<span class="nm">${esc(PJ[ui.me].n)}</span>${inShop?shopCoins(st,ui.tienda):""}<button class="linkbtn" data-switch>Cambiar personaje</button>`:"";
   return `<header class="top"><button class="brand" data-home>${MARK}<span>Velmara</span></button>
-   <div class="who">${who}<span class="live${Store.mode==="live"?" on":""}"><i></i>${lt}</span></div></header>`;
+   <div class="who">${st&&(ui.me||ui.canDM)?bell(st):""}${who}<span class="live${Store.mode==="live"?" on":""}"><i></i>${lt}</span></div></header>`;
 }
-const openShops=st=>LUGARES.flatMap(l=>st.mundo.lugares[l.id]?.visible?l.tiendas.filter(t=>st.mundo.tiendas[t.id]?.abierta).map(t=>({l,t})):[]);
+const liveShops=()=>TIENDAS.filter(t=>!t.borrado);
+/* Avisos: la campana de la cabecera lista lo que está pasando (por ahora, tiendas abiertas).
+   Al entrar en la web, o cuando se abre una tienda nueva, sale unos segundos un aviso arriba. */
+function notifs(st){return openShops(st).map(t=>({id:"t:"+t.id,html:`<b>${esc(t.n)}</b> está abierta${t.lugar?` en ${esc(lugarN(t.lugar))}`:""}.`,btn:`<button class="btn" data-tienda="${t.id}" data-bellgo>Entrar</button>`}))}
+function bell(st){const N=notifs(st);
+  return `<span class="bellw"><button class="bell${N.length?" on":""}" data-bell aria-label="Avisos${N.length?`: ${N.length}`:""}" aria-expanded="${!!ui.bell}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v3.6L4.3 15.4A1 1 0 0 0 5.2 17h13.6a1 1 0 0 0 .9-1.6L18 12.6V9a6 6 0 0 0-6-6Z"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0"/></svg>${N.length?`<i class="num">${N.length}</i>`:""}</button>
+   ${ui.bell?`<div class="bellp" role="dialog" aria-label="Avisos"><span class="lab">Avisos</span>${N.map(n=>`<div class="belli"><span>${n.html}</span>${n.btn}</div>`).join("")||`<p class="note">Nada nuevo por ahora.</p>`}</div>`:""}</span>`}
+let seenOpen=null;
+function popNotifs(st){
+  if(!st||!(ui.me||ui.canDM))return;const N=notifs(st),ids=new Set(N.map(n=>n.id));
+  const fresh=N.filter(n=>!seenOpen?.has(n.id));seenOpen=ids;if(!fresh.length)return;
+  const el=$("#notifpop");el.innerHTML=fresh.map(n=>`<div class="belli"><span>${n.html}</span>${n.btn}</div>`).join("");el.hidden=false;el.classList.remove("out");
+  clearTimeout(popNotifs.t);popNotifs.t=setTimeout(()=>{el.classList.add("out");setTimeout(()=>{el.hidden=true},400)},6000);
+}
+const openShops=st=>liveShops().filter(t=>st.mundo.tiendas[t.id]?.abierta);
+const shopsAt=id=>liveShops().filter(t=>t.lugar===id);
+// Nombre de un lugar: nota del vault, nota compartida o lugar de la tienda
+const lugarN=id=>Saber.dm[id]?.n||Saber.pub[id]?.n||LUGARES.find(l=>l.id===id)?.n||id||"";
+function shopRows(st,id){const T=shopsAt(id);if(!T.length)return "";
+  return `<div class="wshops">${T.map(t=>{const s=st.mundo.tiendas[t.id]||{};
+    return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub||"")}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`}
 function nav(st){
   const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
   const dot=openShops(st).length?`<i class="dot" title="Hay algo abierto"></i>`:"";
@@ -633,7 +675,7 @@ const plain=s=>String(s||"").replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,a,b)
 function whoSees(id){const p=Saber.pub[id]?.para;if(!p)return "Nadie";if(p.todos)return "Todos";const n=PJS.filter(x=>p[x.id]).map(x=>x.n);return n.length?n.join(", "):"Nadie"}
 // Mundo = mapa de Velmara de fondo (js/mundo.js). Aquí solo queda la tienda, que es una pantalla aparte.
 function viewMundo(st){
-  if(ui.tienda&&TIENDA[ui.tienda]&&(st.mundo.lugares[TIENDA[ui.tienda].lugar]?.visible||ui.canDM))return viewTienda(st,ui.tienda);
+  if(ui.tienda&&TIENDA[ui.tienda]&&!TIENDA[ui.tienda].borrado&&(st.mundo.tiendas[ui.tienda]?.abierta||ui.canDM))return viewTienda(st,ui.tienda);
   ui.tienda=null;return "";
 }
 // Lo que pinta el mapa: entradas con su marcador (pos) y, para el DM, si aún no lo ve nadie (oculto)
@@ -646,17 +688,13 @@ function mundoEntries(){
   }
   return E;
 }
-function mundoNow(){
-  const st=Store.state;if(!st)return "";
-  return openShops(st).map(({l,t})=>`<div class="wnowcard"><span class="live on"><i></i>Abierta</span><b>${esc(t.n)}</b><span class="note">${esc(l.n)}</span><button class="btn" data-tienda="${t.id}">Entrar</button></div>`).join("");
-}
+function mundoNow(){return ""} // los avisos van a la campana de la cabecera
 // Contenido de una ventana: la nota (con enlaces que abren otras ventanas), sus tiendas y, para el DM, quién la ve
 function entryBody(id){
   const st=Store.state,E=mundoEntries(),e=E[id];if(!e)return "";
   const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
   const l=LUGARES.find(x=>x.id===id),lm=l&&st.mundo.lugares[id];
-  const shops=l&&(lm?.visible||ui.canDM)?`${lm.nota?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:""}<div class="wshops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
-     return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub)}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`:"";
+  const shops=(lm?.nota&&(lm.visible||ui.canDM)?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:"")+shopRows(st,id);
   const meta=(e.img?`<img class="wimg" src="${e.img}" alt="">`:"")+(e.estado?`<p class="note">${esc(e.estado)}</p>`:"");
   if(!ui.canDM)return meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
   const pub=Saber.pub[id],para=pub?.para||{};
@@ -668,108 +706,110 @@ function entryBody(id){
   return share+mk+meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
 }
 
-/* ---------- Tienda ---------- */
+/* ---------- Tienda: lo que venda cada una se configura en el Compendio ---------- */
+const catalog=(t,k)=>Object.entries(t.items||{}).filter(([ref])=>ref[0]===k&&refX(ref)&&!refX(ref).borrado).map(([ref,e])=>({ref,e,x:refX(ref)}));
 function viewTienda(st,id){
-  const t=TIENDA[id],l=LUGARES.find(x=>x.id===t.lugar),s=st.mundo.tiendas[id];
-  const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i><button data-ent="${l.id}">${esc(l.n)}</button><i>/</i><span>${esc(t.n)}</span></div>`;
-  const hero=`<div class="hero"><span class="sub">${esc(t.sub)}</span><h1>${esc(t.n)}</h1><p>${esc(t.desc)}</p><p class="quote">«${esc(t.cita)}»</p>${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>`;
-  if(!s.abierta&&!ui.canDM)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">La encargada ha echado el cierre. Volved cuando el DM la abra.</p></div>`;
+  const t=TIENDA[id],s=st.mundo.tiendas[id]||{abierta:false,nota:""},lid=t.lugar;
+  const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i>${lid?`<button data-ent="${lid}">${esc(lugarN(lid))}</button><i>/</i>`:""}<span>${esc(t.n)}</span></div>`;
+  const hero=`<div class="hero"><span class="sub">${esc(t.sub||"")}</span><h1>${esc(t.n)}</h1>${t.desc?`<p>${esc(t.desc)}</p>`:""}${t.cita?`<p class="quote">«${esc(t.cita)}»</p>`:""}${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>`;
+  if(!s.abierta&&!ui.canDM)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">Volved cuando el DM la abra.</p></div>`;
   // El DM puede mirar siempre; para comprar o coger equipo elige antes un PJ
   const dmNote=ui.canDM&&(!s.abierta||!ui.me)?`<div class="notice"><b>DM</b>${!s.abierta?"Está cerrada: los jugadores no pueden entrar. ":""}${!ui.me?"Solo mirando. Para comprar o coger equipo por un PJ, elígelo arriba en «Ver la hoja de…».":""}</div>`:"";
-  const nb=Object.keys(st.botes).length;
-  const T=[["equipo","Entrega de equipo"],["botin","Botín y botica"],["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`],["libro","Libro de cuentas"],...(ui.canDM?[["dm","Mostrador · DM"]]:[])];
-  const V={equipo:tabEquipo,botin:tabBotin,botes:tabBotes,libro:tabLibro,dm:ui.canDM?st=>tabDM(st,id):tabEquipo}[ui.stab]||tabEquipo;
-  return crumbs+hero+dmNote+`<nav class="subtabs" role="tablist">${T.map(([k,lab])=>`<button role="tab" data-stab="${k}" aria-selected="${ui.stab===k}">${lab}</button>`).join("")}</nav>`+V(st);
+  const nb=Object.values(st.botes).filter(b=>b.tienda===id).length,hasGear=catalog(t,"w").length+catalog(t,"a").length>0,hasLoot=catalog(t,"o").length>0,pots=t.botes&&t.modo!=="grupo";
+  const T=[...(hasGear?[["equipo","Equipo"]]:[]),...(hasLoot?[["botin","Objetos"]]:[]),...(pots?[["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`]]:[]),["libro","Libro de cuentas"],...(ui.canDM?[["dm","Mostrador · DM"]]:[])];
+  const tab=T.some(x=>x[0]===ui.stab)?ui.stab:T[0][0];
+  const V={equipo:tabEquipo,botin:tabBotin,botes:tabBotes,libro:tabLibro,dm:tabDM}[tab];
+  const empty=!hasGear&&!hasLoot?`<div class="notice"><b>Vacía</b>Esta tienda aún no vende nada.${ui.canDM?" Añade objetos en Mesa del DM → Compendio → Tiendas.":""}</div>`:"";
+  return crumbs+hero+dmNote+empty+`<nav class="subtabs" role="tablist">${T.map(([k,lab])=>`<button role="tab" data-stab="${k}" aria-selected="${tab===k}">${lab}</button>`).join("")}</nav>`+V(st,id);
 }
-const NOPJ={vales:0,inv:{},arma:null,sec:null,armadura:null,bolsa:[],propios:{}};
-function gearSlot(st,slot,g){
-  const h=holderOf(st,slot,g.id),mine=!!ui.me&&h===ui.me,me=st.pjs[ui.me]||NOPJ;
+const NOPJ={inv:{},arma:null,sec:null,armadura:null,bolsa:[],propios:{}};
+function gearSlot(st,id,slot,g,cost){
+  const t=TIENDA[id],h=holderOf(st,slot,g.id),mine=!!ui.me&&h===ui.me,me=st.pjs[ui.me]||NOPJ,have=ui.me?pts(st,id,ui.me):0;
   const twoBlock=slot==="sec"&&me.arma&&gearInfo(st,ui.me,me.arma)?.h===2;
   const card=(slot==="armadura"?armorCard(g):weaponCard(g)).replace('class="dh-card"',`class="dh-card${h&&!mine?" gone":""}${mine?" mine":""}"`);
   let btn="";
   if(mine)btn=`<button class="btn ghost" data-devolver="${g.id}" ${dis()}>Devolver</button>`;
-  else if(!h)btn=`<button class="btn" data-equip="${slot}" data-id="${g.id}" ${dis(twoBlock)}>${me[slot]?"Cambiar":"Elegir"}</button>`;
+  else if(!h)btn=`<button class="btn" data-equip="${slot}" data-id="${g.id}" ${dis(twoBlock||have<cost)}>${cost?`Coger · ${mon(t,cost)}`:me[slot]?"Cambiar":"Elegir"}</button>`;
   if(!ui.me)btn="";
-  const who=h?(mine?(me[slot]===g.id?"<b>La llevas tú</b>":"<b>En tu bolsa</b>"):`La lleva <b>${esc(PJ[h].n)}</b>`):twoBlock?"Tu arma es a dos manos":"Libre";
+  const who=h?(mine?(me[slot]===g.id?"<b>La llevas tú</b>":"<b>En tu bolsa</b>"):`La lleva <b>${esc(PJ[h]?.n||h)}</b>`):twoBlock?"Tu arma es a dos manos":cost?`Cuesta ${mon(t,cost)}`:"Libre";
   return `<div class="slotcard">${card}<div class="under"><span class="holder">${who}</span>${btn}</div></div>`;
 }
-function tabEquipo(st){
-  const F=[["fis","Armas físicas"],["mag","Armas mágicas"],["sec","Secundarias"],["arm","Armaduras"]];
-  let head,cards;
-  if(ui.wf==="arm"){head=["Armaduras de tier 2","Umbrales finales = base + nivel."];cards=ARMORS.map(a=>gearSlot(st,"armadura",a))}
-  else{const slot=ui.wf==="sec"?"sec":"arma";
-    head={fis:["Armas principales físicas","Versiones de tier 2."],mag:["Armas principales mágicas","Requieren rasgo de lanzamiento."],sec:["Armas secundarias","No se pueden llevar con un arma principal a dos manos."]}[ui.wf];
-    cards=WEAPONS.filter(w=>w.g===ui.wf).map(w=>gearSlot(st,slot,w))}
-  return `<p class="note" style="margin-bottom:14px">Regalo de los Disipadores: un arma principal, una secundaria y una armadura por PJ. Hay una sola pieza de cada; lo que coge uno no lo puede coger otro hasta que lo devuelva.</p>
-   <div class="chips">${F.map(([k,l])=>`<button class="chip" data-wf="${k}" aria-pressed="${ui.wf===k}">${l}</button>`).join("")}</div>
-   <section class="block"><header><span class="tab-label">${head[0]}</span><p>${head[1]}</p></header><div class="cards">${cards.join("")}</div></section>`;
+function tabEquipo(st,id){
+  const t=TIENDA[id],W=catalog(t,"w"),Ar=catalog(t,"a");
+  const F=[["fis","Armas físicas",W.filter(c=>c.x.g==="fis")],["mag","Armas mágicas",W.filter(c=>c.x.g==="mag")],["sec","Secundarias",W.filter(c=>c.x.g==="sec")],["arm","Armaduras",Ar]].filter(f=>f[2].length);
+  const f=F.find(x=>x[0]===ui.wf)||F[0];if(!f)return "";
+  const slot=f[0]==="arm"?"armadura":f[0]==="sec"?"sec":"arma";
+  const head={fis:"Versiones de tier 2.",mag:"Requieren rasgo de lanzamiento.",sec:"No se pueden llevar con un arma principal a dos manos.",arm:"Umbrales finales = base + nivel."}[f[0]];
+  return `<p class="note" style="margin-bottom:14px">Hay una sola pieza de cada: lo que coge uno no lo puede coger otro hasta que lo devuelva. Al devolverla se recupera lo pagado.</p>
+   <div class="chips">${F.map(([k,l])=>`<button class="chip" data-wf="${k}" aria-pressed="${f[0]===k}">${l}</button>`).join("")}</div>
+   <section class="block"><header><span class="tab-label">${f[1]}</span><p>${head}</p></header><div class="cards">${f[2].map(c=>gearSlot(st,id,slot,c.x,costOf(t,c.ref))).join("")}</div></section>`;
 }
-function lootSlot(st,it){
-  const me=st.pjs[ui.me]||NOPJ,left=it.s==null?null:st.stock[it.id]??0,p=price(it),have=me.inv[it.id]||0,gone=left===0;
-  const stockTxt=it.s==null?(have?"Ya la conoces":"Se aprende, no se agota"):gone?"Agotado":`Quedan <span class="num">${left}</span> de ${it.s}`;
+function lootSlot(st,id,c){
+  const t=TIENDA[id],it=c.x,me=st.pjs[ui.me]||NOPJ,lim=c.e.s!=null&&c.e.s!=="",left=lim?st.exist[id]?.[c.ref]??0:null,p=costOf(t,c.ref),have=me.inv[it.id]||0,gone=left===0;
+  const mine=ui.me?pts(st,id,ui.me):0,pots=t.botes&&t.modo!=="grupo";
+  const stockTxt=!lim?(it.k==="rec"?(have?"Ya la conoces":"Se aprende, no se agota"):"Sin límite"):gone?"Agotado":`Quedan <span class="num">${left}</span> de ${c.e.s}`;
   const blocked=gone||(it.k==="rec"&&have)||!ui.me;
-  const card=itemCard(it).replace('class="dh-card',`class="dh-card${gone?" gone":""}`);
+  const mn=String(t.moneda||"puntos"),card=itemCard(it,{p,uno:mn.replace(/s$/,""),varios:mn}).replace('class="dh-card',`class="dh-card${gone?" gone":""}`);
   return `<div class="slotcard">${card}<div class="under"><span class="holder stock${gone?" zero":""}">${stockTxt}${have&&it.k!=="rec"?` · llevas ${have}`:""}</span>
-   ${blocked?"":`<span class="btns"><button class="btn" data-buy="${it.id}" ${dis(me.vales<p)}>Comprar</button>${p>1?`<button class="btn ghost" data-pot="${it.id}" ${dis(me.vales<1)}>Bote</button>`:""}</span>`}</div></div>`;
+   ${blocked?"":`<span class="btns"><button class="btn" data-buy="${c.ref}" ${dis(mine<p)}>${p?`Comprar · ${mon(t,p)}`:"Coger"}</button>${pots&&p>1?`<button class="btn ghost" data-pot="${c.ref}" ${dis(mine<1)}>Bote</button>`:""}</span>`}</div></div>`;
 }
-function tabBotin(st){
-  const F=[["todo","Todo"],["c","Comunes · 1"],["pc","Poco comunes · 2"],["rec","Recetas"],["r","Vitrina · 4"]];
-  const G=[["c","Planta baja · Comunes","1 vale cada uno."],["pc","Planta media · Poco comunes","2 vales cada uno."],
-    ["rec","Recetas de pociones","Permanentes. Como movimiento de descanso gastas el ingrediente y fabricas 1 poción."],
-    ["r","La vitrina · Raros","4 vales y una sola unidad. Lo normal es juntar vales en un bote."]].filter(g=>ui.filt==="todo"||ui.filt===g[0]);
-  return `${pickerHTML()}<div class="chips">${F.map(([k,l])=>`<button class="chip" data-filt="${k}" aria-pressed="${ui.filt===k}">${l}</button>`).join("")}</div>
-   ${G.map(([r,h,p])=>`<section class="block"><header><span class="tab-label">${h}</span><p>${p}</p></header><div class="cards">${ITEMS.filter(i=>i.r===r).map(i=>lootSlot(st,i)).join("")}</div></section>`).join("")}
-   <p class="note">Máximo ${MAX_CONS} copias de un mismo consumible por PJ. Los vales que no gastéis se guardan para otra visita.</p>`;
+function tabBotin(st,id){
+  const t=TIENDA[id],O=catalog(t,"o");
+  const G=[["c","Comunes"],["pc","Poco comunes"],["rec","Recetas","Permanentes. Como movimiento de descanso gastas el ingrediente y fabricas 1 poción."],["r","Raros"]].map(([r,h,x])=>[r,h,x,O.filter(c=>c.x.r===r)]).filter(g=>g[3].length);
+  const F=[["todo","Todo"],...G.map(g=>[g[0],g[1]])],sel=F.some(f=>f[0]===ui.filt)?ui.filt:"todo";
+  return `${pickerHTML(st,id)}<div class="chips">${F.map(([k,l])=>`<button class="chip" data-filt="${k}" aria-pressed="${sel===k}">${l}</button>`).join("")}</div>
+   ${G.filter(g=>sel==="todo"||sel===g[0]).map(([r,h,x,L])=>`<section class="block"><header><span class="tab-label">${h}</span>${x?`<p>${x}</p>`:""}</header><div class="cards">${L.map(c=>lootSlot(st,id,c)).join("")}</div></section>`).join("")}
+   <p class="note">Máximo ${MAX_CONS} copias de un mismo consumible por PJ. Lo que no gastéis se guarda para otra visita.</p>`;
 }
-function tabBotes(st){
-  const B=Object.entries(st.botes).sort((a,b)=>a[1].t-b[1].t),me=st.pjs[ui.me]||NOPJ;
-  if(!B.length)return `<div class="deco"><h2>No hay botes abiertos</h2><p class="note">En «Botín y botica», pulsa «Bote» en un objeto para que el grupo junte vales. Un objeto de la vitrina cuesta 4: cada uno puede poner uno.</p></div>`;
-  return `<div class="pots">${B.map(([id,b])=>{const it=ITEM[b.item],p=price(it),sum=Object.values(b.aportes).reduce((a,n)=>a+n,0),mine=b.aportes[ui.me]||0;
-    const segs=Object.entries(b.aportes).flatMap(([k,n])=>Array(n).fill(`<span style="width:${100/p}%" title="${esc(PJ[k].n)}"></span>`)).join("");
-    return `<article class="pot deco"><span class="black-label">${esc(RAR[it.r].n)} · ${p} vales</span><h3>${esc(it.n)}</h3><p class="note">${esc(it.t)}</p>
-     <div class="bar" role="img" aria-label="${sum} de ${p} vales">${segs}</div>
-     <div class="contrib"><span>Para <b>${esc(PJ[b.para].n)}</b></span><span class="num">${sum} / ${p}</span>${Object.entries(b.aportes).map(([k,n])=>`<span>${esc(PJ[k].n)} <b class="num">${n}</b></span>`).join("")}</div>
-     ${ui.me?`<div class="btns"><button class="btn" data-give="${id}" data-d="1" ${dis(me.vales<1)}>Poner 1 vale</button>
-      <button class="btn ghost" data-give="${id}" data-d="-1" ${dis(!mine)}>Retirar 1</button><button class="btn warn" data-cancel="${id}" ${dis()}>Cancelar</button></div>`:""}</article>`}).join("")}</div>
-   <p class="note" style="margin-top:14px">Al llegar al precio, el objeto pasa solo a quien lo recibe. Si se cancela, cada uno recupera sus vales.</p>`;
+function tabBotes(st,id){
+  const t=TIENDA[id],B=Object.entries(st.botes).filter(([,b])=>b.tienda===id).sort((a,b)=>a[1].t-b[1].t),mineP=ui.me?pts(st,id,ui.me):0;
+  if(!B.length)return `<div class="deco"><h2>No hay botes abiertos</h2><p class="note">En «Objetos», pulsa «Bote» en algo caro para que el grupo junte ${esc(t.moneda)}.</p></div>`;
+  return `<div class="pots">${B.map(([bid,b])=>{const it=ITEM[b.item],p=b.p,sum=Object.values(b.aportes).reduce((a,n)=>a+n,0),mine=b.aportes[ui.me]||0;
+    const segs=Object.entries(b.aportes).flatMap(([k,n])=>Array(n).fill(`<span style="width:${100/p}%" title="${esc(PJ[k]?.n||k)}"></span>`)).join("");
+    return `<article class="pot deco"><span class="black-label">${esc(RAR[it.r]?.n||"")} · ${mon(t,p)}</span><h3>${esc(it.n)}</h3><p class="note">${esc(it.t)}</p>
+     <div class="bar" role="img" aria-label="${sum} de ${p}">${segs}</div>
+     <div class="contrib"><span>Para <b>${esc(PJ[b.para]?.n||"")}</b></span><span class="num">${sum} / ${p}</span>${Object.entries(b.aportes).map(([k,n])=>`<span>${esc(PJ[k]?.n||k)} <b class="num">${n}</b></span>`).join("")}</div>
+     ${ui.me?`<div class="btns"><button class="btn" data-give="${bid}" data-d="1" ${dis(mineP<1)}>Poner ${mon(t,1)}</button>
+      <button class="btn ghost" data-give="${bid}" data-d="-1" ${dis(!mine)}>Retirar 1</button><button class="btn warn" data-cancel="${bid}" ${dis()}>Cancelar</button></div>`:""}</article>`}).join("")}</div>
+   <p class="note" style="margin-top:14px">Al llegar al precio, el objeto pasa solo a quien lo recibe. Si se cancela, cada uno recupera lo suyo.</p>`;
 }
-// Lo que antes estaba en la Mesa del DM y es de la tienda: abrir/cerrar, aviso, vales y existencias
+// Mostrador del DM: abrir/cerrar, aviso, puntos y existencias de esta tienda
 function tabDM(st,id){
-  const s=st.mundo.tiendas[id];
-  const stockRows=ITEMS.filter(i=>i.s!=null).map(i=>{const n=st.stock[i.id]??0;return `<div class="row"><div class="l"><b>${esc(i.n)}</b><small>${esc(RAR[i.r]?.n||"")} · de ${i.s}</small></div>
-     <span class="num stock${n?"":" zero"}">${n}</span><div class="btns"><button class="btn ghost" data-stk="${i.id}" data-d="-1" ${dis(!n)}>−1</button><button class="btn ghost" data-stk="${i.id}" data-d="1" ${dis()}>+1</button></div></div>`}).join("");
+  const t=TIENDA[id],s=st.mundo.tiendas[id]||{abierta:false,nota:""},grp=t.modo==="grupo";
+  const lim=Object.entries(t.items||{}).filter(([ref,e])=>e&&e.s!=null&&e.s!==""&&refX(ref));
+  const stockRows=lim.map(([ref,e])=>{const n=st.exist[id]?.[ref]??0,x=refX(ref);return `<div class="row"><div class="l"><b>${esc(x.n)}</b><small>de ${e.s}</small></div>
+     <span class="num stock${n?"":" zero"}">${n}</span><div class="btns"><button class="btn ghost" data-stk="${ref}" data-d="-1" ${dis(!n)}>−1</button><button class="btn ghost" data-stk="${ref}" data-d="1" ${dis()}>+1</button></div></div>`}).join("");
+  const who=grp?[{id:"_grupo",n:"Bolsa común",j:"Todo el grupo"}]:PJS.filter(p=>!p.prueba);
   return `<section class="block deco"><header><h2>Mostrador</h2><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span></header>
-    <div class="btns"><button class="btn${s.abierta?" warn":""}" data-topen="${id}" data-v="${s.abierta?0:1}" ${dis()}>${s.abierta?"Cerrar tienda":"Abrir tienda"}</button></div>
-    <label class="note" for="tn-${id}">Aviso de la tienda</label><textarea id="tn-${id}" placeholder="Por ejemplo: abierta hasta el final de la sesión 10">${esc(s.nota)}</textarea>
+    <div class="btns"><button class="btn${s.abierta?" warn":""}" data-topen="${id}" data-v="${s.abierta?0:1}" ${dis()}>${s.abierta?"Cerrar tienda":"Abrir tienda"}</button><button class="btn ghost" data-cgo="tiendas" data-id="${id}">Editar en el Compendio</button></div>
+    <label class="note" for="tn-${id}">Aviso de la tienda</label><textarea id="tn-${id}" placeholder="Por ejemplo: abierta hasta el final de la sesión 10">${esc(s.nota||"")}</textarea>
     <div class="btns"><button class="btn ghost" data-tnota="${id}" ${dis()}>Guardar aviso</button></div></section>
-   <section class="block deco"><header><h2>Vales</h2></header><div class="rows">${PJS.filter(p=>!p.prueba).map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j||"")}</small></div>${coins(st.pjs[p.id]?.vales||0)}
+   <section class="block deco"><header><h2>${esc(cap(t.moneda||"puntos"))}</h2></header><div class="rows">${who.map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j||"")}</small></div>${coins(st.puntos?.[id]?.[p.id]||0,0,t)}
      <div class="btns"><button class="btn ghost" data-vales="${p.id}" data-d="-1" ${dis()}>−1</button><button class="btn ghost" data-vales="${p.id}" data-d="1" ${dis()}>+1</button></div></div>`).join("")}</div>
-    <div class="btns"><button class="btn" data-valesall="3" ${dis()}>Dar 3 vales a cada PJ</button></div></section>
-   <section class="block deco"><header><h2>Existencias</h2></header><div class="rows">${stockRows}</div>
-    <p class="note">Para cambiar objetos, precios o imágenes: Mesa del DM → Compendio.</p></section>
+    <div class="btns"><button class="btn" data-valesall="${+t.inicial||1}" ${dis()}>${grp?`Poner ${mon(t,+t.inicial||1)} en la bolsa`:`Dar ${mon(t,+t.inicial||1)} a cada PJ`}</button></div></section>
+   ${lim.length?`<section class="block deco"><header><h2>Existencias</h2></header><div class="rows">${stockRows}</div></section>`:""}
    <section class="block deco"><header><h2>Empezar de cero</h2></header>
-    <div class="btns"><button class="btn warn" data-reset ${dis()}>${ui.confirmReset?"Pulsa otra vez para vaciarlo todo":"Reiniciar existencias e inventarios"}</button></div>
-    <p class="note">Devuelve existencias, armas y armaduras, borra inventarios y deja 3 vales por PJ. Lugares, tiendas y hojas se quedan como estén.</p></section>`;
+    <div class="btns"><button class="btn warn" data-reset ${dis()}>${ui.confirmReset?"Pulsa otra vez para vaciarlo todo":"Reiniciar todas las tiendas e inventarios"}</button></div>
+    <p class="note">Devuelve existencias y equipo de todas las tiendas, borra inventarios y deja los puntos iniciales. Lugares, hojas y objetos propios se quedan.</p></section>`;
 }
-function tabLibro(st){
-  const fmt=t=>new Date(t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
-  const rows=PJS.filter(p=>!p.prueba).map(p=>{const s=st.pjs[p.id];return `<tr><td><b>${esc(p.n)}</b></td><td class="num">${s.vales}</td>
+function tabLibro(st,id){
+  const t=TIENDA[id],fmt=x=>new Date(x).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"}),grp=t.modo==="grupo";
+  const rows=PJS.filter(p=>!p.prueba).map(p=>{const s=st.pjs[p.id];return `<tr><td><b>${esc(p.n)}</b></td>${grp?"":`<td class="num">${pts(st,id,p.id)}</td>`}
     <td>${s.arma?esc(gearInfo(st,p.id,s.arma)?.n||"?"):'<span class="empty">—</span>'}${s.sec?`<br>${esc(gearInfo(st,p.id,s.sec)?.n||"?")}`:""}</td>
     <td>${s.armadura?esc(gearInfo(st,p.id,s.armadura)?.n||"?"):'<span class="empty">—</span>'}</td>
-    <td>${Object.keys(s.inv).length?Object.entries(s.inv).map(([k,q])=>esc(ITEM[k].n)+(q>1?` ×${q}`:"")).join(", "):'<span class="empty">—</span>'}</td></tr>`}).join("");
-  return `<section class="block"><header><span class="tab-label">El grupo</span></header><div class="tbl"><table><thead><tr><th>PJ</th><th>Vales</th><th>Armas</th><th>Armadura</th><th>Mochila</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+    <td>${Object.keys(s.inv).length?Object.entries(s.inv).map(([k,q])=>esc(ITEM[k]?.n||k)+(q>1?` ×${q}`:"")).join(", "):'<span class="empty">—</span>'}</td></tr>`}).join("");
+  return `<section class="block"><header><span class="tab-label">El grupo</span>${grp?`<p>Bolsa común: <b class="num">${mon(t,pts(st,id,"_grupo"))}</b></p>`:""}</header><div class="tbl"><table><thead><tr><th>PJ</th>${grp?"":`<th>${esc(cap(t.moneda))}</th>`}<th>Armas</th><th>Armadura</th><th>Mochila</th></tr></thead><tbody>${rows}</tbody></table></div></section>
    <section class="block"><header><span class="tab-label">Movimientos</span></header><ul class="log">${st.log.map(l=>`<li><time class="num">${fmt(l.t)}</time><span>${esc(l.x)}</span></li>`).join("")}</ul></section>`;
 }
 // Ventana para elegir destinatario; vive en ui para sobrevivir a los cambios de otros jugadores
-function pickerHTML(){
-  if(!ui.pick)return "";const it=ITEM[ui.pick.id],pot=ui.pick.mode==="pot",p=price(it);
+function pickerHTML(st,id){
+  if(!ui.pick||ui.pick.tienda!==id)return "";const t=TIENDA[id],it=refX(ui.pick.ref),pot=ui.pick.mode==="pot",p=costOf(t,ui.pick.ref);if(!it)return "";
   return `<div class="picker deco" id="picker"><h2>${pot?"Abrir bote":"Comprar"}: ${esc(it.n)}</h2>
-   <p class="note">${pot?`Pones 1 vale y el resto del grupo completa hasta ${p}.`:`Cuesta ${p} vale${p>1?"s":""} de tu bolsa.`} ¿Para quién es?</p>
-   <div class="btns"><select id="para-sel" aria-label="Para quién">${PJS.map(x=>`<option value="${x.id}" ${x.id===ui.pick.para?"selected":""}>${esc(x.n)}${x.id===ui.me?" (yo)":""}</option>`).join("")}</select>
+   <p class="note">${pot?`Pones ${mon(t,1)} y el resto del grupo completa hasta ${p}.`:t.modo==="grupo"?`Cuesta ${mon(t,p)} de la bolsa común.`:`Cuesta ${mon(t,p)} tuyos.`} ¿Para quién es?</p>
+   <div class="btns"><select id="para-sel" aria-label="Para quién">${PJS.filter(x=>!x.prueba||x.id===ui.me).map(x=>`<option value="${x.id}" ${x.id===ui.pick.para?"selected":""}>${esc(x.n)}${x.id===ui.me?" (yo)":""}</option>`).join("")}</select>
    <button class="btn" data-pickok ${dis()}>${pot?"Abrir bote":"Comprar"}</button><button class="btn ghost" data-pickno>Cancelar</button></div></div>`;
 }
-function picker(id,mode){ui.pick={id,mode,para:ui.me};render();$("#picker")?.scrollIntoView({block:"start",behavior:"smooth"})}
-
+function picker(ref,mode){ui.pick={ref,mode,para:ui.me,tienda:ui.tienda};render();$("#picker")?.scrollIntoView({block:"start",behavior:"smooth"})}
 
 /* ---------- Hoja de personaje ---------- */
 const step=(path,v,lab)=>`<span class="step"><button data-hstep="${path}" data-d="-1" aria-label="${lab} menos" ${dis()}>−</button><span class="v num">${v}</span><button data-hstep="${path}" data-d="1" aria-label="${lab} más" ${dis()}>+</button></span>`;
@@ -950,9 +990,7 @@ function viewCartas(st,kind){
   let det="";
   if(cur){const e=K.find(([id])=>id===cur)[1],E=mundoEntries();
     const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
-    const l=kind==="lugares"&&LUGARES.find(x=>x.id===cur),lm=l&&st.mundo.lugares[cur];
-    const shops=l&&(lm?.visible||ui.canDM)?`<div class="wshops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
-      return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub)}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`:"";
+    const shops=kind==="lugares"?shopRows(st,cur):"";
     const shared=!!Saber.pub[cur]?.para?.[ui.me]||!!Saber.pub[cur]?.para?.todos;
     det=`<article class="ctbig">${cardArt(cur,600,300,e.img,V.glyph)}
       <div class="ctband"><span class="ctlab">${V.lab}</span><h2>${esc(e.n)}</h2>${e.sub?`<span class="ctsub">${link(slugN(e.sub),e.sub)}</span>`:""}</div>
@@ -983,15 +1021,18 @@ function dmPartida(st){
     <div class="btns"><button class="btn warn" data-hideall ${dis(!nComp)}>${ui.confirmHide?"Pulsa otra vez: nadie verá nada":"Quitar a los jugadores todo lo compartido"}</button></div>
     <p class="note">Importar ya no comparte nada: tú eliges en el Compendio o en Contactos y Lugares qué conoce cada PJ. Para ver la web como un jugador que lo sabe todo, elige «PJ de prueba» en «Ver la hoja de…».</p>
     <p class="note">Usa el archivo <b>velmara-saber.json</b>. Reimportar actualiza las notas del vault, salvo las que hayas creado o editado en el Compendio, y no toca lo ya compartido.</p></section>
+   <section class="block deco"><header><h2>Tiendas</h2><button class="btn ghost" data-cgo="tiendas" data-id="">Crear o editar en el Compendio</button></header>
+    <div class="rows">${liveShops().map(t=>{const o=st.mundo.tiendas[t.id]?.abierta;return `<div class="row"><div class="l"><b>${esc(t.n)}</b><small>${esc(lugarN(t.lugar)||"Sin lugar")}</small></div>
+     <span class="state ${o?"open":"shut"}">${o?"Abierta":"Cerrada"}</span><div class="btns"><button class="btn${o?" warn":""}" data-topen="${t.id}" data-v="${o?0:1}" ${dis()}>${o?"Cerrar":"Abrir"}</button><button class="btn ghost" data-tienda="${t.id}" data-stabgo="dm">Mostrador</button></div></div>`}).join("")||`<p class="note">No hay tiendas.</p>`}</div></section>
    ${LUGARES.map(l=>{const m=st.mundo.lugares[l.id];return `<section class="block deco"><header><h2>${esc(l.n)}</h2>
      <label class="toggle"><input type="checkbox" data-lvis="${l.id}" ${m.visible?"checked":""} ${dis()}> Visible para los jugadores</label></header>
      <label class="note" for="ln-${l.id}">Aviso del lugar</label><textarea id="ln-${l.id}" placeholder="Por ejemplo: esta noche hay toque de queda">${esc(m.nota)}</textarea>
-     <div class="btns"><button class="btn ghost" data-lnota="${l.id}" ${dis()}>Guardar aviso</button>${l.tiendas.map(t=>`<button class="btn ghost" data-tienda="${t.id}" data-stabgo="dm">${esc(t.n)}: mostrador</button>`).join("")}</div></section>`}).join("")}`;
+     <div class="btns"><button class="btn ghost" data-lnota="${l.id}" ${dis()}>Guardar aviso</button></div></section>`}).join("")}`;
 }
 
 // Colecciones del Compendio. Las de "lore" viven en las notas del DM (Saber); las demás en Contenido.
 const CCOLS=[["personas","Personas","lore"],["lugares","Lugares","lore"],["organizaciones","Organizaciones","lore"],["mundo","Mundo","lore"],["cronica","Crónica","lore"],
-  ["pjs","Personajes jugadores"],["armas","Armas"],["armaduras","Armaduras"],["objetos","Objetos"]];
+  ["pjs","Personajes jugadores"],["armas","Armas"],["armaduras","Armaduras"],["objetos","Objetos"],["tiendas","Tiendas"]];
 const isLore=c=>["personas","lugares","organizaciones","mundo","cronica"].includes(c);
 const ALC=["Cuerpo a cuerpo","Muy Cercana","Cercana","Lejana","Muy Lejana"];
 // Campos de cada ficha: [clave, etiqueta, tipo, opciones]
@@ -1003,16 +1044,23 @@ const CFIELDS={
     ["a","Alcance","sel",ALC.map(x=>[x,x])],["d","Daño (p. ej. d8+3 fís)"],["h","Manos","sel",[["1","Una mano"],["2","Dos manos"]]],["f","Rasgo especial","area"],["img","Imagen","img"]],
   armaduras:[["n","Nombre"],["u","Umbrales (mayor / grave)"],["sc","Puntuación","num"],["f","Rasgo especial","area"],["img","Imagen","img"]],
   objetos:[["n","Nombre"],["r","Rareza","sel",Object.entries(RAR).map(([k,v])=>[k,v.n])],["k","Tipo","sel",[["cons","Consumible"],["obj","Reutilizable"],["rec","Receta"]]],
-    ["s","Unidades en la tienda (vacío = no se agota)","num"],["p","Precio en vales (vacío = según rareza)","num"],["t","Efecto","area"],["img","Imagen","img"]]
+    ["s","Unidades al ponerlo en una tienda (vacío = sin límite)","num"],["p","Precio por defecto (vacío = según rareza: 1, 2 o 4)","num"],["t","Efecto","area"],["img","Imagen","img"]],
+  tiendas:[["n","Nombre"],["sub","Subtítulo (qué vende)"],["lugar","Lugar","sel",()=>lugarOpts()],["desc","Descripción","area"],["cita","Frase de la tienda"],
+    ["moneda","Nombre de los puntos (vales, monedas, favores…)"],["modo","Cómo se pagan","sel",[["pj","Cada personaje tiene los suyos"],["grupo","Bolsa común del grupo"]]],
+    ["inicial","Puntos al empezar (por PJ, o en la bolsa común)","num"],["botes","Botes para juntar puntos entre varios","sel",[["true","Sí"],["false","No"]]]]
 };
+// Lugares donde poner una tienda: los de las notas y los de la Mesa
+function lugarOpts(){const o=new Map([["","(sin lugar)"]]);for(const l of LUGARES)o.set(l.id,l.n);
+  for(const [id,e] of Object.entries(Saber.dm))if(e.cat==="lugares")o.set(id,e.n);return [...o].sort((a,b)=>a[0]?a[1].localeCompare(b[1],"es"):-1)}
 function compList(col){
   if(isLore(col))return Object.entries(Saber.dm).filter(([,e])=>e.cat===col).map(([id,e])=>({id,n:e.n,sub:e.sub,img:e.img,shared:!!Saber.pub[id]}));
   const c=COLS[col],all=Object.values(c.map);
-  return all.map(x=>({id:x.id,n:x.n,sub:col==="pjs"?x.c:col==="objetos"?RAR[x.r]?.n:col==="armas"?x.d:x.u,img:x.img,borrado:x.borrado}));
+  return all.map(x=>({id:x.id,n:x.n,sub:col==="pjs"?x.c:col==="objetos"?RAR[x.r]?.n:col==="armas"?x.d:col==="tiendas"?[lugarN(x.lugar),`${Object.keys(x.items||{}).length} a la venta`].filter(Boolean).join(" · "):x.u,img:x.img,borrado:x.borrado}));
 }
 function compRec(col,id){
   if(id==="__new")return isLore(col)?{n:"",cat:col,sub:"",estado:"",txt:"",pub:"",tipo:col==="personas"?"npc":""}:
-    col==="armas"?{n:"",g:"fis",tr:"Agilidad",a:"Cuerpo a cuerpo",d:"",h:1,f:""}:col==="armaduras"?{n:"",u:"",sc:4,f:""}:col==="objetos"?{n:"",r:"c",k:"cons",s:1,t:""}:{n:"",j:"",c:""};
+    col==="armas"?{n:"",g:"fis",tr:"Agilidad",a:"Cuerpo a cuerpo",d:"",h:1,f:""}:col==="armaduras"?{n:"",u:"",sc:4,f:""}:col==="objetos"?{n:"",r:"c",k:"cons",s:1,t:""}:
+    col==="tiendas"?{n:"",sub:"",lugar:"",desc:"",cita:"",moneda:"vales",modo:"pj",inicial:3,botes:true,items:{}}:{n:"",j:"",c:""};
   if(isLore(col)){const e=Saber.dm[id];return e&&{...e,pub:Saber.pub[id]?.txt??e.pub??""}}
   return COLS[col].map[id]&&{...COLS[col].map[id]};
 }
@@ -1033,7 +1081,7 @@ function compEditor(col){
   const field=([k,l,t,opt])=>{const fid="cf-"+k;
     if(t==="img")return `<div class="cimg"><span class="lab">${l}</span>${img?`<img src="${img}" alt="">`:`<span class="note">Sin imagen: se usa el dibujo por defecto.</span>`}
       <div class="btns"><label class="btn ghost">Subir imagen<input type="file" id="cf-imgfile" accept="image/*" hidden></label>${img?`<button class="btn ghost" data-cimgdel>Quitar imagen</button>`:""}</div></div>`;
-    if(t==="sel")return `<label class="lab" for="${fid}">${l}</label><select id="${fid}">${opt.map(([v,n])=>`<option value="${esc(v)}" ${String(val(k))===String(v)?"selected":""}>${esc(n)}</option>`).join("")}</select>`;
+    if(t==="sel")return `<label class="lab" for="${fid}">${l}</label><select id="${fid}">${(typeof opt==="function"?opt():opt).map(([v,n])=>`<option value="${esc(v)}" ${String(val(k))===String(v)?"selected":""}>${esc(n)}</option>`).join("")}</select>`;
     if(t==="area")return `<label class="lab" for="${fid}">${l}</label><textarea id="${fid}" class="${k==="txt"||k==="pub"?"tall":""}">${esc(val(k))}</textarea>`;
     return `<label class="lab" for="${fid}">${l}</label><input id="${fid}" ${t==="num"?'type="number" inputmode="numeric"':""} value="${esc(val(k))}">`};
   const isNew=id==="__new",pub=lore&&!isNew?Saber.pub[id]:null,para=pub?.para||{};
@@ -1041,17 +1089,40 @@ function compEditor(col){
      <div class="btns"><button class="btn ghost" data-cplace="${id}">${Saber.posOf(id)?"Mover en el mapa":"Poner en el mapa"}</button>${Saber.posOf(id)?`<button class="btn ghost" data-wunplace2="${id}">Quitar del mapa</button>`:""}<button class="btn ghost" data-ent="${id}">Ver en el Mundo</button></div></div>`:"";
   const retirado=r.borrado;
   return `<div class="deco cform"><header class="chead"><span class="tab-label">${isNew?"Nuevo":esc(CCOLS.find(c=>c[0]===col)[1])}</span><h2>${esc(val("n")||"Sin nombre")}</h2>${retirado?`<span class="state shut">Retirado</span>`:""}</header>
-    ${who}<div class="cfields">${F.map(field).join("")}</div>
+    ${who}<div class="cfields">${F.map(field).join("")}</div>${col==="tiendas"&&!isNew?shopCatalogEditor(id):""}
     <div class="btns cbtns"><button class="btn" data-csave ${dis()}>${isNew?"Crear":"Guardar cambios"}</button>${ui.cdraft||ui.cimg!==undefined?`<button class="btn ghost" data-cundo>Descartar cambios</button>`:""}
      ${isNew?"":retirado?`<button class="btn ghost" data-crestore>Volver a ponerlo</button>`:`<button class="btn warn" data-cdel>${ui.cconfirm?"Pulsa otra vez para confirmar":lore?"Borrar nota":"Retirar"}</button>`}</div>
     ${!lore&&!isNew&&!retirado?`<p class="note">Retirar lo quita de la tienda y de las listas; quien ya lo tenga lo conserva.</p>`:""}</div>`;
 }
+// Lo que vende una tienda: cada cambio se guarda al momento
+const CATG=[["w:fis","Armas físicas"],["w:mag","Armas mágicas"],["w:sec","Armas secundarias"],["a:","Armaduras"],["o:","Objetos"]];
+const catGroup=ref=>ref[0]==="w"?"w:"+(refX(ref)?.g||"fis"):ref.slice(0,2);
+function shopCatalogEditor(id){
+  const t=TIENDA[id],I=t.items||{};
+  const rows=CATG.map(([g,l])=>{const R=Object.entries(I).filter(([ref])=>catGroup(ref)===g&&refX(ref));if(!R.length)return "";
+    return `<h3 class="cath">${l} <small>${R.length}</small></h3>${R.map(([ref,e])=>{const x=refX(ref),def=ref[0]==="o"?price(x):0;
+      return `<div class="catrow"><b>${esc(x.n)}${x.borrado?" <small>(retirado)</small>":""}</b>
+        <label>Precio<input type="number" min="0" inputmode="numeric" id="cip-${ref}" data-cip="${ref}" value="${e.p??""}" placeholder="${def}"></label>
+        ${ref[0]==="o"?`<label>Unidades<input type="number" min="0" inputmode="numeric" id="cis-${ref}" data-cis="${ref}" value="${e.s??""}" placeholder="∞"></label>`:`<span class="note">Pieza única</span>`}
+        <button class="wx" data-cidel="${ref}" aria-label="Quitar ${esc(x.n)}">✕</button></div>`}).join("")}`}).join("");
+  const all=[...WEAPONS.map(w=>"w:"+w.id),...ARMORS.map(a=>"a:"+a.id),...ITEMS.map(i=>"o:"+i.id)].filter(r=>!I[r]);
+  const opts=CATG.map(([g,l])=>{const R=all.filter(r=>catGroup(r)===g);return R.length?`<optgroup label="${l}">${R.map(r=>`<option value="${r}">${esc(refX(r).n)}</option>`).join("")}</optgroup>`:""}).join("");
+  return `<div class="catalog"><span class="lab">A la venta</span>
+    ${all.length?`<div class="ctrow"><select id="ci-add" aria-label="Añadir a la venta">${opts}</select><button class="btn" data-ciadd ${dis()}>Añadir</button></div>
+    <div class="btns">${CATG.filter(([g])=>all.some(r=>catGroup(r)===g)).map(([g,l])=>`<button class="btn ghost" data-ciall="${g}" ${dis()}>+ ${l.toLowerCase()}</button>`).join("")}</div>`:""}
+    <p class="note">Precio vacío: armas y armaduras gratis, objetos según su rareza. Unidades vacías: sin límite.</p>
+    ${rows||`<p class="empty">Todavía no vende nada.</p>`}</div>`;
+}
+function shopItems(id,fn){const t=TIENDA[id],o=structuredClone(t);delete o.id;delete o.nuevo;o.items=fn({...(o.items||{})});
+  return Contenido.guardar("tiendas",id,o).catch(e=>{console.error(e);toast("No se pudo guardar.",true)})}
+const newEntry=ref=>{const x=refX(ref);return ref[0]==="o"?{p:x.p??null,s:x.s??null}:{p:0,s:null}};
 async function compSave(){
   const col=ui.ccol,id=ui.cid,r=compRec(col,id),D=ui.cdraft||{},lore=isLore(col);
   const o={...r};for(const [k,v] of Object.entries(D))o[k]=v;
   if(ui.cimg!==undefined){if(ui.cimg)o.img=ui.cimg;else delete o.img}
   o.n=String(o.n||"").trim().slice(0,80);if(!o.n){toast("Ponle un nombre.",true);return}
-  for(const k of ["sc","h"])if(k in o&&o[k]!=="")o[k]=+o[k];
+  for(const k of ["sc","h","inicial"])if(k in o&&o[k]!=="")o[k]=+o[k];
+  if(col==="tiendas"){o.botes=String(o.botes)==="true";o.items=o.items||{}}
   for(const k of ["s","p"])if(k in o){if(o[k]===""||o[k]==null)delete o[k];else o[k]=Math.max(0,+o[k])}
   let nid=id;
   if(id==="__new"){const base=slugN(o.n)||"nuevo",taken=k=>lore?Saber.dm[k]:COLS[col].map[k]||(col==="armas"&&ARMOR[k]);nid=base;for(let i=2;taken(nid);i++)nid=base+"-"+i}
@@ -1104,6 +1175,7 @@ function render(){
   const ae=document.activeElement;let sel=null;try{sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}
   const keep=["TEXTAREA","INPUT"].includes(ae?.tagName)&&ae.type!=="checkbox"&&ae.id?{id:ae.id,v:ae.value,sel}:null;
   app.innerHTML=header(st)+body;
+  popNotifs(st);
   // Al redibujar, lo que se estaba escribiendo conserva el foco y la posición del cursor
   if(keep){const el=document.getElementById(keep.id);if(el){el.value=keep.v;el.focus();if(keep.sel?.[0]!=null)try{el.setSelectionRange(keep.sel[0],keep.sel[1])}catch(e){}}}
 }
@@ -1160,6 +1232,7 @@ document.addEventListener("click",e=>{
   const card=e.target.closest(".dh-card,.mini");if(card&&!e.target.closest("button")){card.classList.toggle("open");return}
   // Inventario: con una ficha elegida, tocar un hueco que la acepta la equipa
   const dz=e.target.closest(".eslot.can");if(dz&&ui.sel){const r=ui.sel;ui.sel=null;return act(st=>A.slot(st,ui.me,r,dz.dataset.drop))}
+  if(ui.bell&&!e.target.closest(".bellw")){ui.bell=false;render()}
   const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(b.hasAttribute("data-home"))return go({view:ui.me?"personaje":"mundo",ent:null,tienda:null});
   if(b.hasAttribute("data-switch")){ui.me=null;ls.set("v-pj",null);render();return}
@@ -1179,15 +1252,15 @@ document.addEventListener("click",e=>{
   if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;render();if(ui.sel&&innerWidth<820)$(".invdet")?.scrollIntoView({block:"nearest",behavior:"smooth"});return}
   if(d.sel!==undefined){ui.sel=null;render();return}
   if(d.eq!==undefined){const r=d.eq,to=d.slot||null;ui.sel=null;return act(st=>A.slot(st,ui.me,r,to))}
-  if(d.devolver)return act(st=>A.devolver(st,ui.me,d.devolver),"Devuelta a la armería.");
+  if(d.devolver)return act(st=>A.devolver(st,ui.me,d.devolver),"Devuelta.");
   if(d.pq)return act(st=>{const o=st.pjs[ui.me].propios[d.pq];if(!o)no("Ya no existe.");return A.propio(st,ui.me,d.pq,{q:Math.min(99,(o.q||1)+(+d.d))})});
   if(d.puse)return act(st=>{const o=st.pjs[ui.me].propios[d.puse];if(!o)no("Ya no existe.");return A.propio(st,ui.me,d.puse,{q:(o.q||1)-1})},"Usado.");
   if(d.pdel)return act(st=>A.propio(st,ui.me,d.pdel,null),"Borrado.");
   if(b.hasAttribute("data-start"))return act(st=>{if(st)no("La partida ya ha empezado.");return freshState()},"Partida preparada.");
   if(b.hasAttribute("data-pickno")){ui.pick=null;render();return}
-  if(b.hasAttribute("data-pickok")){const {id,mode,para}=ui.pick,it=ITEM[id];ui.pick=null;
-    if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
-    return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
+  if(b.hasAttribute("data-pickok")){const {ref,mode,para,tienda}=ui.pick,it=refX(ref);ui.pick=null;
+    if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,tienda,ref,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
+    return act(st=>A.buy(st,ui.me,tienda,ref,para),`${it.n}: comprado.`)}
   // Saber: el DM decide quién ve cada nota y qué texto le llega
   if(d.card){const k=CARDV[ui.view]?.sel||"ct";ui[k]=d.card;ls.set("v-"+k,d.card);render();if(innerWidth<760)$(".ctbig")?.scrollIntoView({behavior:"smooth",block:"start"});return}
   if(d.cgo){ui.ccol=d.cgo;ls.set("v-ccol",d.cgo);ui.dtab="compendio";ui.cid=d.id;ui.cdraft=null;ui.cimg=undefined;return go({view:"dm"})}
@@ -1219,15 +1292,21 @@ document.addEventListener("click",e=>{
   if(d.cdel)return act(st=>A.hoja(st,ui.me,h=>{h.cartas=h.cartas.filter(x=>x!==d.cdel);h.baul=h.baul.filter(x=>x!==d.cdel)}),"Carta quitada.");
   if(d.buy)return picker(d.buy,"buy");
   if(d.pot)return picker(d.pot,"pot");
-  if(d.equip)return act(st=>A.equip(st,ui.me,d.equip,d.id));
+  if(d.equip)return act(st=>A.equip(st,ui.me,ui.tienda,d.equip,d.id));
   if(d.give)return act(st=>A.give(st,ui.me,d.give,+d.d));
   if(d.cancel)return act(st=>A.cancelPot(st,ui.me,d.cancel),"Bote cancelado.");
   if(d.use)return act(st=>A.use(st,ui.me,d.use),"Usado.");
   if(d.brew)return act(st=>A.brew(st,ui.me,d.brew),"Poción preparada.");
   if(d.pass){const to=$("#to-"+d.pass).value;return act(st=>A.pass(st,ui.me,d.pass,to),"Entregado.")}
-  if(d.vales)return act(st=>A.vales(st,d.vales,+d.d));
+  if(d.vales)return act(st=>A.vales(st,ui.tienda,d.vales,+d.d));
   if(b.hasAttribute("data-hideall")){if(!ui.confirmHide){ui.confirmHide=true;render();return}ui.confirmHide=false;
     Saber.ocultarTodo().then(()=>toast("Los jugadores ya no ven nada del lore.")).catch(e=>{console.error(e);toast("No se pudo.",true)});return}
+  if(d.ciadd!==undefined&&b.hasAttribute("data-ciadd")){const ref=$("#ci-add")?.value;if(ref)shopItems(ui.cid,I=>({...I,[ref]:newEntry(ref)}));return}
+  if(d.ciall){const g=d.ciall,refs=[...WEAPONS.map(w=>"w:"+w.id),...ARMORS.map(a=>"a:"+a.id),...ITEMS.map(i=>"o:"+i.id)].filter(r=>catGroup(r)===g);
+    shopItems(ui.cid,I=>{for(const r of refs)if(!I[r])I[r]=newEntry(r);return I});return}
+  if(d.cidel){shopItems(ui.cid,I=>{delete I[d.cidel];return I});return}
+  if(b.hasAttribute("data-bell")){ui.bell=!ui.bell;render();return}
+  if(b.hasAttribute("data-bellgo")){ui.bell=false;$("#notifpop").hidden=true}
   if(d.dtab){ui.dtab=d.dtab;ls.set("v-dtab",d.dtab);render();return}
   if(d.ccol){ui.ccol=d.ccol;ls.set("v-ccol",d.ccol);ui.cid=null;ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();return}
   if(d.cid){ui.cid=d.cid;ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();if(innerWidth<820)$(".cedit")?.scrollIntoView({behavior:"smooth",block:"start"});return}
@@ -1240,8 +1319,8 @@ document.addEventListener("click",e=>{
   if(b.hasAttribute("data-crestore")){Contenido.borrar(ui.ccol,ui.cid,false).then(()=>toast("Vuelve a estar.")).catch(e=>toast("No se pudo.",true));return}
   if(d.cplace){const id=d.cplace;go({view:"mundo",tienda:null});Mundo.open(id);Mundo.place(id);return}
   if(d.wunplace2){Saber.setPos(d.wunplace2,null).then(()=>toast("Quitado del mapa.")).catch(()=>toast("No se pudo.",true));return}
-  if(d.stk)return act(st=>A.stock(st,d.stk,+d.d));
-  if(d.valesall)return act(st=>A.valesAll(st,+d.valesall),"Vales repartidos.");
+  if(d.stk)return act(st=>A.stock(st,ui.tienda,d.stk,+d.d));
+  if(d.valesall)return act(st=>A.valesAll(st,ui.tienda,+d.valesall),"Repartido.");
   if(d.topen)return act(st=>A.tienda(st,d.topen,{abierta:d.v==="1"}),d.v==="1"?"Tienda abierta.":"Tienda cerrada.");
   if(d.tnota){const v=$("#tn-"+d.tnota).value.trim().slice(0,300);return act(st=>A.tienda(st,d.tnota,{nota:v}),"Aviso guardado.")}
   if(d.lnota){const v=$("#ln-"+d.lnota).value.trim().slice(0,300);return act(st=>A.lugar(st,d.lnota,{nota:v}),"Aviso guardado.")}
@@ -1270,6 +1349,10 @@ document.addEventListener("change",e=>{
   if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
   if(t.id==="cf-imgfile"){const f=t.files[0];t.value="";if(!f)return;reducirImagen(f).then(d=>{ui.cimg=d;render()}).catch(err=>toast(err.message,true));return}
   if(t.id?.startsWith("cf-")){ui.cdraft={...(ui.cdraft||{}),[t.id.slice(3)]:t.value};if(t.tagName==="SELECT")render();return}
+  if(t.dataset?.cip||t.dataset?.cis){const ref=t.dataset.cip||t.dataset.cis,k=t.dataset.cip?"p":"s",v=t.value===""?null:Math.max(0,+t.value);
+    const tid=ui.cid;shopItems(tid,I=>({...I,[ref]:{...(I[ref]||{}),[k]:v}}));
+    if(k==="s"&&Store.state)act(st=>A.setStock(st,tid,ref,v)); // las unidades que pones son las que hay ahora
+    return}
   if(t.id==="dm-pj"){ui.me=t.value||null;ui.sel=null;render();return}
   if(t.id==="all-doms"){ui.allDoms=t.checked;render();return}
   if(t.id==="import-file"){const f=t.files[0];t.value="";if(!f)return;

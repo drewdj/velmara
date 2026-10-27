@@ -8,12 +8,17 @@ const Store={
   // Firebase borra objetos vacíos y valores null: los recuperamos al leer
   fix(st){
     if(!st)return null;
-    st.botes=st.botes||{};st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.stock=st.stock||{};st.pjs=st.pjs||{};
+    st.botes=st.botes||{};st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.pjs=st.pjs||{};
     // PJs y objetos creados después en el Compendio entran con valores iniciales
-    for(const p of PJS)if(!st.pjs[p.id])st.pjs[p.id]={vales:0};
-    for(const i of ITEMS)if(i.s!=null&&st.stock[i.id]==null)st.stock[i.id]=i.s;
-    for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.vales=p.vales||0;p.bolsa=Array.isArray(p.bolsa)?p.bolsa:Object.values(p.bolsa||{});p.propios=p.propios||{}}
-    for(const k in st.botes){st.botes[k].aportes=st.botes[k].aportes||{}}
+    for(const p of PJS)if(!st.pjs[p.id])st.pjs[p.id]={};
+    // Tiendas (v3): puntos, existencias y pagos por tienda. Lo de antes (vales y stock globales) pasa a las Tres Agujas.
+    if(!st.puntos){st.puntos={"tres-agujas":{}};for(const k in st.pjs)st.puntos["tres-agujas"][k]=st.pjs[k].vales||0}
+    if(!st.exist){st.exist={"tres-agujas":{}};for(const k in st.stock||{})st.exist["tres-agujas"]["o:"+k]=st.stock[k]}
+    delete st.stock;for(const k in st.pjs)delete st.pjs[k].vales;
+    st.pagos=st.pagos||{};
+    if(typeof fillShop==="function")for(const t of TIENDAS)fillShop(st,t,false);
+    for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.bolsa=Array.isArray(p.bolsa)?p.bolsa:Object.values(p.bolsa||{});p.propios=p.propios||{}}
+    for(const k in st.botes){const b=st.botes[k];b.aportes=b.aportes||{};b.tienda=b.tienda||"tres-agujas";b.ref=b.ref||"o:"+b.item;if(b.p==null)b.p=ITEM[b.item]?price(ITEM[b.item]):1}
     // Hojas de personaje: lo que falte (o Firebase haya borrado por vacío) vuelve a su valor inicial
     if(typeof hojaInicial==="function"){
       st.hojas=st.hojas||{};

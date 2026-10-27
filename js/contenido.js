@@ -6,9 +6,10 @@ const COLS={
   pjs:{n:"Personajes jugadores",arr:PJS,map:PJ},
   armas:{n:"Armas",arr:WEAPONS,map:WEAPON},
   armaduras:{n:"Armaduras",arr:ARMORS,map:ARMOR},
-  objetos:{n:"Objetos y consumibles",arr:ITEMS,map:ITEM}
+  objetos:{n:"Objetos y consumibles",arr:ITEMS,map:ITEM},
+  tiendas:{n:"Tiendas",arr:TIENDAS,map:TIENDA}
 };
-const BASE=Object.fromEntries(Object.entries(COLS).map(([k,c])=>[k,c.arr.map(x=>({...x}))]));
+const BASE=Object.fromEntries(Object.entries(COLS).map(([k,c])=>[k,c.arr.map(x=>structuredClone(x))]));
 const Contenido={
   data:{},mode:"local",ref:null,subs:[],
   emit(){this.subs.forEach(f=>f())},
