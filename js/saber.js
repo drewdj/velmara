@@ -5,7 +5,8 @@
      que se usa queda fijada (las reglas no dejan cambiarla; para cambiarla, borra dmcheck en Firebase).
    - Lo que el DM comparte se copia a saber/{id} con el texto para jugadores y a quién va (para).
    Sin Firebase (modo prueba) todo queda en memoria y cualquier contraseña vale. */
-const DEF_POS={lunaris:[400,305]}; // posición de partida; el DM la ajusta arrastrando el marcador
+// Posiciones de partida (a ojo, a partir del mapa de la Zona Norte); el DM las ajusta arrastrando el marcador
+const DEF_POS={aelrennor:[166,231],"gaen-gwynyr":[161,262],"el-cruce":[253,240],lunaris:[397,260],velofrio:[275,40],cenicero:[188,392]};
 const CATS=[["lugares","Lugares"],["personas","Personas"],["organizaciones","Organizaciones"],["mundo","Mundo"],["cronica","Crónica"]];
 const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
 const Saber={
@@ -45,10 +46,10 @@ const Saber={
   async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.forget();this.emit()},
   // Lo que ve un PJ: entradas compartidas con todos o con él
   visibleFor(pj){const o={};for(const [id,e] of Object.entries(this.pub))if(e&&(e.para?.todos||e.para?.[pj]))o[id]=e;return o},
-  async share(id,para,txt){
-    const e=this.dm[id],any=para.todos||Object.values(para).some(Boolean);
+  async share(id,para,txt,e=this.dm[id]){
+    const any=para.todos||Object.values(para).some(Boolean);
     const pos=this.posOf(id);
-    const val=any?{n:e.n,cat:e.cat,sub:e.sub||"",txt:String(txt).slice(0,20000),para,ts:Date.now(),...(pos?{pos}:{})}:null;
+    const val=any?{n:e.n,cat:e.cat,sub:e.sub||"",tipo:e.tipo||"",estado:e.estado||"",txt:String(txt).slice(0,20000),para,ts:Date.now(),...(pos?{pos}:{})}:null;
     if(this.mode==="local"){if(val)this.pub[id]=val;else delete this.pub[id];this.emit();return}
     await this.db.ref("saber/"+id).set(val);
   },
@@ -62,8 +63,10 @@ const Saber={
   },
   async importar(json){
     const E=json?.entradas;if(!E||typeof E!=="object")throw new Error("Ese archivo no tiene notas del vault.");
-    if(this.mode==="local"){this.dm=E;this.emit();return Object.keys(E).length}
-    await this.db.ref(`dm/${this.key}/lore`).set(E);return Object.keys(E).length;
+    if(this.mode==="local")this.dm=E;else await this.db.ref(`dm/${this.key}/lore`).set(E);
+    // Lo que el archivo marca como sabido (para) se comparte, salvo lo que el DM ya haya compartido a mano
+    for(const [id,e] of Object.entries(E))if(e.para&&!this.pub[id])await this.share(id,e.para,e.pub||"",e);
+    this.emit();return Object.keys(E).length;
   }
 };
 

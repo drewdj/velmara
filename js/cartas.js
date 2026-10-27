@@ -27,6 +27,7 @@ const GLYPH={
  receta:'<rect x="22" y="16" width="56" height="70" rx="3"/><rect x="16" y="10" width="68" height="12" rx="6"/><rect x="16" y="80" width="68" height="12" rx="6"/><path d="M32 36 H68 M32 48 H68 M32 60 H58" fill="none" stroke-width="2.5"/>',
  gema:'<path d="M30 14 H70 L88 36 L50 92 L12 36Z"/><path d="M12 36 H88 M30 14 L40 36 L50 92 L60 36 L70 14" fill="none" stroke-width="2"/>',
  objeto:'<path d="M34 24 C34 12 66 12 66 24 L64 30 C82 40 88 60 82 78 C76 94 24 94 18 78 C12 60 18 40 36 30Z"/><path d="M34 30 H66" fill="none" stroke-width="3"/><circle cx="50" cy="62" r="9" fill="none" stroke-width="3"/>',
+ persona:'<path d="M50 8 C34 8 26 22 28 38 C30 50 38 56 50 56 C62 56 70 50 72 38 C74 22 66 8 50 8Z"/><path d="M50 56 C30 56 16 70 12 96 H88 C84 70 70 56 50 56Z"/><path d="M28 38 C24 30 26 16 36 10 M72 38 C76 30 74 16 64 10" fill="none" stroke-width="2.5"/><path d="M38 66 L50 84 L62 66" fill="none" stroke-width="2.5"/>',
  // Emblemas de dominio
  Arcana:'<circle cx="50" cy="50" r="30" fill="none" stroke-width="4"/><path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42Z"/>',
  Blade:'<path d="M50 4 L57 60 L50 68 L43 60Z"/><rect x="30" y="60" width="40" height="7" rx="2"/><rect x="46" y="67" width="8" height="20" rx="2"/><path d="M18 30 L82 30" fill="none" stroke-width="3"/>',
@@ -47,7 +48,7 @@ function glyphFor(kind,id,it){
   for(const [re,g] of m)if(new RegExp(re).test(id))return g;
   return "espada";
 }
-const UPRIGHT=new Set(["armadura","pocion","receta","gema","objeto","escudo"]);
+const UPRIGHT=new Set(["persona","armadura","pocion","receta","gema","objeto","escudo"]);
 // Tono de cada escena: [halo, cielo]
 const TINT={fis:["#F2913A","#3B2350"],mag:["#7C6CFF","#241A52"],arm:["#8FB6E8","#22304F"],c:["#5FC9A8","#173F45"],
   pc:["#6BB3FF","#1B3358"],r:["#E06CFF","#3A1650"],rec:["#F5C35A","#4A2E14"]};

@@ -345,6 +345,34 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .padd input{flex:1 1 220px}
 
 
+/* ---------- Contactos ---------- */
+.cthead{margin:6px 0 14px}.cthead h1{margin:2px 0 0}
+.ctgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:start}
+@media (max-width:760px){.ctgrid{grid-template-columns:minmax(0,1fr)}}
+.ctlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px;align-content:start}
+.ctmini{display:grid;padding:0;border:2px solid rgb(249 167 43 / .55);background:var(--paper);color:var(--ink);text-align:center;overflow:hidden;cursor:pointer;border-radius:6px;transition:transform .15s,box-shadow .15s;min-width:0}
+.ctmini:hover{transform:translateY(-3px)}
+.ctmini.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 18px rgb(249 167 43 / .55);transform:translateY(-3px)}
+.ctmini .ctart{display:block;width:100%;height:auto;border-bottom:3px solid var(--gold)}
+.ctn{font-family:var(--cond);font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.1;padding:6px 4px 0;overflow-wrap:anywhere}
+.cts{font-size:.75rem;color:#5B5170;padding:0 4px 7px}
+.ctbig{background:var(--paper);color:var(--ink);border:3px solid var(--gold);border-radius:10px;overflow:hidden;box-shadow:0 14px 40px rgb(0 0 0 / .45);position:sticky;top:12px;scroll-margin-top:12px}
+@media (max-width:760px){.ctbig{position:static}}
+.ctbig .ctart{display:block;width:100%;height:auto}
+.ctband{position:relative;text-align:center;padding:16px 16px 10px;border-top:4px solid var(--gold);background:linear-gradient(#FBF7EE,var(--paper))}
+.ctlab{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-family:var(--cond);font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);background:linear-gradient(100deg,var(--gold-hi),var(--gold) 45%,var(--gold-lo));padding:3px 16px 2px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.ctband h2{margin:4px 0 2px;color:var(--violet);font-size:1.9rem;text-transform:uppercase;letter-spacing:.04em}
+.ctsub{font-size:.9rem;color:#5B5170}
+.ctbody{padding:4px 18px 18px}
+.ctest{margin:0 0 10px;padding:6px 10px;border-left:3px solid var(--gold);background:#F3EBDD;font-size:.9rem}
+.ctbody .prose{max-width:none}
+.ctbody .prose b{color:var(--violet)}
+.ctbody .prose h2,.ctbody .prose h3,.ctbody .prose h4{color:var(--gold-lo)}
+.ctbody .prose blockquote{color:#4A4060;border-color:var(--gold-hi)}
+.ctbody .lk,.ctsub .lk{color:#7A3FB0}
+.ctbody .callout{background:#F3EBDD;border-color:var(--gold-hi)}
+.ctdm{margin-top:14px}
+.ctadd{margin-top:20px}.ctrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.ctrow select{flex:1;min-width:0}
 /* ---------- Mundo: mapa de fondo y ventanas ---------- */
 #mundoroot{max-width:1600px;margin:0 auto}
 .mundo-shell{border:1px solid var(--line);background:#33525F}
@@ -466,21 +494,21 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=10"></script>
-<script src="js/datos.js?v=10"></script>
-<script src="js/dominios.js?v=10"></script>
-<script src="js/reglas.js?v=10"></script>
-<script src="js/store.js?v=10"></script>
-<script src="js/cartas.js?v=10"></script>
-<script src="js/mapa.js?v=10"></script>
-<script src="js/saber.js?v=10"></script>
-<script src="js/mundo.js?v=10"></script>
+<script src="js/firebase-config.js?v=11"></script>
+<script src="js/datos.js?v=11"></script>
+<script src="js/dominios.js?v=11"></script>
+<script src="js/reglas.js?v=11"></script>
+<script src="js/store.js?v=11"></script>
+<script src="js/cartas.js?v=11"></script>
+<script src="js/mapa.js?v=11"></script>
+<script src="js/saber.js?v=11"></script>
+<script src="js/mundo.js?v=11"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
-const ui={me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
+const ui={ct:ls.get("v-ct"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
   stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,
   edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
 if(ui.view==="lugares")ui.view="mundo";
@@ -511,7 +539,7 @@ function header(st){
 }
 const openShops=st=>LUGARES.flatMap(l=>st.mundo.lugares[l.id]?.visible?l.tiendas.filter(t=>st.mundo.tiendas[t.id]?.abierta).map(t=>({l,t})):[]);
 function nav(st){
-  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
+  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
   const dot=openShops(st).length?`<i class="dot" title="Hay algo abierto"></i>`:"";
   return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="mundo"?dot:""}</button>`).join("")}</nav>`;
 }
@@ -573,7 +601,7 @@ function entryBody(id){
      <div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
      <label class="lab" for="sh-${id}">Texto que les llega</label><textarea id="sh-${id}" class="shtxt">${esc(pub?pub.txt:e.pub||"")}</textarea>
      <div class="btns"><button class="btn" data-shsave="${id}" ${dis()}>Guardar texto</button><button class="btn ghost" data-shreset="${id}">Texto de la nota</button>${pub?`<button class="btn warn" data-shoff="${id}">Ocultar</button>`:""}</div></details>`:"";
-  const mk=`<div class="btns wmk">${e.pos?`<span class="note">Arrastra el marcador para moverlo.</span><button class="btn ghost" data-wunplace="${id}">Quitar del mapa</button>`:`<button class="btn ghost" data-wplace="${id}">Poner en el mapa</button>`}</div>`;
+  const mk=`<div class="btns wmk">${e.pos?`<span class="note">Arrastra el marcador o</span><button class="btn ghost" data-wplace="${id}">Mover en el mapa</button><button class="btn ghost" data-wunplace="${id}">Quitar del mapa</button>`:`<button class="btn ghost" data-wplace="${id}">Poner en el mapa</button>`}</div>`;
   return share+mk+meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
 }
 
@@ -810,6 +838,32 @@ function invEditar(st,s,L){
      <select id="pa-t" aria-label="Tipo">${Object.entries(PTIPO).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><button class="btn" type="submit" ${dis()}>Añadir</button></form></section>`;
 }
 
+/* ---------- Contactos: la gente que conoce el PJ, como cartas ---------- */
+// Lo que el PJ sabe de cada PNJ es lo que el DM le ha compartido (saber/). El DM añade o quita contactos aquí mismo.
+const isNPC=e=>e&&e.cat==="personas"&&e.tipo!=="pj"&&e.sub!=="Personaje jugador";
+const ctTint=id=>{const T=Object.values(TINT);let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return T[h%T.length]};
+const ctArt=(id,w,h)=>`<svg class="ctart" viewBox="0 0 ${w} ${h}" aria-hidden="true">${scene(w,h,ctTint(id),"persona",ARTE[id],{cy:h*.52,size:Math.min(w,h)*.62})}</svg>`;
+function viewContactos(st){
+  const K=Object.entries(Saber.visibleFor(ui.me)).filter(([,e])=>isNPC(e)).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
+  const cur=K.some(([id])=>id===ui.ct)?ui.ct:K[0]?.[0]||null; // ui.ct se respeta: un contacto recién añadido llega un instante después
+  const who=esc(PJ[ui.me].n);
+  const list=K.length?`<div class="ctlist">${K.map(([id,e])=>`<button class="ctmini${id===cur?" sel":""}" data-ct="${id}" aria-pressed="${id===cur}">${ctArt(id,120,130)}<span class="ctn">${esc(e.n)}</span>${e.sub?`<span class="cts">${esc(e.sub)}</span>`:""}</button>`).join("")}</div>`
+    :`<div class="deco"><p class="note">${ui.canDM?`${who} aún no conoce a nadie. Añade contactos abajo.`:"Aún no conoces a nadie. Cuando el DM te cuente de alguien, aparecerá aquí."}</p></div>`;
+  let det="";
+  if(cur){const e=K.find(([id])=>id===cur)[1],E=mundoEntries();
+    const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
+    det=`<article class="ctbig">${ctArt(cur,600,300)}
+      <div class="ctband"><span class="ctlab">Contacto</span><h2>${esc(e.n)}</h2>${e.sub?`<span class="ctsub">${link(slugN(e.sub),e.sub)}</span>`:""}</div>
+      <div class="ctbody">${e.estado?`<p class="ctest"><b>Estado:</b> ${esc(e.estado)}</p>`:""}<div class="prose">${mdHTML(e.txt||"",link)||`<p class="note">Solo sabéis su nombre.</p>`}</div>
+      ${ui.canDM?`<div class="btns ctdm"><button class="btn ghost" data-ent="${cur}">Abrir en el Mundo (texto y quién lo ve)</button><button class="btn warn" data-ctdel="${cur}" ${dis()}>${who} ya no lo conoce</button></div>`:""}</div></article>`}
+  let add="";
+  if(ui.canDM){const known=new Set(K.map(([id])=>id));
+    const rest=Object.entries(Saber.dm).filter(([id,e])=>isNPC(e)&&!known.has(id)).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
+    add=`<div class="deco ctadd"><h3>Añadir contacto a ${who}</h3>${rest.length?`<div class="ctrow"><select id="ct-add" aria-label="Persona">${rest.map(([id,e])=>`<option value="${id}">${esc(e.n)}${e.sub?` · ${esc(e.sub)}`:""}</option>`).join("")}</select><button class="btn" data-ctadd ${dis()}>Añadir</button></div><p class="note">Le llega el texto para jugadores de la nota; lo puedes cambiar luego en el Mundo.</p>`
+      :`<p class="note">${Object.keys(Saber.dm).length?"Ya conoce a todas las personas del vault.":"Importa las notas del vault en la Mesa del DM para poder añadir gente."}</p>`}</div>`}
+  return `<div class="cthead"><span class="tab-label">${who}</span><h1>Contactos</h1></div><div class="ctgrid">${list}${det}</div>${add}`;
+}
+
 /* ---------- Mesa del DM ---------- */
 function viewDM(st){
   const nNotas=Object.keys(Saber.dm).length,nComp=Object.keys(Saber.pub).length;
@@ -865,9 +919,9 @@ function render(){
   else if(!st)body=`<div class="deco" style="margin-top:24px"><h2>La partida aún no ha empezado</h2><p class="note">El DM tiene que prepararla: cinco PJs con 3 vales y la tienda llena.</p>
     ${ui.canDM?`<div class="btns" style="margin-top:12px"><button class="btn" data-start ${dis()}>Empezar partida</button></div>`:""}</div>`;
   else{
-    if(!ui.me&&["personaje","inventario"].includes(ui.view))ui.view="mundo";
+    if(!ui.me&&["personaje","inventario","contactos"].includes(ui.view))ui.view="mundo";
     if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
-    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
+    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
     body=nav(st)+V(st);
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
@@ -947,6 +1001,12 @@ document.addEventListener("click",e=>{
     if(mode==="pot"){ui.stab="botes";ls.set("v-stab","botes");return act(st=>A.openPot(st,ui.me,id,para,"b"+Date.now().toString(36)+TAB.slice(0,4)),"Bote abierto. Avisa al grupo.")}
     return act(st=>A.buy(st,ui.me,id,para),`${it.n}: comprado.`)}
   // Saber: el DM decide quién ve cada nota y qué texto le llega
+  if(d.ct){ui.ct=d.ct;ls.set("v-ct",d.ct);render();if(innerWidth<760)$(".ctbig")?.scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(b.hasAttribute("data-ctadd")){const id=$("#ct-add")?.value;if(!id)return;const cur={...(Saber.pub[id]?.para||{})};cur[ui.me]=true;ui.ct=id;ls.set("v-ct",id);
+    return dmSave(id,cur,Saber.pub[id]?.txt??(Saber.dm[id]?.pub||""),"Contacto añadido.")}
+  if(d.ctdel){const id=d.ctdel,cur={...(Saber.pub[id]?.para||{})};
+    if(cur.todos){delete cur.todos;for(const p of PJS)cur[p.id]=true}delete cur[ui.me];
+    return dmSave(id,cur,Saber.pub[id]?.txt||"","Contacto quitado.")}
   if(d.para){const id=d.id,cur={...(Saber.pub[id]?.para||{})};
     if(d.para==="todos"){if(cur.todos)delete cur.todos;else{for(const k in cur)delete cur[k];cur.todos=true}}else cur[d.para]=!cur[d.para];
     for(const k in cur)if(!cur[k])delete cur[k];
