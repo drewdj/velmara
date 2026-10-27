@@ -354,7 +354,7 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .ctmini:hover{transform:translateY(-3px)}
 .ctmini.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 18px rgb(249 167 43 / .55);transform:translateY(-3px)}
 .ctmini .ctart{display:block;width:100%;height:auto;border-bottom:3px solid var(--gold)}
-.ctn{font-family:var(--cond);font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.1;padding:6px 4px 0;overflow-wrap:anywhere}
+.ctn{font-family:var(--cond);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:0;line-height:1.1;padding:6px 4px 0;overflow-wrap:anywhere}
 .cts{font-size:.75rem;color:#5B5170;padding:0 4px 7px}
 .ctbig{background:var(--paper);color:var(--ink);border:3px solid var(--gold);border-radius:10px;overflow:hidden;box-shadow:0 14px 40px rgb(0 0 0 / .45);position:sticky;top:12px;scroll-margin-top:12px}
 @media (max-width:760px){.ctbig{position:static}}
@@ -373,6 +373,21 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .ctbody .callout{background:#F3EBDD;border-color:var(--gold-hi)}
 .ctdm{margin-top:14px}
 .ctadd{margin-top:20px}.ctrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.ctrow select{flex:1;min-width:0}
+/* ---------- Vista previa de enlaces (pasar el ratón; 1,5 s la fija) ---------- */
+#peeks{position:fixed;inset:0;z-index:70;pointer-events:none}
+.peek{position:fixed;width:min(360px,calc(100vw - 24px));max-height:min(60vh,520px);display:flex;flex-direction:column;background:var(--violet);border:1px solid var(--gold);box-shadow:0 14px 40px rgb(0 0 0 / .55);pointer-events:none;animation:peekin .12s ease-out}
+.peek.pin{pointer-events:auto;box-shadow:0 0 0 1px var(--gold),0 18px 50px rgb(0 0 0 / .65)}
+@keyframes peekin{from{opacity:0;transform:translateY(4px)}}
+.peek .whead{cursor:default}.peek.pin .whead{cursor:move}
+.peek .whead b{flex:1;font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--gold-hi)}
+.peek .pclose{display:none}.peek.pin .pclose{display:inline-grid}
+.peek .wbody{overflow:auto}
+.peek .note.psub{margin:-4px 0 0}
+.peekring{position:fixed;z-index:71;width:28px;height:28px;pointer-events:none;transform:translate(10px,10px)}
+.peekring circle{fill:none;stroke-width:3.5}
+.peekring .bg{stroke:rgb(40 28 69 / .75)}
+.peekring .fg{stroke:var(--gold);stroke-linecap:round;stroke-dasharray:63;stroke-dashoffset:63;transform:rotate(-90deg);transform-origin:50% 50%;animation:peekfill 1.5s linear forwards}
+@keyframes peekfill{to{stroke-dashoffset:0}}
 /* ---------- Mundo: mapa de fondo y ventanas ---------- */
 #mundoroot{max-width:1600px;margin:0 auto}
 .mundo-shell{border:1px solid var(--line);background:#33525F}
@@ -490,19 +505,20 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 <div class="wrap" id="app"></div>
 <div id="maproot" hidden></div>
 <div id="mundoroot" hidden></div>
+<div id="peeks"></div>
 <div id="toast" class="toast" hidden></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=11"></script>
-<script src="js/datos.js?v=11"></script>
-<script src="js/dominios.js?v=11"></script>
-<script src="js/reglas.js?v=11"></script>
-<script src="js/store.js?v=11"></script>
-<script src="js/cartas.js?v=11"></script>
-<script src="js/mapa.js?v=11"></script>
-<script src="js/saber.js?v=11"></script>
-<script src="js/mundo.js?v=11"></script>
+<script src="js/firebase-config.js?v=12"></script>
+<script src="js/datos.js?v=12"></script>
+<script src="js/dominios.js?v=12"></script>
+<script src="js/reglas.js?v=12"></script>
+<script src="js/store.js?v=12"></script>
+<script src="js/cartas.js?v=12"></script>
+<script src="js/mapa.js?v=12"></script>
+<script src="js/saber.js?v=12"></script>
+<script src="js/mundo.js?v=12"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1070,7 +1086,54 @@ document.addEventListener("change",e=>{
 });
 
 // El DM entra con su contraseña; la sesión la guarda Firebase en este navegador
-Saber.subs.push(()=>{const was=ui.canDM;ui.canDM=Saber.isDM;if(!was&&ui.canDM&&ui.login){ui.login=false;ui.view="dm";ls.set("v-view","dm")}if(was!==ui.canDM&&mapMounted)Mapa.refresh();render()});
+/* Vista previa de los enlaces [[…]]: al pasar el ratón sale la ficha; si se mantiene 1,5 s se queda fija
+   (se puede mover por la cabecera y leer con calma). Solo con ratón; en táctil el toque sigue abriendo el Mundo. */
+const Peek=(()=>{
+  const root=$("#peeks"),HOLD=1500;let cur=null; // cur: {a,el,ring,t}
+  function html(id){
+    const e=mundoEntries()[id];if(!e)return null;const E=mundoEntries();
+    const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
+    return `<div class="whead"><b>${esc(e.n)}</b><button class="wx pclose" data-pclose aria-label="Cerrar">✕</button></div>
+     <div class="wbody">${e.sub?`<p class="note psub">${esc(e.sub)}</p>`:""}${e.estado?`<p class="note">${esc(e.estado)}</p>`:""}<article class="prose">${mdHTML(e.txt||"",link)||`<p class="note">Sin más datos.</p>`}</article>
+     <div class="btns"><button class="btn ghost" data-ent="${id}">Abrir en el Mundo</button></div></div>`;
+  }
+  function place(el,a){
+    const r=a.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight;
+    let x=Math.min(Math.max(8,r.left),innerWidth-w-8),y=r.bottom+8;
+    if(y+h>innerHeight-8)y=Math.max(8,r.top-h-8);
+    el.style.left=x+"px";el.style.top=y+"px";
+  }
+  function stop(){if(!cur)return;clearTimeout(cur.t);cur.el?.remove();cur.ring?.remove();cur=null}
+  function start(a,ev){
+    const h=html(a.dataset.ent);if(!h)return;
+    const el=document.createElement("div");el.className="peek";el.innerHTML=h;root.append(el);place(el,a);
+    const ring=document.createElement("div");ring.className="peekring";ring.innerHTML=`<svg viewBox="0 0 28 28"><circle class="bg" cx="14" cy="14" r="10"/><circle class="fg" cx="14" cy="14" r="10"/></svg>`;
+    ring.style.left=ev.clientX+"px";ring.style.top=ev.clientY+"px";document.body.append(ring);
+    cur={a,el,ring,t:setTimeout(()=>{el.classList.add("pin");ring.remove();cur=null},HOLD)};
+  }
+  document.addEventListener("pointerover",ev=>{
+    if(ev.pointerType!=="mouse")return;
+    const a=ev.target.closest?.(".lk[data-ent]");if(!a||cur?.a===a)return;
+    stop();start(a,ev);
+  });
+  document.addEventListener("pointerout",ev=>{if(cur&&!cur.a.contains(ev.relatedTarget))stop()});
+  document.addEventListener("pointermove",ev=>{if(cur?.ring){cur.ring.style.left=ev.clientX+"px";cur.ring.style.top=ev.clientY+"px"}});
+  document.addEventListener("pointerdown",ev=>{if(cur&&cur.a.contains(ev.target))stop()}); // al hacer clic manda el clic
+  // Fijas: arrastrar por la cabecera, traer al frente, cerrar con ✕ o Esc
+  root.addEventListener("pointerdown",ev=>{
+    const el=ev.target.closest(".peek.pin");if(!el)return;root.append(el);
+    if(ev.target.closest("[data-pclose]")){el.remove();return}
+    const hd=ev.target.closest(".whead");if(!hd)return;
+    const r=el.getBoundingClientRect(),dx=ev.clientX-r.left,dy=ev.clientY-r.top;hd.setPointerCapture(ev.pointerId);
+    const mv=e=>{el.style.left=Math.min(Math.max(0,e.clientX-dx),innerWidth-60)+"px";el.style.top=Math.min(Math.max(0,e.clientY-dy),innerHeight-40)+"px"};
+    const up=()=>{hd.removeEventListener("pointermove",mv);hd.removeEventListener("pointerup",up)};
+    hd.addEventListener("pointermove",mv);hd.addEventListener("pointerup",up);
+  });
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){const p=root.querySelector(".peek.pin:last-child");if(p)p.remove()}});
+  return {stop,clear(){stop();root.innerHTML=""}};
+})();
+
+Saber.subs.push(()=>{const was=ui.canDM;ui.canDM=Saber.isDM;if(!was&&ui.canDM&&ui.login){ui.login=false;ui.view="dm";ls.set("v-view","dm")}if(was!==ui.canDM){Peek.clear();if(mapMounted)Mapa.refresh()}render()});
 Store.subs.push(render);
 render();
 Store.init(Nope).then(()=>{Saber.init();render()});
