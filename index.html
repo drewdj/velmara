@@ -161,7 +161,7 @@ section.block>header p{margin:0;color:var(--muted);font-size:.95rem}
 .row .l{min-width:0;flex:1 1 240px}
 .row .l b{font-family:var(--cond);font-size:1.15rem;letter-spacing:.02em}
 .row .l small{display:block;color:var(--muted);font-size:.88rem}
-select,input[type=text],textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);padding:5px 8px;max-width:100%}
+select,input[type=text],input[type=search],input[type=number],input:not([type]),textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);padding:5px 8px;max-width:100%}
 textarea{width:100%;min-height:64px;resize:vertical}
 .tbl{overflow-x:auto;border:1px solid var(--line);background:var(--violet)}
 table{border-collapse:collapse;width:100%;font-size:.93rem}
@@ -345,6 +345,35 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .padd input{flex:1 1 220px}
 
 
+/* ---------- Compendio ---------- */
+.cgrid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.cgrid{grid-template-columns:minmax(0,1fr)}}
+.cside{display:grid;gap:10px}
+.cside .chips{display:flex;flex-wrap:wrap;gap:6px}
+.cside input[type=search]{flex:1;min-width:0}
+.clist{display:grid;gap:6px;max-height:62vh;overflow:auto;padding-right:4px}
+.citem{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid var(--line);background:var(--violet);color:var(--paper);text-align:left;cursor:pointer;min-width:0}
+.citem:hover{border-color:var(--gold-lo)}
+.citem.sel{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.citem.off{opacity:.55}
+.citem img,.citem .cini{width:40px;height:40px;flex:none;object-fit:cover;border:1px solid var(--gold-lo)}
+.citem .cini{display:grid;place-content:center;font-family:var(--cond);font-weight:700;color:var(--gold-hi);background:var(--night)}
+.citem>span:not(.cini){flex:1;min-width:0;display:grid}
+.citem b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.citem small{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cdot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--line)}.cdot.on{background:var(--gold)}
+.cedit{scroll-margin-top:12px}
+.cform .chead{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:10px}.cform .chead h2{margin:0;flex:1;min-width:0}
+.cfields{display:grid;gap:6px}
+.cfields input,.cfields select,.cfields textarea{width:100%}
+.cfields textarea.tall{min-height:220px}
+.cimg{display:grid;gap:8px;margin:6px 0}
+.cimg img{max-width:220px;max-height:220px;object-fit:cover;border:2px solid var(--gold)}
+.cwho{display:grid;gap:8px;padding:10px;border:1px solid var(--line);background:var(--night);margin-bottom:12px}
+.cwho .chips{display:flex;flex-wrap:wrap;gap:6px}
+.cbtns{margin-top:14px}
+.wimg{display:block;width:100%;max-height:220px;object-fit:cover;border:1px solid var(--gold-lo)}
+.pjcard img.pimg{width:64px;height:64px;object-fit:cover;border:2px solid var(--gold);border-radius:50%}
 /* ---------- Contactos ---------- */
 .cthead{margin:6px 0 14px}.cthead h1{margin:2px 0 0}
 .ctgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:start}
@@ -510,21 +539,22 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=12"></script>
-<script src="js/datos.js?v=12"></script>
-<script src="js/dominios.js?v=12"></script>
-<script src="js/reglas.js?v=12"></script>
-<script src="js/store.js?v=12"></script>
-<script src="js/cartas.js?v=12"></script>
-<script src="js/mapa.js?v=12"></script>
-<script src="js/saber.js?v=12"></script>
-<script src="js/mundo.js?v=12"></script>
+<script src="js/firebase-config.js?v=13"></script>
+<script src="js/datos.js?v=13"></script>
+<script src="js/dominios.js?v=13"></script>
+<script src="js/reglas.js?v=13"></script>
+<script src="js/store.js?v=13"></script>
+<script src="js/cartas.js?v=13"></script>
+<script src="js/mapa.js?v=13"></script>
+<script src="js/contenido.js?v=13"></script>
+<script src="js/saber.js?v=13"></script>
+<script src="js/mundo.js?v=13"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
-const ui={ct:ls.get("v-ct"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
+const ui={dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
   stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,
   edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
 if(ui.view==="lugares")ui.view="mundo";
@@ -565,7 +595,7 @@ const seg=k=>`<div class="seg" role="tablist" aria-label="Modo"><button role="ta
 function viewPick(){
   return `<div class="pick"><header><span class="tab-label">Antes de entrar</span><h1>¿Quién eres?</h1>
    <p>Elige tu personaje. Se queda guardado en este dispositivo para todo lo que hagas: hoja, inventario y compras.</p></header>
-   <div class="pjs">${PJS.map(p=>`<button class="pjcard deco" data-me="${p.id}"><span class="init" aria-hidden="true">${esc(p.n[0])}</span>
+   <div class="pjs">${PJS.map(p=>`<button class="pjcard deco" data-me="${p.id}">${p.img?`<img class="init pimg" src="${p.img}" alt="">`:`<span class="init" aria-hidden="true">${esc(p.n[0])}</span>`}
      <span class="nm">${esc(p.n)}</span><span class="cl">${esc(p.c)}<br>Jugador: ${esc(p.j)}</span></button>`).join("")}
     <div class="pjcard deco dmcard">${ui.login?`<form id="dmform" class="dmform"><span class="nm">DM</span><label class="note" for="dm-pw">Contraseña</label>
       <input type="password" id="dm-pw" autocomplete="current-password" required><div class="btns"><button class="btn" type="submit" ${dis()}>Entrar</button><button class="btn ghost" type="button" data-login="0">Cancelar</button></div>
@@ -610,7 +640,7 @@ function entryBody(id){
   const l=LUGARES.find(x=>x.id===id),lm=l&&st.mundo.lugares[id];
   const shops=l&&(lm?.visible||ui.canDM)?`${lm.nota?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:""}<div class="wshops">${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];
      return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub)}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`:"";
-  const meta=e.estado?`<p class="note">${esc(e.estado)}</p>`:"";
+  const meta=(e.img?`<img class="wimg" src="${e.img}" alt="">`:"")+(e.estado?`<p class="note">${esc(e.estado)}</p>`:"");
   if(!ui.canDM)return meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
   const pub=Saber.pub[id],para=pub?.para||{};
   const share=e.dm?`<details class="wshare" ${pub?"":"open"}><summary>Lo ve: <b>${esc(whoSees(id))}</b></summary>
@@ -630,8 +660,8 @@ function viewTienda(st,id){
   // El DM puede mirar siempre; para comprar o coger equipo elige antes un PJ
   const dmNote=ui.canDM&&(!s.abierta||!ui.me)?`<div class="notice"><b>DM</b>${!s.abierta?"Está cerrada: los jugadores no pueden entrar. ":""}${!ui.me?"Solo mirando. Para comprar o coger equipo por un PJ, elígelo arriba en «Ver la hoja de…».":""}</div>`:"";
   const nb=Object.keys(st.botes).length;
-  const T=[["equipo","Entrega de equipo"],["botin","Botín y botica"],["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`],["libro","Libro de cuentas"]];
-  const V={equipo:tabEquipo,botin:tabBotin,botes:tabBotes,libro:tabLibro}[ui.stab]||tabEquipo;
+  const T=[["equipo","Entrega de equipo"],["botin","Botín y botica"],["botes",`Botes${nb?`<span class="badge num">${nb}</span>`:""}`],["libro","Libro de cuentas"],...(ui.canDM?[["dm","Mostrador · DM"]]:[])];
+  const V={equipo:tabEquipo,botin:tabBotin,botes:tabBotes,libro:tabLibro,dm:ui.canDM?st=>tabDM(st,id):tabEquipo}[ui.stab]||tabEquipo;
   return crumbs+hero+dmNote+`<nav class="subtabs" role="tablist">${T.map(([k,lab])=>`<button role="tab" data-stab="${k}" aria-selected="${ui.stab===k}">${lab}</button>`).join("")}</nav>`+V(st);
 }
 const NOPJ={vales:0,inv:{},arma:null,sec:null,armadura:null,bolsa:[],propios:{}};
@@ -685,6 +715,24 @@ function tabBotes(st){
      ${ui.me?`<div class="btns"><button class="btn" data-give="${id}" data-d="1" ${dis(me.vales<1)}>Poner 1 vale</button>
       <button class="btn ghost" data-give="${id}" data-d="-1" ${dis(!mine)}>Retirar 1</button><button class="btn warn" data-cancel="${id}" ${dis()}>Cancelar</button></div>`:""}</article>`}).join("")}</div>
    <p class="note" style="margin-top:14px">Al llegar al precio, el objeto pasa solo a quien lo recibe. Si se cancela, cada uno recupera sus vales.</p>`;
+}
+// Lo que antes estaba en la Mesa del DM y es de la tienda: abrir/cerrar, aviso, vales y existencias
+function tabDM(st,id){
+  const s=st.mundo.tiendas[id];
+  const stockRows=ITEMS.filter(i=>i.s!=null).map(i=>{const n=st.stock[i.id]??0;return `<div class="row"><div class="l"><b>${esc(i.n)}</b><small>${esc(RAR[i.r]?.n||"")} · de ${i.s}</small></div>
+     <span class="num stock${n?"":" zero"}">${n}</span><div class="btns"><button class="btn ghost" data-stk="${i.id}" data-d="-1" ${dis(!n)}>−1</button><button class="btn ghost" data-stk="${i.id}" data-d="1" ${dis()}>+1</button></div></div>`}).join("");
+  return `<section class="block deco"><header><h2>Mostrador</h2><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span></header>
+    <div class="btns"><button class="btn${s.abierta?" warn":""}" data-topen="${id}" data-v="${s.abierta?0:1}" ${dis()}>${s.abierta?"Cerrar tienda":"Abrir tienda"}</button></div>
+    <label class="note" for="tn-${id}">Aviso de la tienda</label><textarea id="tn-${id}" placeholder="Por ejemplo: abierta hasta el final de la sesión 10">${esc(s.nota)}</textarea>
+    <div class="btns"><button class="btn ghost" data-tnota="${id}" ${dis()}>Guardar aviso</button></div></section>
+   <section class="block deco"><header><h2>Vales</h2></header><div class="rows">${PJS.map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j||"")}</small></div>${coins(st.pjs[p.id]?.vales||0)}
+     <div class="btns"><button class="btn ghost" data-vales="${p.id}" data-d="-1" ${dis()}>−1</button><button class="btn ghost" data-vales="${p.id}" data-d="1" ${dis()}>+1</button></div></div>`).join("")}</div>
+    <div class="btns"><button class="btn" data-valesall="3" ${dis()}>Dar 3 vales a cada PJ</button></div></section>
+   <section class="block deco"><header><h2>Existencias</h2></header><div class="rows">${stockRows}</div>
+    <p class="note">Para cambiar objetos, precios o imágenes: Mesa del DM → Compendio.</p></section>
+   <section class="block deco"><header><h2>Empezar de cero</h2></header>
+    <div class="btns"><button class="btn warn" data-reset ${dis()}>${ui.confirmReset?"Pulsa otra vez para vaciarlo todo":"Reiniciar existencias e inventarios"}</button></div>
+    <p class="note">Devuelve existencias, armas y armaduras, borra inventarios y deja 3 vales por PJ. Lugares, tiendas y hojas se quedan como estén.</p></section>`;
 }
 function tabLibro(st){
   const fmt=t=>new Date(t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
@@ -858,17 +906,17 @@ function invEditar(st,s,L){
 // Lo que el PJ sabe de cada PNJ es lo que el DM le ha compartido (saber/). El DM añade o quita contactos aquí mismo.
 const isNPC=e=>e&&e.cat==="personas"&&e.tipo!=="pj"&&e.sub!=="Personaje jugador";
 const ctTint=id=>{const T=Object.values(TINT);let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return T[h%T.length]};
-const ctArt=(id,w,h)=>`<svg class="ctart" viewBox="0 0 ${w} ${h}" aria-hidden="true">${scene(w,h,ctTint(id),"persona",ARTE[id],{cy:h*.52,size:Math.min(w,h)*.62})}</svg>`;
+const ctArt=(id,w,h,img)=>`<svg class="ctart" viewBox="0 0 ${w} ${h}" aria-hidden="true">${scene(w,h,ctTint(id),"persona",img,{cy:h*.52,size:Math.min(w,h)*.62})}</svg>`;
 function viewContactos(st){
   const K=Object.entries(Saber.visibleFor(ui.me)).filter(([,e])=>isNPC(e)).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
   const cur=K.some(([id])=>id===ui.ct)?ui.ct:K[0]?.[0]||null; // ui.ct se respeta: un contacto recién añadido llega un instante después
   const who=esc(PJ[ui.me].n);
-  const list=K.length?`<div class="ctlist">${K.map(([id,e])=>`<button class="ctmini${id===cur?" sel":""}" data-ct="${id}" aria-pressed="${id===cur}">${ctArt(id,120,130)}<span class="ctn">${esc(e.n)}</span>${e.sub?`<span class="cts">${esc(e.sub)}</span>`:""}</button>`).join("")}</div>`
+  const list=K.length?`<div class="ctlist">${K.map(([id,e])=>`<button class="ctmini${id===cur?" sel":""}" data-ct="${id}" aria-pressed="${id===cur}">${ctArt(id,120,130,e.img)}<span class="ctn">${esc(e.n)}</span>${e.sub?`<span class="cts">${esc(e.sub)}</span>`:""}</button>`).join("")}</div>`
     :`<div class="deco"><p class="note">${ui.canDM?`${who} aún no conoce a nadie. Añade contactos abajo.`:"Aún no conoces a nadie. Cuando el DM te cuente de alguien, aparecerá aquí."}</p></div>`;
   let det="";
   if(cur){const e=K.find(([id])=>id===cur)[1],E=mundoEntries();
     const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
-    det=`<article class="ctbig">${ctArt(cur,600,300)}
+    det=`<article class="ctbig">${ctArt(cur,600,300,e.img)}
       <div class="ctband"><span class="ctlab">Contacto</span><h2>${esc(e.n)}</h2>${e.sub?`<span class="ctsub">${link(slugN(e.sub),e.sub)}</span>`:""}</div>
       <div class="ctbody">${e.estado?`<p class="ctest"><b>Estado:</b> ${esc(e.estado)}</p>`:""}<div class="prose">${mdHTML(e.txt||"",link)||`<p class="note">Solo sabéis su nombre.</p>`}</div>
       ${ui.canDM?`<div class="btns ctdm"><button class="btn ghost" data-ent="${cur}">Abrir en el Mundo (texto y quién lo ve)</button><button class="btn warn" data-ctdel="${cur}" ${dis()}>${who} ya no lo conoce</button></div>`:""}</div></article>`}
@@ -880,29 +928,98 @@ function viewContactos(st){
   return `<div class="cthead"><span class="tab-label">${who}</span><h1>Contactos</h1></div><div class="ctgrid">${list}${det}</div>${add}`;
 }
 
-/* ---------- Mesa del DM ---------- */
+/* ---------- Mesa del DM: Compendio (crear y editar todo) y Partida ---------- */
 function viewDM(st){
-  const nNotas=Object.keys(Saber.dm).length,nComp=Object.keys(Saber.pub).length;
+  const T=[["compendio","Compendio"],["partida","Partida"]],t=ui.dtab==="partida"?"partida":"compendio";
   return `<div class="hero"><span class="tab-label">Solo para el DM</span><h1>Mesa del DM</h1><p>Lo que cambies aquí lo ven los jugadores al momento.</p></div>
-   <section class="block deco"><header><h2>Notas del vault</h2></header>
-    <p class="note">${nNotas?`${nNotas} notas cargadas; ${nComp} compartidas con algún PJ.`:"Todavía no hay notas."} Las notas completas solo las puede leer tu cuenta de DM. En <b>Mundo</b> eliges quién ve cada una.</p>
-    <div class="btns"><button class="btn" data-import ${dis()}>${nNotas?"Volver a importar el vault":"Importar el vault"}</button><button class="btn ghost" data-view="mundo">Ir a Mundo</button></div>
+   <nav class="subtabs" role="tablist">${T.map(([k,l])=>`<button role="tab" data-dtab="${k}" aria-selected="${t===k}">${l}</button>`).join("")}</nav>`+(t==="partida"?dmPartida(st):viewCompendio(st));
+}
+function dmPartida(st){
+  const nNotas=Object.keys(Saber.dm).length,nComp=Object.keys(Saber.pub).length;
+  return `<section class="block deco"><header><h2>Notas del vault</h2></header>
+    <p class="note">${nNotas?`${nNotas} notas cargadas; ${nComp} compartidas con algún PJ.`:"Todavía no hay notas."} Las notas completas solo las puede leer tu cuenta de DM.</p>
+    <div class="btns"><button class="btn" data-import ${dis()}>${nNotas?"Volver a importar el vault":"Importar el vault"}</button></div>
     <input type="file" id="import-file" accept=".json,application/json" hidden>
-    <p class="note">Usa el archivo <b>velmara-saber.json</b>. Reimportar actualiza las notas sin tocar lo ya compartido.</p></section>
+    <p class="note">Usa el archivo <b>velmara-saber.json</b>. Reimportar actualiza las notas del vault, salvo las que hayas creado o editado en el Compendio, y no toca lo ya compartido.</p></section>
    ${LUGARES.map(l=>{const m=st.mundo.lugares[l.id];return `<section class="block deco"><header><h2>${esc(l.n)}</h2>
      <label class="toggle"><input type="checkbox" data-lvis="${l.id}" ${m.visible?"checked":""} ${dis()}> Visible para los jugadores</label></header>
      <label class="note" for="ln-${l.id}">Aviso del lugar</label><textarea id="ln-${l.id}" placeholder="Por ejemplo: esta noche hay toque de queda">${esc(m.nota)}</textarea>
-     <div class="btns"><button class="btn ghost" data-lnota="${l.id}" ${dis()}>Guardar aviso</button></div>
-     ${l.tiendas.map(t=>{const s=st.mundo.tiendas[t.id];return `<div class="dmgrid" style="border-top:1px solid var(--line);padding-top:14px">
-      <div class="btns" style="justify-content:space-between"><h3>${esc(t.n)}</h3><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span></div>
-      <div class="btns"><button class="btn${s.abierta?" warn":""}" data-topen="${t.id}" data-v="${s.abierta?0:1}" ${dis()}>${s.abierta?"Cerrar tienda":"Abrir tienda"}</button></div>
-      <label class="note" for="tn-${t.id}">Aviso de la tienda</label><textarea id="tn-${t.id}" placeholder="Por ejemplo: abierta hasta el final de la sesión 10">${esc(s.nota)}</textarea>
-      <div class="btns"><button class="btn ghost" data-tnota="${t.id}" ${dis()}>Guardar aviso</button></div></div>`}).join("")}</section>`}).join("")}
-   <section class="block deco"><header><h2>Vales</h2></header><div class="rows">${PJS.map(p=>`<div class="row"><div class="l"><b>${esc(p.n)}</b><small>${esc(p.j)}</small></div>${coins(st.pjs[p.id].vales)}
-     <div class="btns"><button class="btn ghost" data-vales="${p.id}" data-d="-1" ${dis()}>−1</button><button class="btn ghost" data-vales="${p.id}" data-d="1" ${dis()}>+1</button></div></div>`).join("")}</div>
-    <div class="btns"><button class="btn" data-valesall="3" ${dis()}>Dar 3 vales a cada PJ</button>
-     <button class="btn warn" data-reset ${dis()}>${ui.confirmReset?"Pulsa otra vez para vaciarlo todo":"Reiniciar existencias e inventarios"}</button></div>
-    <p class="note">Reiniciar devuelve existencias, armas y armaduras, borra inventarios y deja 3 vales por PJ. Lugares y tiendas se quedan como estén.</p></section>`;
+     <div class="btns"><button class="btn ghost" data-lnota="${l.id}" ${dis()}>Guardar aviso</button>${l.tiendas.map(t=>`<button class="btn ghost" data-tienda="${t.id}" data-stabgo="dm">${esc(t.n)}: mostrador</button>`).join("")}</div></section>`}).join("")}`;
+}
+
+// Colecciones del Compendio. Las de "lore" viven en las notas del DM (Saber); las demás en Contenido.
+const CCOLS=[["personas","Personas","lore"],["lugares","Lugares","lore"],["organizaciones","Organizaciones","lore"],["mundo","Mundo","lore"],["cronica","Crónica","lore"],
+  ["pjs","Personajes jugadores"],["armas","Armas"],["armaduras","Armaduras"],["objetos","Objetos"]];
+const isLore=c=>["personas","lugares","organizaciones","mundo","cronica"].includes(c);
+const ALC=["Cuerpo a cuerpo","Muy Cercana","Cercana","Lejana","Muy Lejana"];
+// Campos de cada ficha: [clave, etiqueta, tipo, opciones]
+const CFIELDS={
+  lore:[["n","Nombre"],["cat","Categoría","sel",CATS],["sub","Subtítulo o lugar"],["estado","Estado"],["img","Imagen","img"],
+    ["pub","Lo que saben los jugadores","area"],["txt","Nota completa (solo DM)","area"]],
+  pjs:[["n","Nombre"],["j","Jugador"],["c","Clase · ascendencia"],["img","Retrato","img"]],
+  armas:[["n","Nombre"],["g","Tipo","sel",[["fis","Principal física"],["mag","Principal mágica"],["sec","Secundaria"]]],["tr","Rasgo","sel",RASGOS.map(r=>[r[1],r[1]])],
+    ["a","Alcance","sel",ALC.map(x=>[x,x])],["d","Daño (p. ej. d8+3 fís)"],["h","Manos","sel",[["1","Una mano"],["2","Dos manos"]]],["f","Rasgo especial","area"],["img","Imagen","img"]],
+  armaduras:[["n","Nombre"],["u","Umbrales (mayor / grave)"],["sc","Puntuación","num"],["f","Rasgo especial","area"],["img","Imagen","img"]],
+  objetos:[["n","Nombre"],["r","Rareza","sel",Object.entries(RAR).map(([k,v])=>[k,v.n])],["k","Tipo","sel",[["cons","Consumible"],["obj","Reutilizable"],["rec","Receta"]]],
+    ["s","Unidades en la tienda (vacío = no se agota)","num"],["p","Precio en vales (vacío = según rareza)","num"],["t","Efecto","area"],["img","Imagen","img"]]
+};
+function compList(col){
+  if(isLore(col))return Object.entries(Saber.dm).filter(([,e])=>e.cat===col).map(([id,e])=>({id,n:e.n,sub:e.sub,img:e.img,shared:!!Saber.pub[id]}));
+  const c=COLS[col],all=Object.values(c.map);
+  return all.map(x=>({id:x.id,n:x.n,sub:col==="pjs"?x.c:col==="objetos"?RAR[x.r]?.n:col==="armas"?x.d:x.u,img:x.img,borrado:x.borrado}));
+}
+function compRec(col,id){
+  if(id==="__new")return isLore(col)?{n:"",cat:col,sub:"",estado:"",txt:"",pub:"",tipo:col==="personas"?"npc":""}:
+    col==="armas"?{n:"",g:"fis",tr:"Agilidad",a:"Cuerpo a cuerpo",d:"",h:1,f:""}:col==="armaduras"?{n:"",u:"",sc:4,f:""}:col==="objetos"?{n:"",r:"c",k:"cons",s:1,t:""}:{n:"",j:"",c:""};
+  if(isLore(col)){const e=Saber.dm[id];return e&&{...e,pub:Saber.pub[id]?.txt??e.pub??""}}
+  return COLS[col].map[id]&&{...COLS[col].map[id]};
+}
+function viewCompendio(st){
+  if(!CCOLS.some(c=>c[0]===ui.ccol))ui.ccol="personas";
+  const col=ui.ccol,q=slugN(ui.cq||"");
+  const L=compList(col).filter(x=>!q||slugN(x.n).includes(q)).sort((a,b)=>a.n.localeCompare(b.n,"es"));
+  const list=`<div class="cside"><div class="chips">${CCOLS.map(([k,l])=>`<button class="chip" data-ccol="${k}" aria-pressed="${k===col}">${l}</button>`).join("")}</div>
+    <div class="ctrow"><input type="search" id="cq" placeholder="Buscar…" value="${esc(ui.cq||"")}" aria-label="Buscar"><button class="btn" data-cnew>Nuevo</button></div>
+    <div class="clist">${L.map(x=>`<button class="citem${x.id===ui.cid?" sel":""}${x.borrado?" off":""}" data-cid="${x.id}">${x.img?`<img src="${x.img}" alt="">`:`<span class="cini">${esc((x.n||"?")[0])}</span>`}<span><b>${esc(x.n||"(sin nombre)")}</b>${x.sub?`<small>${esc(x.sub)}</small>`:""}${x.borrado?`<small>Retirado</small>`:""}</span>${isLore(col)?`<i class="cdot${x.shared?" on":""}" title="${x.shared?"Lo ve alguien":"No lo ve nadie"}"></i>`:""}</button>`).join("")||`<p class="note">${isLore(col)&&!Object.keys(Saber.dm).length?"Aún no hay notas: importa el vault en «Partida» o crea una con «Nuevo».":"No hay nada con ese nombre."}</p>`}</div></div>`;
+  return `<div class="cgrid">${list}<div class="cedit">${compEditor(col)}</div></div>`;
+}
+function compEditor(col){
+  const id=ui.cid;if(!id)return `<div class="deco"><p class="note">Elige algo de la lista para editarlo, o pulsa «Nuevo».</p></div>`;
+  const r=compRec(col,id);if(!r){ui.cid=null;return compEditor(col)}
+  const D=ui.cdraft||{},val=k=>k in D?D[k]:r[k]??"",lore=isLore(col),F=CFIELDS[lore?"lore":col];
+  const img=ui.cimg!==undefined?ui.cimg:r.img;
+  const field=([k,l,t,opt])=>{const fid="cf-"+k;
+    if(t==="img")return `<div class="cimg"><span class="lab">${l}</span>${img?`<img src="${img}" alt="">`:`<span class="note">Sin imagen: se usa el dibujo por defecto.</span>`}
+      <div class="btns"><label class="btn ghost">Subir imagen<input type="file" id="cf-imgfile" accept="image/*" hidden></label>${img?`<button class="btn ghost" data-cimgdel>Quitar imagen</button>`:""}</div></div>`;
+    if(t==="sel")return `<label class="lab" for="${fid}">${l}</label><select id="${fid}">${opt.map(([v,n])=>`<option value="${esc(v)}" ${String(val(k))===String(v)?"selected":""}>${esc(n)}</option>`).join("")}</select>`;
+    if(t==="area")return `<label class="lab" for="${fid}">${l}</label><textarea id="${fid}" class="${k==="txt"||k==="pub"?"tall":""}">${esc(val(k))}</textarea>`;
+    return `<label class="lab" for="${fid}">${l}</label><input id="${fid}" ${t==="num"?'type="number" inputmode="numeric"':""} value="${esc(val(k))}">`};
+  const isNew=id==="__new",pub=lore&&!isNew?Saber.pub[id]:null,para=pub?.para||{};
+  const who=lore&&!isNew?`<div class="cwho"><span class="lab">Quién lo conoce</span><div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
+     <div class="btns"><button class="btn ghost" data-cplace="${id}">${Saber.posOf(id)?"Mover en el mapa":"Poner en el mapa"}</button>${Saber.posOf(id)?`<button class="btn ghost" data-wunplace2="${id}">Quitar del mapa</button>`:""}<button class="btn ghost" data-ent="${id}">Ver en el Mundo</button></div></div>`:"";
+  const retirado=r.borrado;
+  return `<div class="deco cform"><header class="chead"><span class="tab-label">${isNew?"Nuevo":esc(CCOLS.find(c=>c[0]===col)[1])}</span><h2>${esc(val("n")||"Sin nombre")}</h2>${retirado?`<span class="state shut">Retirado</span>`:""}</header>
+    ${who}<div class="cfields">${F.map(field).join("")}</div>
+    <div class="btns cbtns"><button class="btn" data-csave ${dis()}>${isNew?"Crear":"Guardar cambios"}</button>${ui.cdraft||ui.cimg!==undefined?`<button class="btn ghost" data-cundo>Descartar cambios</button>`:""}
+     ${isNew?"":retirado?`<button class="btn ghost" data-crestore>Volver a ponerlo</button>`:`<button class="btn warn" data-cdel>${ui.cconfirm?"Pulsa otra vez para confirmar":lore?"Borrar nota":"Retirar"}</button>`}</div>
+    ${!lore&&!isNew&&!retirado?`<p class="note">Retirar lo quita de la tienda y de las listas; quien ya lo tenga lo conserva.</p>`:""}</div>`;
+}
+async function compSave(){
+  const col=ui.ccol,id=ui.cid,r=compRec(col,id),D=ui.cdraft||{},lore=isLore(col);
+  const o={...r};for(const [k,v] of Object.entries(D))o[k]=v;
+  if(ui.cimg!==undefined){if(ui.cimg)o.img=ui.cimg;else delete o.img}
+  o.n=String(o.n||"").trim().slice(0,80);if(!o.n){toast("Ponle un nombre.",true);return}
+  for(const k of ["sc","h"])if(k in o&&o[k]!=="")o[k]=+o[k];
+  for(const k of ["s","p"])if(k in o){if(o[k]===""||o[k]==null)delete o[k];else o[k]=Math.max(0,+o[k])}
+  let nid=id;
+  if(id==="__new"){const base=slugN(o.n)||"nuevo",taken=k=>lore?Saber.dm[k]:COLS[col].map[k]||(col==="armas"&&ARMOR[k]);nid=base;for(let i=2;taken(nid);i++)nid=base+"-"+i}
+  ui.busy=true;render();
+  try{
+    if(lore){const pubTxt=o.pub;if(o.cat==="personas"&&!o.tipo)o.tipo="npc";await Saber.guardar(nid,o,pubTxt);if(o.cat!==col)ui.ccol=o.cat}
+    else{delete o.id;delete o.nuevo;await Contenido.guardar(col,nid,o)}
+    ui.cid=nid;ui.cdraft=null;ui.cimg=undefined;toast(id==="__new"?"Creado.":"Guardado.");
+  }catch(e){console.error(e);toast("No se pudo guardar. ¿Sigue abierta la sesión de DM?",true)}
+  ui.busy=false;render();
 }
 
 /* ---------- Mapa (vive fuera de #app para no perder lo dibujado en cada render) ---------- */
@@ -1000,8 +1117,9 @@ document.addEventListener("click",e=>{
   if(d.ent!==undefined){go({view:"mundo",tienda:null,ent:null});if(d.ent)Mundo.open(d.ent);return}
   if(d.cat){ui.cat=d.cat;ls.set("v-cat",d.cat);render();return}
   if(d.lugar!==undefined)return go({ent:d.lugar||null,tienda:null});
-  if(d.tienda)return go({view:"mundo",tienda:d.tienda});
+  if(d.tienda)return go({view:"mundo",tienda:d.tienda,...(d.stabgo?{stab:d.stabgo}:{})});
   if(d.stab)return go({stab:d.stab});
+
   if(d.filt){ui.filt=d.filt;render();return}
   if(d.wf){ui.wf=d.wf;render();return}
   if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;render();if(ui.sel&&innerWidth<820)$(".invdet")?.scrollIntoView({block:"nearest",behavior:"smooth"});return}
@@ -1053,6 +1171,19 @@ document.addEventListener("click",e=>{
   if(d.brew)return act(st=>A.brew(st,ui.me,d.brew),"Poción preparada.");
   if(d.pass){const to=$("#to-"+d.pass).value;return act(st=>A.pass(st,ui.me,d.pass,to),"Entregado.")}
   if(d.vales)return act(st=>A.vales(st,d.vales,+d.d));
+  if(d.dtab){ui.dtab=d.dtab;ls.set("v-dtab",d.dtab);render();return}
+  if(d.ccol){ui.ccol=d.ccol;ls.set("v-ccol",d.ccol);ui.cid=null;ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();return}
+  if(d.cid){ui.cid=d.cid;ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();if(innerWidth<820)$(".cedit")?.scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(b.hasAttribute("data-cnew")){ui.cid="__new";ui.cdraft=null;ui.cimg=undefined;ui.cconfirm=false;render();if(innerWidth<820)$(".cedit")?.scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(b.hasAttribute("data-cundo")){ui.cdraft=null;ui.cimg=undefined;render();return}
+  if(b.hasAttribute("data-cimgdel")){ui.cimg=null;render();return}
+  if(b.hasAttribute("data-csave"))return compSave();
+  if(b.hasAttribute("data-cdel")){if(!ui.cconfirm){ui.cconfirm=true;render();return}ui.cconfirm=false;const col=ui.ccol,id=ui.cid;
+    (isLore(col)?Saber.borrarNota(id).then(()=>{ui.cid=null}):Contenido.borrar(col,id)).then(()=>{toast(isLore(col)?"Nota borrada.":"Retirado.");render()}).catch(e=>{console.error(e);toast("No se pudo.",true)});return}
+  if(b.hasAttribute("data-crestore")){Contenido.borrar(ui.ccol,ui.cid,false).then(()=>toast("Vuelve a estar.")).catch(e=>toast("No se pudo.",true));return}
+  if(d.cplace){const id=d.cplace;go({view:"mundo",tienda:null});Mundo.open(id);Mundo.place(id);return}
+  if(d.wunplace2){Saber.setPos(d.wunplace2,null).then(()=>toast("Quitado del mapa.")).catch(()=>toast("No se pudo.",true));return}
+  if(d.stk)return act(st=>A.stock(st,d.stk,+d.d));
   if(d.valesall)return act(st=>A.valesAll(st,+d.valesall),"Vales repartidos.");
   if(d.topen)return act(st=>A.tienda(st,d.topen,{abierta:d.v==="1"}),d.v==="1"?"Tienda abierta.":"Tienda cerrada.");
   if(d.tnota){const v=$("#tn-"+d.tnota).value.trim().slice(0,300);return act(st=>A.tienda(st,d.tnota,{nota:v}),"Aviso guardado.")}
@@ -1072,9 +1203,16 @@ document.addEventListener("submit",async e=>{
   if(e.target.id==="padd"){const n=$("#pa-n").value.trim().slice(0,60),tipo=$("#pa-t").value;if(!n)return;
     act(st=>A.propio(st,ui.me,Date.now().toString(36)+TAB.slice(0,3),{n,tipo,q:1,d:"",h:1}),"Añadido a tus cosas.")}
 });
+// Borrador del Compendio: lo escrito sobrevive a los cambios que lleguen de otros mientras editas
+document.addEventListener("input",e=>{const t=e.target;
+  if(t.id==="cq"){ui.cq=t.value;render();return}
+  if(t.id?.startsWith("cf-")&&t.tagName!=="SELECT"&&t.type!=="file")ui.cdraft={...(ui.cdraft||{}),[t.id.slice(3)]:t.value};
+});
 document.addEventListener("change",e=>{
   const t=e.target;if(t.closest("#maproot"))return;
   if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
+  if(t.id==="cf-imgfile"){const f=t.files[0];t.value="";if(!f)return;reducirImagen(f).then(d=>{ui.cimg=d;render()}).catch(err=>toast(err.message,true));return}
+  if(t.id?.startsWith("cf-")){ui.cdraft={...(ui.cdraft||{}),[t.id.slice(3)]:t.value};if(t.tagName==="SELECT")render();return}
   if(t.id==="dm-pj"){ui.me=t.value||null;ui.sel=null;render();return}
   if(t.id==="all-doms"){ui.allDoms=t.checked;render();return}
   if(t.id==="import-file"){const f=t.files[0];t.value="";if(!f)return;
@@ -1094,7 +1232,7 @@ const Peek=(()=>{
     const e=mundoEntries()[id];if(!e)return null;const E=mundoEntries();
     const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
     return `<div class="whead"><b>${esc(e.n)}</b><button class="wx pclose" data-pclose aria-label="Cerrar">✕</button></div>
-     <div class="wbody">${e.sub?`<p class="note psub">${esc(e.sub)}</p>`:""}${e.estado?`<p class="note">${esc(e.estado)}</p>`:""}<article class="prose">${mdHTML(e.txt||"",link)||`<p class="note">Sin más datos.</p>`}</article>
+     <div class="wbody">${e.img?`<img class="wimg" src="${e.img}" alt="">`:""}${e.sub?`<p class="note psub">${esc(e.sub)}</p>`:""}${e.estado?`<p class="note">${esc(e.estado)}</p>`:""}<article class="prose">${mdHTML(e.txt||"",link)||`<p class="note">Sin más datos.</p>`}</article>
      <div class="btns"><button class="btn ghost" data-ent="${id}">Abrir en el Mundo</button></div></div>`;
   }
   function place(el,a){
@@ -1136,6 +1274,8 @@ const Peek=(()=>{
 Saber.subs.push(()=>{const was=ui.canDM;ui.canDM=Saber.isDM;if(!was&&ui.canDM&&ui.login){ui.login=false;ui.view="dm";ls.set("v-view","dm")}if(was!==ui.canDM){Peek.clear();if(mapMounted)Mapa.refresh()}render()});
 Store.subs.push(render);
 render();
+Contenido.subs.push(()=>{if(Store.state)Store.state=Store.fix(Store.state);render();if(mapMounted)Mapa.refresh()});
+Contenido.init();
 Store.init(Nope).then(()=>{Saber.init();render()});
 </script>
 </body>

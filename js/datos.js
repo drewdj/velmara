@@ -188,7 +188,7 @@ const PJ_BASE={
  geliberto:{clase:"sorcerer",sub:"Elemental",asc:"Infernis / Ribbet",com:"Wildborne",cartas:["unleash-chaos","rune-ward"]}
 };
 function hojaInicial(id){
-  const b=PJ_BASE[id],c=CLASES[b.clase];
+  const b=PJ_BASE[id]||{clase:"warrior",sub:"",asc:"",com:"",cartas:[]},c=CLASES[b.clase];
   return {nivel:4,clase:b.clase,sub:b.sub,asc:b.asc,com:b.com,
     rasgos:{agi:0,fue:0,fin:0,ins:0,pre:0,con:0},evasion:c.ev,competencia:2,
     arm:{pts:0,mayor:0,grave:0},armMarc:0,

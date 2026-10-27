@@ -166,5 +166,6 @@ const Mundo=(()=>{
     if(p[0]<view.x||p[0]>view.x+view.w||p[1]<view.y||p[1]>view.y+h){view.x=p[0]-view.w/2;view.y=p[1]-h/2;applyView();marks()}}
   function input(e){if(e.target.id==="wq"){q=e.target.value;list()}}
   // Los enlaces dentro de una ventana abren otra
-  return {mount,refresh,open,close};
+  function place(id){placing=id;hint()}
+  return {mount,refresh,open,close,place};
 })();

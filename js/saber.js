@@ -49,7 +49,7 @@ const Saber={
   async share(id,para,txt,e=this.dm[id]){
     const any=para.todos||Object.values(para).some(Boolean);
     const pos=this.posOf(id);
-    const val=any?{n:e.n,cat:e.cat,sub:e.sub||"",tipo:e.tipo||"",estado:e.estado||"",txt:String(txt).slice(0,20000),para,ts:Date.now(),...(pos?{pos}:{})}:null;
+    const val=any?{n:e.n,cat:e.cat,sub:e.sub||"",tipo:e.tipo||"",estado:e.estado||"",txt:String(txt).slice(0,20000),para,ts:Date.now(),...(pos?{pos}:{}),...(e.img?{img:e.img}:{})}:null;
     if(this.mode==="local"){if(val)this.pub[id]=val;else delete this.pub[id];this.emit();return}
     await this.db.ref("saber/"+id).set(val);
   },
@@ -61,8 +61,22 @@ const Saber={
     await this.db.ref(`dm/${this.key}/pos/${id}`).set(v);
     if(this.pub[id])await this.db.ref(`saber/${id}/pos`).set(v||null);
   },
+  // Compendio: guardar una nota (nueva o editada). Si ya la ve alguien, le llegan los cambios con el texto para jugadores.
+  async guardar(id,e,pubTxt){
+    e={...e,web:true};delete e.dm;delete e.oculto;delete e.pos;
+    if(this.mode==="local")this.dm[id]=e;else await this.db.ref(`dm/${this.key}/lore/${id}`).set(e);
+    const p=this.pub[id];if(p)await this.share(id,p.para,pubTxt??p.txt,e);
+    this.emit();
+  },
+  async borrarNota(id){
+    if(this.pub[id])await this.share(id,{},"",this.dm[id]);
+    if(this.mode==="local"){delete this.dm[id];this.emit();return}
+    await this.db.ref(`dm/${this.key}/lore/${id}`).set(null);
+  },
   async importar(json){
     const E=json?.entradas;if(!E||typeof E!=="object")throw new Error("Ese archivo no tiene notas del vault.");
+    // Lo creado o editado desde el Compendio (web) manda sobre el vault al reimportar
+    for(const [id,e] of Object.entries(this.dm))if(e.web)E[id]=e;
     if(this.mode==="local")this.dm=E;else await this.db.ref(`dm/${this.key}/lore`).set(E);
     // Lo que el archivo marca como sabido (para) se comparte, salvo lo que el DM ya haya compartido a mano
     for(const [id,e] of Object.entries(E))if(e.para&&!this.pub[id])await this.share(id,e.para,e.pub||"",e);
