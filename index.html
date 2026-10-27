@@ -395,10 +395,10 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 /* ---------- Catálogo de una tienda (Compendio) ---------- */
 .catalog{display:grid;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
 .cath{margin:10px 0 2px;font-size:1rem;color:var(--gold-hi);text-transform:uppercase;letter-spacing:.06em}.cath small{color:var(--muted)}
-.catrow{display:grid;grid-template-columns:minmax(0,1fr) 92px 92px 32px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgb(74 59 115 / .5)}
-.catrow label{display:grid;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.catrow input{width:100%;padding:3px 6px}
-@media (max-width:600px){.catrow{grid-template-columns:minmax(0,1fr) 70px 70px 32px}}
+.cattbl{margin:4px 0 6px}.cattbl td{padding:5px 10px;vertical-align:middle}.cattbl th{white-space:nowrap}
+.cattbl input{width:76px;padding:3px 6px}.cattbl td:nth-child(2){white-space:nowrap}.cattbl td:first-child{min-width:160px}
+.catadd{max-height:420px;overflow-y:auto}.catadd thead th{position:sticky;top:0;background:var(--violet);z-index:1}
+.catalog .chips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 6px}.catalog .chip{font-size:.8rem;padding:2px 10px}.cattbl .btn{padding:3px 10px;font-size:.85rem}
 /* ---------- Avisos ---------- */
 .bellw{position:relative}
 .bell{position:relative;width:38px;height:38px;display:grid;place-items:center;background:none;border:1px solid var(--line);color:var(--muted);cursor:pointer;padding:0}
@@ -577,22 +577,22 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=20"></script>
-<script src="js/datos.js?v=20"></script>
-<script src="js/dominios.js?v=20"></script>
-<script src="js/reglas.js?v=20"></script>
-<script src="js/store.js?v=20"></script>
-<script src="js/cartas.js?v=20"></script>
-<script src="js/mapa.js?v=20"></script>
-<script src="js/contenido.js?v=20"></script>
-<script src="js/saber.js?v=20"></script>
-<script src="js/mundo.js?v=20"></script>
+<script src="js/firebase-config.js?v=21"></script>
+<script src="js/datos.js?v=21"></script>
+<script src="js/dominios.js?v=21"></script>
+<script src="js/reglas.js?v=21"></script>
+<script src="js/store.js?v=21"></script>
+<script src="js/cartas.js?v=21"></script>
+<script src="js/mapa.js?v=21"></script>
+<script src="js/contenido.js?v=21"></script>
+<script src="js/saber.js?v=21"></script>
+<script src="js/mundo.js?v=21"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const TAB=Math.random().toString(36).slice(2);
-const ui={bell:false,dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),lg:ls.get("v-lg"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
+const ui={bell:false,ciq:"",cig:"",dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),lg:ls.get("v-lg"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
   stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,confirmHide:false,
   edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
 if(!PJ[ui.me])ui.me=null;
@@ -1097,21 +1097,34 @@ function compEditor(col){
 // Lo que vende una tienda: cada cambio se guarda al momento
 const CATG=[["w:fis","Armas físicas"],["w:mag","Armas mágicas"],["w:sec","Armas secundarias"],["a:","Armaduras"],["o:","Objetos"]];
 const catGroup=ref=>ref[0]==="w"?"w:"+(refX(ref)?.g||"fis"):ref.slice(0,2);
+const catDet=ref=>{const x=refX(ref);return ref[0]==="w"?`${x.tr} · ${x.a} · ${x.d}`:ref[0]==="a"?`Umbrales ${x.u} · Armadura ${x.sc}`:(RAR[x.r]?.n||"")};
+const allRefs=()=>[...WEAPONS.map(w=>"w:"+w.id),...ARMORS.map(a=>"a:"+a.id),...ITEMS.map(i=>"o:"+i.id)];
+const catLab=ref=>(CATG.find(([g])=>g===catGroup(ref))||[,""])[1];
+// Lo que falta por añadir, con el buscador y el filtro de tipo
+function catFree(I){const q=slugN(ui.ciq||""),g=ui.cig||"";
+  return allRefs().filter(r=>!I[r]&&(!g||catGroup(r)===g)&&(!q||slugN(refX(r).n+" "+catDet(r)).includes(q)))}
 function shopCatalogEditor(id){
-  const t=TIENDA[id],I=t.items||{};
-  const rows=CATG.map(([g,l])=>{const R=Object.entries(I).filter(([ref])=>catGroup(ref)===g&&refX(ref));if(!R.length)return "";
-    return `<h3 class="cath">${l} <small>${R.length}</small></h3>${R.map(([ref,e])=>{const x=refX(ref),def=ref[0]==="o"?price(x):0;
-      return `<div class="catrow"><b>${esc(x.n)}${x.borrado?" <small>(retirado)</small>":""}</b>
-        <label>Precio<input type="number" min="0" inputmode="numeric" id="cip-${ref}" data-cip="${ref}" value="${e.p??""}" placeholder="${def}"></label>
-        ${ref[0]==="o"?`<label>Unidades<input type="number" min="0" inputmode="numeric" id="cis-${ref}" data-cis="${ref}" value="${e.s??""}" placeholder="∞"></label>`:`<span class="note">Pieza única</span>`}
-        <button class="wx" data-cidel="${ref}" aria-label="Quitar ${esc(x.n)}">✕</button></div>`}).join("")}`}).join("");
-  const all=[...WEAPONS.map(w=>"w:"+w.id),...ARMORS.map(a=>"a:"+a.id),...ITEMS.map(i=>"o:"+i.id)].filter(r=>!I[r]);
-  const opts=CATG.map(([g,l])=>{const R=all.filter(r=>catGroup(r)===g);return R.length?`<optgroup label="${l}">${R.map(r=>`<option value="${r}">${esc(refX(r).n)}</option>`).join("")}</optgroup>`:""}).join("");
-  return `<div class="catalog"><span class="lab">A la venta</span>
-    ${all.length?`<div class="ctrow"><select id="ci-add" aria-label="Añadir a la venta">${opts}</select><button class="btn" data-ciadd ${dis()}>Añadir</button></div>
-    <div class="btns">${CATG.filter(([g])=>all.some(r=>catGroup(r)===g)).map(([g,l])=>`<button class="btn ghost" data-ciall="${g}" ${dis()}>+ ${l.toLowerCase()}</button>`).join("")}</div>`:""}
+  const t=TIENDA[id],I=t.items||{},ord=r=>CATG.findIndex(([g])=>g===catGroup(r));
+  const sold=Object.keys(I).filter(r=>refX(r)).sort((x,y)=>ord(x)-ord(y)||refX(x).n.localeCompare(refX(y).n,"es"));
+  const rows=sold.map(ref=>{const x=refX(ref),e=I[ref],def=ref[0]==="o"?price(x):0;
+    return `<tr><td><b>${esc(x.n)}</b>${x.borrado?" <small>(retirado)</small>":""}</td><td class="note">${catLab(ref)}</td><td class="note">${esc(catDet(ref))}</td>
+      <td><input type="number" min="0" inputmode="numeric" id="cip-${ref}" data-cip="${ref}" value="${e.p??""}" placeholder="${def}" aria-label="Precio de ${esc(x.n)}"></td>
+      <td>${ref[0]==="o"?`<input type="number" min="0" inputmode="numeric" id="cis-${ref}" data-cis="${ref}" value="${e.s??""}" placeholder="∞" aria-label="Unidades de ${esc(x.n)}">`:`<span class="note">Única</span>`}</td>
+      <td><button class="wx" data-cidel="${ref}" aria-label="Quitar ${esc(x.n)}">✕</button></td></tr>`}).join("");
+  const free=catFree(I),rest=allRefs().filter(r=>!I[r]);
+  const chips=[["","Todo"],...CATG.filter(([g])=>rest.some(r=>catGroup(r)===g))].map(([g,l])=>`<button class="chip" aria-pressed="${(ui.cig||"")===g}" data-cig="${g}">${l}</button>`).join("");
+  const add=free.map(ref=>{const x=refX(ref),def=ref[0]==="o"?price(x):0;
+    return `<tr><td><b>${esc(x.n)}</b></td><td class="note">${catLab(ref)}</td><td class="note">${esc(catDet(ref))}</td><td class="num">${def}</td>
+      <td><button class="btn ghost sm" data-ciadd1="${ref}" ${dis()}>Añadir</button></td></tr>`}).join("");
+  return `<div class="catalog"><span class="lab">A la venta <small>${sold.length}</small></span>
     <p class="note">Precio vacío: armas y armaduras gratis, objetos según su rareza. Unidades vacías: sin límite.</p>
-    ${rows||`<p class="empty">Todavía no vende nada.</p>`}</div>`;
+    ${rows?`<div class="tbl cattbl"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Detalle</th><th>Precio</th><th>Unidades</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:`<p class="empty">Todavía no vende nada.</p>`}
+    ${rest.length?`<span class="lab">Añadir a la tienda</span>
+    <div class="ctrow"><input type="search" id="ci-q" placeholder="Buscar objeto, arma o armadura…" value="${esc(ui.ciq||"")}" aria-label="Buscar para añadir">
+      <button class="btn" data-ciaddf ${free.length?"":"disabled"} ${dis()}>Añadir los ${free.length}</button></div>
+    <div class="chips">${chips}</div>
+    ${add?`<div class="tbl cattbl catadd"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Detalle</th><th>Precio base</th><th></th></tr></thead><tbody>${add}</tbody></table></div>`:`<p class="empty">Nada coincide.</p>`}`:`<p class="note">Ya vende todo lo que existe.</p>`}
+  </div>`;
 }
 function shopItems(id,fn){const t=TIENDA[id],o=structuredClone(t);delete o.id;delete o.nuevo;o.items=fn({...(o.items||{})});
   return Contenido.guardar("tiendas",id,o).catch(e=>{console.error(e);toast("No se pudo guardar.",true)})}
@@ -1301,9 +1314,9 @@ document.addEventListener("click",e=>{
   if(d.vales)return act(st=>A.vales(st,ui.tienda,d.vales,+d.d));
   if(b.hasAttribute("data-hideall")){if(!ui.confirmHide){ui.confirmHide=true;render();return}ui.confirmHide=false;
     Saber.ocultarTodo().then(()=>toast("Los jugadores ya no ven nada del lore.")).catch(e=>{console.error(e);toast("No se pudo.",true)});return}
-  if(d.ciadd!==undefined&&b.hasAttribute("data-ciadd")){const ref=$("#ci-add")?.value;if(ref)shopItems(ui.cid,I=>({...I,[ref]:newEntry(ref)}));return}
-  if(d.ciall){const g=d.ciall,refs=[...WEAPONS.map(w=>"w:"+w.id),...ARMORS.map(a=>"a:"+a.id),...ITEMS.map(i=>"o:"+i.id)].filter(r=>catGroup(r)===g);
-    shopItems(ui.cid,I=>{for(const r of refs)if(!I[r])I[r]=newEntry(r);return I});return}
+  if(d.ciadd1){const r=d.ciadd1;shopItems(ui.cid,I=>({...I,[r]:newEntry(r)}));return}
+  if(d.cig!==undefined&&b.hasAttribute("data-cig")){ui.cig=d.cig;render();return}
+  if(b.hasAttribute("data-ciaddf")){const refs=catFree(TIENDA[ui.cid].items||{});ui.cig="";ui.ciq="";shopItems(ui.cid,I=>{for(const r of refs)if(!I[r])I[r]=newEntry(r);return I});return}
   if(d.cidel){shopItems(ui.cid,I=>{delete I[d.cidel];return I});return}
   if(b.hasAttribute("data-bell")){ui.bell=!ui.bell;render();return}
   if(b.hasAttribute("data-bellgo")){ui.bell=false;$("#notifpop").hidden=true}
@@ -1342,6 +1355,7 @@ document.addEventListener("submit",async e=>{
 // Borrador del Compendio: lo escrito sobrevive a los cambios que lleguen de otros mientras editas
 document.addEventListener("input",e=>{const t=e.target;
   if(t.id==="cq"){ui.cq=t.value;render();return}
+  if(t.id==="ci-q"){ui.ciq=t.value;render();return}
   if(t.id?.startsWith("cf-")&&t.tagName!=="SELECT"&&t.type!=="file")ui.cdraft={...(ui.cdraft||{}),[t.id.slice(3)]:t.value};
 });
 document.addEventListener("change",e=>{
