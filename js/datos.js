@@ -1,13 +1,11 @@
 /* Datos de Velmara: personajes, lugares, catálogo de la tienda y equipo de tier 2 (SRD y Hope & Fear). */
+// Los personajes los crea cada jugador desde la web (Contenido "pjs" + su hoja en el estado).
+// Solo queda el de prueba del DM: no sale al elegir personaje y ve todo lo que hay, compartido o no
 const PJS=[
- {id:"cora",n:"C.O.R.A",j:"Adrián",c:"Mago · Clank"},
- {id:"chimpok",n:"Chimpok",j:"Andrés",c:"Explorador · Simiah"},
- {id:"fungrino",n:"Fungrino",j:"Quique",c:"Bardo · Fungril"},
- {id:"galeryon",n:"Galeryon",j:"Gabriel",c:"Guerrero · Drakona"},
- {id:"geliberto",n:"Geliberto",j:"Mateo",c:"Hechicero · Infernis"},
- // Solo para el DM: no sale al elegir personaje y ve todo lo que hay, compartido o no
  {id:"prueba",n:"PJ de prueba",j:"DM",c:"Lo ve todo",prueba:true}
 ];
+// Los cinco PJs de antes: se borran del estado y del Contenido al cargar
+const PJS_VIEJOS=["cora","chimpok","fungrino","galeryon","geliberto"];
 const RAR={c:{n:"Común",p:1},pc:{n:"Poco común",p:2},r:{n:"Raro",p:4},rec:{n:"Receta"}};
 const MAX_CONS=5;
 
@@ -235,20 +233,10 @@ const DOMINIOS={
 const TIPO_CARTA={Spell:"Hechizo",Ability:"Habilidad",Grimoire:"Grimorio"};
 const RASGOS=[["agi","Agilidad","Correr, saltar, maniobrar"],["fue","Fuerza","Levantar, golpear, agarrar"],["fin","Fineza","Controlar, ocultar, trastear"],
  ["ins","Instinto","Percibir, sentir, orientarse"],["pre","Presencia","Encandilar, actuar, engañar"],["con","Conocimiento","Recordar, analizar, comprender"]];
-// Lo que ya sabemos de cada PJ (notas del vault); el resto lo rellena cada jugador
-const PJ_BASE={
- cora:{clase:"wizard",sub:"Escuela del Conocimiento",asc:"Clank",com:"Loreborne",cartas:["mending-touch","book-of-illiat","book-of-tyfar"]},
- chimpok:{clase:"ranger",sub:"Beastbound",asc:"Simiah / Goblin",com:"Seaborne",cartas:["untouchable","vicious-entangle"]},
- fungrino:{clase:"bard",sub:"Wordsmith",asc:"Fungril / Giant",com:"Highborne",cartas:["inspirational-words","enrapture"]},
- galeryon:{clase:"warrior",sub:"Slayer",asc:"Drakona / Elfo",com:"Orderborne",cartas:["not-good-enough","whirlwind"]},
- geliberto:{clase:"sorcerer",sub:"Elemental",asc:"Infernis / Ribbet",com:"Wildborne",cartas:["unleash-chaos","rune-ward"]}
-};
+// Hoja vacía: la rellena el creador de personajes. Lo que se calcula (evasión, PG, umbrales…) sale de calcHoja()
 function hojaInicial(id){
-  const b=PJ_BASE[id]||{clase:"warrior",sub:"",asc:"",com:"",cartas:[]},c=CLASES[b.clase];
-  return {nivel:4,clase:b.clase,sub:b.sub,asc:b.asc,com:b.com,
-    rasgos:{agi:0,fue:0,fin:0,ins:0,pre:0,con:0},evasion:c.ev,competencia:2,
-    arm:{pts:0,mayor:0,grave:0},armMarc:0,
-    pg:{max:c.pg,marc:0},estres:{max:6,marc:0},esperanza:2,
-    exp:[{n:"",b:2},{n:"",b:2}],oro:{p:0,b:0,c:0},
-    cartas:b.cartas.slice(),baul:[],notas:""};
+  return {v:2,nivel:1,clase:id==="prueba"?"warrior":"",sub:id==="prueba"?"valiente":"",asc1:id==="prueba"?"humano":"",asc2:"",ascN:"",com:id==="prueba"?"orderborne":"",
+    rasgos:{agi:0,fue:0,fin:0,ins:0,pre:0,con:0},exp:[{n:"",b:2},{n:"",b:2}],clankExp:-1,
+    cartas:[],baul:[],notas:"",item:"",desc:"",preg:[],conex:[],subidas:{},aj:{ev:0,pg:0,es:0,comp:0,um:0,arm:0},
+    pg:{marc:0},estres:{marc:0},esperanza:2,armMarc:0};
 }

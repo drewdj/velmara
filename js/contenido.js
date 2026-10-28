@@ -15,17 +15,17 @@ const Contenido={
   emit(){this.subs.forEach(f=>f())},
   init(){
     const cfg=window.FIREBASE_CONFIG;
-    if(!cfg||!window.firebase){this.mode="local";return}
+    if(!cfg||!window.firebase){this.mode="local";this.listo=true;return}
     this.mode="live";
     const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
     this.ref=app.database().ref("tienda/contenido");
-    this.ref.on("value",s=>{this.data=s.val()||{};this.aplicar();this.emit()},e=>console.error(e));
+    this.ref.on("value",s=>{this.data=s.val()||{};this.aplicar();this.listo=true;this.emit()},e=>console.error(e));
   },
   aplicar(){
     for(const [k,c] of Object.entries(COLS)){
       const ov=this.data[k]||{},seen=new Set(),all=[];
       for(const b of BASE[k]){seen.add(b.id);const o=ov[b.id];all.push(o?{...b,...o,id:b.id}:{...b})}
-      for(const [id,o] of Object.entries(ov))if(!seen.has(id)&&o)all.push({...o,id,nuevo:true});
+      for(const [id,o] of Object.entries(ov))if(!seen.has(id)&&o&&!(k==="pjs"&&PJS_VIEJOS.includes(id)))all.push({...o,id,nuevo:true});
       // Lo borrado sale de las listas pero sigue en la tabla: quien ya lo tenga lo conserva
       c.arr.length=0;c.arr.push(...all.filter(x=>!x.borrado));
       for(const key in c.map)delete c.map[key];

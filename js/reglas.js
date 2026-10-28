@@ -34,12 +34,16 @@ function log(st,x){st.log=[{t:Date.now(),x},...(st.log||[])].slice(0,60)}
 function need(st){if(!st||!st.pjs)no("La partida todavía no ha empezado. Avisa al DM.");return st}
 // Quién tiene una pieza de la armería: equipada en cualquier hueco o guardada en su bolsa
 const holderOf=(st,slot,id)=>PJS.find(p=>{const s=st.pjs[p.id];return s.arma===id||s.sec===id||s.armadura===id||(s.bolsa||[]).includes(id)})?.id;
+// Tier cuya casilla marca un avance: la del tier actual si queda, si no la de uno anterior
+function tierLibre(h,k,n){const A=avancesDe(h);for(let t=tierDe(n);t>=2;t--)if((AV[k].min||2)<=t&&A.filter(a=>a.k===k&&a.t===t).length<CASILLAS[k])return t;return tierDe(n)}
 const BOLSA_MAX=2; // armas de inventario, como en la hoja de Daggerheart
 // Una referencia de equipo es el id de la armería o "p:<id>" para un objeto propio del jugador
 function gearInfo(st,pj,ref){
   if(!ref)return null;
   if(ref.startsWith("p:")){const o=st.pjs[pj].propios[ref.slice(2)];if(!o)return null;
-    return {ref,n:o.n,slot:{pri:"arma",sec:"sec",arm:"armadura"}[o.tipo]||null,h:o.h===2?2:1,propio:true,o}}
+    // Un propio con base es equipo de tier 1 del creador: lleva sus datos de arma o armadura
+    const b=o.base&&typeof T1!=="undefined"?T1[o.base]:null;
+    return {ref,n:o.n,slot:{pri:"arma",sec:"sec",arm:"armadura"}[o.tipo]||null,h:o.h===2?2:1,propio:true,o,...(b?(b.g?{w:b}:{a:b}):{})}}
   if(WEAPON[ref])return {ref,n:WEAPON[ref].n,slot:WEAPON[ref].g==="sec"?"sec":"arma",h:WEAPON[ref].h,w:WEAPON[ref]};
   if(ARMOR[ref])return {ref,n:ARMOR[ref].n,slot:"armadura",h:0,a:ARMOR[ref]};
   return null;
@@ -171,6 +175,42 @@ const A={
     me.propios[id]={...(me.propios[id]||{}),...obj};
     if(me.propios[id].q<=0){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});delete me.propios[id]}
     return st},
+  /* Crear un PJ (el creador guiado). d trae la hoja ya hecha y el equipo inicial. La ficha (nombre, foto…) va aparte, en Contenido. */
+  crear(st,id,d){need(st);if(st.hojas[id])no("Ese personaje ya existe.");
+    st.hojas[id]=d.hoja;const me=st.pjs[id]={arma:null,sec:null,armadura:null,bolsa:[],inv:{},propios:{}};
+    let i=0;const put=(o,slot)=>{const k="c"+(i++)+Date.now().toString(36);me.propios[k]={q:1,...o};if(slot)me[slot]="p:"+k};
+    const w=x=>({n:x.n,tipo:x.g==="sec"?"sec":"pri",h:x.h,base:x.id,d:""});
+    if(d.pri)put(w(T1[d.pri]),"arma");if(d.sec)put(w(T1[d.sec]),"sec");
+    if(d.arm)put({n:T1[d.arm].n,tipo:"arm",h:0,base:d.arm,d:""},"armadura");
+    if(d.item)put({n:d.item,tipo:"obj",d:"Objeto de clase."});
+    put({n:"Equipo básico",tipo:"obj",d:"Una antorcha, 15 m de cuerda y provisiones básicas."});
+    if(d.pot)me.inv[d.pot]=1;
+    if(d.fardo)put({n:"Fardo nómada",tipo:"obj",d:"Una vez por sesión, gasta 1 Esperanza para sacar un objeto común útil."});
+    for(const t of TIENDAS)if(t.modo!=="grupo"){st.puntos[t.id]=st.puntos[t.id]||{};if(st.puntos[t.id][id]==null)st.puntos[t.id][id]=+t.inicial||0}
+    log(st,`${d.n} se une a la partida.`);return st},
+  // DM: nivel al que puede subir el grupo
+  nivelGrupo(st,n){need(st);st.mundo.nivel=Math.max(1,Math.min(10,n));log(st,`El grupo ya puede llegar a nivel ${st.mundo.nivel}.`);return st},
+  /* Subir un nivel. s: {a:[avances], exp:"nueva experiencia" (niveles 2, 5, 8), carta:id}. Se guarda lo que había antes
+     de experiencias y cartas para poder deshacerla. */
+  subir(st,pj,s){need(st);const h=st.hojas[pj],n=(h.nivel||1)+1;
+    if(n>st.mundo.nivel)no("El DM aún no ha abierto ese nivel.");
+    const cost=(s.a||[]).reduce((t,a)=>t+(AV[a.k]?.coste||1),0);if(cost!==2)no("Elige dos avances.");
+    const prev={exp:structuredClone(h.exp),cartas:h.cartas.slice(),baul:h.baul.slice()};
+    if([2,5,8].includes(n)){if(!s.exp?.trim())no("Escribe tu nueva Experiencia.");h.exp.push({n:s.exp.trim().slice(0,60),b:2})}
+    const add=id=>{if(!id)return;if(h.cartas.includes(id)||h.baul.includes(id))no("Ya tienes esa carta.");(h.cartas.length<5?h.cartas:h.baul).push(id)};
+    add(s.carta);
+    h.subidas=h.subidas||{};const sub=h.subidas["n"+n]={a:[],prev,exp:s.exp?.trim()||"",carta:s.carta||""};
+    // Se van marcando de uno en uno, así elegir dos veces el mismo avance gasta dos casillas
+    for(const a of s.a){if(casillasLibres(h,a.k,n)<1)no(`«${AV[a.k].n}» ya no tiene casillas libres.`);
+      if(a.k==="rasgos"){const M=rasgosMarcados(h,n);if((a.r||[]).length!==2||a.r[0]===a.r[1]||a.r.some(k=>M.has(k)))no("Elige dos rasgos distintos sin marcar.")}
+      if(a.k==="exp")(a.i||[]).forEach(i=>{if(h.exp[i])h.exp[i].b++});
+      if(a.k==="carta")add(a.id);
+      if(a.k==="sub"&&h.sub==="conocimiento")add(a.id); // Consumado y Brillante: una carta más
+      sub.a.push({...a,t:tierLibre(h,a.k,n)})}
+    h.nivel=n;log(st,`${PJ[pj]?.n||"Un PJ"} sube a nivel ${n}.`);return st},
+  bajar(st,pj){need(st);const h=st.hojas[pj],n=h.nivel||1,s=h.subidas?.["n"+n];if(n<=1||!s)no("No hay subida que deshacer.");
+    if(s.prev){h.exp=s.prev.exp;h.cartas=s.prev.cartas||[];h.baul=s.prev.baul||[]}
+    delete h.subidas["n"+n];h.nivel=n-1;return st},
   // Hoja de personaje: el jugador cambia su propia hoja (mut recibe la hoja y la modifica)
   hoja(st,pj,mut){need(st);mut(st.hojas[pj]);return st},
   lugar(st,id,patch){need(st);Object.assign(st.mundo.lugares[id],patch);
