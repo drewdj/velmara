@@ -188,6 +188,12 @@ const A={
     if(d.fardo)put({n:"Fardo nómada",tipo:"obj",d:"Una vez por sesión, gasta 1 Esperanza para sacar un objeto común útil."});
     for(const t of TIENDAS)if(t.modo!=="grupo"){st.puntos[t.id]=st.puntos[t.id]||{};if(st.puntos[t.id][id]==null)st.puntos[t.id][id]=+t.inicial||0}
     log(st,`${d.n} se une a la partida.`);return st},
+  // DM: borrar un PJ con todo lo suyo (las piezas de la armería quedan libres al quitar su inventario)
+  borrarPJ(st,id){need(st);const n=PJ[id]?.n||id;
+    for(const r of Object.keys(st.pagos||{}))if(st.pagos[r].pj===id)delete st.pagos[r];
+    for(const t in st.puntos||{})delete st.puntos[t][id];
+    for(const k in st.botes||{}){const b=st.botes[k];if(b.para===id||b.por===id){Object.entries(b.aportes||{}).forEach(([q,v])=>{if(q!==id)addPts(st,b.tienda,q,v)});delete st.botes[k]}else if(b.aportes)delete b.aportes[id]}
+    delete st.pjs[id];delete st.hojas[id];log(st,`${n} deja la partida.`);return st},
   // DM: nivel al que puede subir el grupo
   nivelGrupo(st,n){need(st);st.mundo.nivel=Math.max(1,Math.min(10,n));log(st,`El grupo ya puede llegar a nivel ${st.mundo.nivel}.`);return st},
   /* Subir un nivel. s: {a:[avances], exp:"nueva experiencia" (niveles 2, 5, 8), carta:id}. Se guarda lo que había antes

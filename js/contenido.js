@@ -43,6 +43,9 @@ const Contenido={
     if(this.mode==="local"){this.data[col]=this.data[col]||{};if(v)this.data[col][id]=v;else delete this.data[col][id];this.aplicar();this.emit();return}
     await this.ref.child(`${col}/${id}`).set(v);
   },
+  // Quitar del todo (para los PJs que borra el DM)
+  async quitar(col,id){if(this.mode==="local"){if(this.data[col])delete this.data[col][id];this.aplicar();this.emit();return}
+    await this.ref.child(`${col}/${id}`).remove()},
   // Borrar solo marca: quien ya lo tenga lo sigue viendo en su inventario. restaurar lo deshace.
   async borrar(col,id,on=true){
     if(this.mode==="local"){this.data[col]=this.data[col]||{};const o={...(this.data[col][id]||{})};if(on)o.borrado=true;else delete o.borrado;

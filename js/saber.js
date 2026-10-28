@@ -14,13 +14,15 @@ const Saber={
   emit(){this.subs.forEach(f=>f())},
   init(){
     const cfg=window.FIREBASE_CONFIG;
-    if(!cfg||!window.firebase){this.mode="local";this.emit();return}
+    if(!cfg||!window.firebase){this.mode="local";this.tried=true;this.emit();return}
     this.mode="live";
     const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
     this.db=app.database();
     this.db.ref("saber").on("value",s=>{this.pub=s.val()||{};this.emit()},e=>console.error(e));
     let k=null;try{k=localStorage.getItem("v-dmkey")}catch(e){}
-    if(k)this.enter(k).catch(()=>this.forget());
+    // Con la clave guardada se entra solo. Solo se olvida si la contraseña ya no vale (no por un fallo de red)
+    if(k)this.enter(k).catch(e=>{console.error(e);if(e.message==="Contraseña incorrecta.")this.forget()}).finally(()=>{this.tried=true;this.emit()});
+    else this.tried=true;
   },
   async login(pw){
     pw=String(pw||"").trim();if(!pw)throw new Error("Escribe la contraseña.");

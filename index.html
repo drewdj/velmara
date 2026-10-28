@@ -702,6 +702,61 @@ details.feats[open] summary::after{content:"▴"}
 .pjrow>div{display:grid}
 .mini-face{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);display:grid;place-items:center;font-family:var(--cond);font-weight:700;background:var(--violet)}
 @media (max-width:560px){.pjrow{grid-template-columns:auto minmax(0,1fr)}.pjrow .state,.pjrow .btn{grid-column:2}}
+
+/* Inventario: equipo tipo «paper doll», mochila con filtros y rareza, detalle con comparación */
+.invgrid{grid-template-columns:minmax(0,360px) minmax(0,1fr)}
+.invgrid.withdet{grid-template-columns:minmax(0,340px) minmax(0,1fr) minmax(0,300px)}
+.equip{background:linear-gradient(180deg,rgb(249 167 43 / .07),transparent 40%),var(--violet);border:1px solid var(--line);padding:16px}
+.eslots{grid-template-columns:1fr;gap:8px}
+.eslot{grid-template-columns:84px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:12px;align-items:center;padding:8px 10px;background:rgb(10 6 20 / .55);border-color:var(--line);position:relative}
+.eslot .elab{grid-column:2;justify-self:start;font-family:var(--cond);font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);align-self:end}
+.eslot>.tile{grid-row:1/3;grid-column:1}
+.eslot .tile .tn{display:none}
+.eslot .einfo{grid-column:2;display:grid;gap:2px;align-self:start;min-width:0}
+.eslot .einfo b{font-family:var(--cond);font-size:1.15rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.1}
+.eslot .einfo small{color:var(--gold-hi);font-size:.85rem}
+.eslot.full{border-color:rgb(249 167 43 / .45)}
+.tile.empty{aspect-ratio:1;display:grid;place-content:center;gap:2px}
+.tile.empty .kic.big{position:static;font-size:1.8rem;opacity:.4;background:none;width:auto;height:auto}
+.cstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.cstats>div{display:grid;gap:2px;justify-items:center;background:var(--night);border:1px solid var(--line);padding:8px 4px;text-align:center}
+.cstats .lab{font-size:.7rem}
+.cstats b{font-family:var(--cond);font-size:1.6rem;line-height:1}
+.cstats b small{font-size:1rem;opacity:.6;margin:0 1px}
+.pips{display:flex;gap:4px;padding-top:6px}
+.pips i{width:12px;height:12px;transform:rotate(45deg);box-shadow:inset 0 0 0 1.5px var(--gold)}
+.pips i.on{background:var(--gold)}
+.bag{background:var(--violet);border:1px solid var(--line);padding:16px}
+.baghead{display:flex;justify-content:space-between;align-items:center}
+.ifil{display:flex;gap:4px;flex-wrap:wrap}
+.ifil button{font-family:var(--cond);font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.9rem;background:var(--night);border:1px solid var(--line);color:var(--muted);padding:4px 10px}
+.ifil button small{opacity:.7;margin-left:2px}
+.ifil button[aria-selected="true"]{color:var(--violet);background:linear-gradient(100deg,var(--gold-hi),var(--gold-lo));border-color:var(--gold)}
+.tiles{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));background:rgb(10 6 20 / .55);border-color:var(--line);
+  background-image:linear-gradient(rgb(74 59 115 / .25) 1px,transparent 1px),linear-gradient(90deg,rgb(74 59 115 / .25) 1px,transparent 1px);background-size:24px 24px}
+.tile{--rc:#9A8FB5;border:2px solid var(--rc);border-radius:6px;box-shadow:inset 0 0 18px -6px var(--rc)}
+.tile.r-c{--rc:#8FD19E}.tile.r-pc{--rc:#6BB3FF}.tile.r-r{--rc:#E06CFF}.tile.r-rec{--rc:#F5C35A}
+.tile.r-t1{--rc:#B9AECF}.tile.r-t2{--rc:#6BB3FF}.tile.r-t3{--rc:#E06CFF}.tile.r-t4{--rc:#F9A72B}.tile.r-p{--rc:#C9B58F}
+.tile:not(.empty):hover{transform:translateY(-2px);box-shadow:inset 0 0 18px -6px var(--rc),0 6px 16px -4px var(--rc)}
+.tile.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 18px rgb(249 167 43 / .6)}
+.tile .kic{position:absolute;top:4px;left:4px;width:20px;height:20px;display:grid;place-items:center;font-size:.75rem;background:rgb(10 6 20 / .7);color:var(--rc);border-radius:3px}
+.tile .qty{background:var(--gold);color:var(--violet);font-weight:700;border-radius:3px}
+.tile .tn{background:rgb(10 6 20 / .85)}
+@media (prefers-reduced-motion:no-preference){.tile{transition:transform .12s,box-shadow .12s}}
+.invdet{margin:0;max-width:none;position:sticky;top:12px;background:var(--violet);border:1px solid var(--gold);padding:14px;display:grid;gap:10px}
+.dmeta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rtag{font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;padding:1px 8px;border:1px solid var(--rc,#9A8FB5);color:var(--rc,#9A8FB5)}
+.rtag.r-c{--rc:#8FD19E}.rtag.r-pc{--rc:#6BB3FF}.rtag.r-r{--rc:#E06CFF}.rtag.r-rec{--rc:#F5C35A}.rtag.r-t1{--rc:#B9AECF}.rtag.r-t2{--rc:#6BB3FF}.rtag.r-t3{--rc:#E06CFF}.rtag.r-t4{--rc:#F9A72B}.rtag.r-p{--rc:#C9B58F}
+.cmp{display:grid;gap:4px;background:var(--night);padding:8px 10px;border-left:3px solid var(--gold)}
+.cmp .cl{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}
+.cmp .cl small{color:var(--muted);text-align:right}
+.cmp b.up{color:var(--ok)}.cmp b.down{color:var(--bad)}
+.warnt{color:var(--bad)}
+@media (max-width:1100px){.invgrid.withdet{grid-template-columns:minmax(0,340px) minmax(0,1fr)}
+ .invdet{position:fixed;left:auto;right:16px;bottom:16px;top:auto;width:min(340px,calc(100vw - 32px));max-height:75vh;overflow:auto;z-index:30;box-shadow:0 18px 50px rgb(0 0 0 / .6)}}
+@media (max-width:820px){.invgrid,.invgrid.withdet{grid-template-columns:1fr}
+ .invdet{left:0;right:0;bottom:0;width:auto;max-height:70vh;border-width:2px 0 0;padding:14px max(16px,env(safe-area-inset-left)) calc(14px + env(safe-area-inset-bottom))}
+ .invdet .detcard{width:100%;max-width:160px;margin:0 auto;order:2}.invdet .btns{order:-1}.invdet .btns .btn{flex:1}}
 </style>
 </head>
 <body>
@@ -714,17 +769,17 @@ details.feats[open] summary::after{content:"▴"}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=27"></script>
-<script src="js/datos.js?v=27"></script>
-<script src="js/dominios.js?v=27"></script>
-<script src="js/reglas.js?v=27"></script>
-<script src="js/store.js?v=27"></script>
-<script src="js/creacion.js?v=27"></script>
-<script src="js/cartas.js?v=27"></script>
-<script src="js/mapa.js?v=27"></script>
-<script src="js/contenido.js?v=27"></script>
-<script src="js/saber.js?v=27"></script>
-<script src="js/mundo.js?v=27"></script>
+<script src="js/firebase-config.js?v=28"></script>
+<script src="js/datos.js?v=28"></script>
+<script src="js/dominios.js?v=28"></script>
+<script src="js/reglas.js?v=28"></script>
+<script src="js/store.js?v=28"></script>
+<script src="js/creacion.js?v=28"></script>
+<script src="js/cartas.js?v=28"></script>
+<script src="js/mapa.js?v=28"></script>
+<script src="js/contenido.js?v=28"></script>
+<script src="js/saber.js?v=28"></script>
+<script src="js/mundo.js?v=28"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -811,7 +866,7 @@ function viewPick(st){
 }
 
 /* ---------- Crear personaje: los pasos del Core Rulebook ---------- */
-const CR_PASOS=[["clase","Clase"],["herencia","Herencia"],["rasgos","Rasgos"],["numeros","Números"],["equipo","Equipo"],["historia","Historia"],["exp","Experiencias"],["cartas","Cartas"],["conex","Conexiones"],["fin","Nombre"]];
+const CR_PASOS=[["clase","Clase"],["herencia","Herencia"],["rasgos","Rasgos"],["numeros","Números"],["equipo","Equipo"],["historia","Historia"],["exp","Experiencias"],["cartas","Cartas"],["fin","Nombre"]];
 const crNuevo=()=>({paso:0,max:0,clase:"",sub:"",asc1:"",asc2:"",mixta:false,ascN:"",com:"",rasgos:{},pri:"",sec:"",arm:"",pot:"p-men-salud",item:"",preg:{},desc:"",exp:["",""],clankExp:0,cartas:[],conex:{},n:"",j:"",img:""});
 function crLoad(){try{return JSON.parse(ls.get("v-crear")||"null")}catch(e){return null}}
 function crSave(){ls.set("v-crear",JSON.stringify(ui.cr))}
@@ -835,8 +890,7 @@ function crHoja(d,id){
     rasgos:Object.fromEntries(RASGOS.map(([k])=>[k,+d.rasgos[k]||0])),
     exp:d.exp.map((n,i)=>({n:n.trim(),b:2+(d.asc1==="clank"&&d.clankExp===i?1:0)})),clankExp:d.asc1==="clank"?d.clankExp:-1,
     cartas:d.cartas.slice(0,5),baul:d.cartas.slice(5),
-    preg:CLASE_INFO[d.clase].preg.map((q,i)=>({q,a:(d.preg[i]||"").trim()})).filter(x=>x.a),
-    conex:CLASE_INFO[d.clase].conex.map((q,i)=>({q,a:(d.conex[i]||"").trim()}))});
+});
   return h;
 }
 function crEquipo(d){return {pri:d.pri,sec:T1[d.pri]?.h===1?d.sec:"",arm:d.arm,item:d.item,pot:d.pot,n:d.n.trim()||"Nuevo PJ",fardo:d.com==="wanderborne"}}
@@ -850,7 +904,7 @@ function viewCrear(st){
   const malo=CR_PASOS.findIndex(([kk])=>crFalta(d,kk)),lim=Math.min(d.max,malo<0?99:malo);
   const falta=k==="fin"?(CR_PASOS.map(([kk])=>crFalta(d,kk)).find(Boolean)||""):crFalta(d,k);
   const steps=`<ol class="crsteps">${CR_PASOS.map(([kk,l],j)=>`<li><button data-crpaso="${j}" aria-current="${j===i?"step":"false"}" class="${j<=d.max&&!crFalta(d,kk)?"done":""}" ${j<=lim?"":"disabled"}><span class="num">${j+1}</span>${l}</button></li>`).join("")}</ol>`;
-  const body={clase:crClase,herencia:crHerencia,rasgos:crRasgos,numeros:crNumeros,equipo:crEquipoV,historia:crHistoria,exp:crExp,cartas:crCartas,conex:crConex,fin:crFin}[k](d);
+  const body={clase:crClase,herencia:crHerencia,rasgos:crRasgos,numeros:crNumeros,equipo:crEquipoV,historia:crHistoria,exp:crExp,cartas:crCartas,fin:crFin}[k](d);
   return `<div class="crear"><div class="crhead"><div><span class="tab-label">Crear personaje · paso ${i+1} de ${CR_PASOS.length}</span><h1>${lab}</h1></div>
     <button class="linkbtn" data-crsalir>Salir (se guarda lo que llevas)</button></div>${steps}
    <div class="crbody">${body}</div>
@@ -909,15 +963,13 @@ function crEquipoV(d){
     <section class="block"><span class="tab-label">Objeto de clase</span><div class="cropts one">${ci.items.map(x=>opt("data-critem",x,d.item===x,`<b>${esc(x)}</b>`)).join("")}</div></section></div>
    <p class="note">También llevas una antorcha, 15 m de cuerda y provisiones básicas.${d.com==="wanderborne"?" Y tu Fardo nómada.":""}</p>`;
 }
-function crHistoria(d){const ci=CLASE_INFO[d.clase],c=COM[d.com];
+function crHistoria(d){const c=COM[d.com];
   return `<p class="note">Cuéntanos quién eres. Todo es opcional y lo puedes cambiar luego en tu hoja.</p>
    <section class="block"><span class="tab-label">Retrato y aspecto</span>
     <div class="crphoto">${d.img?`<img src="${d.img}" alt="Tu retrato">`:`<span class="init" aria-hidden="true">?</span>`}
      <div class="btns"><label class="btn ghost" for="cr-img">${d.img?"Cambiar foto":"Subir foto"}</label><input type="file" id="cr-img" accept="image/*" hidden>${d.img?`<button class="btn warn" data-crimgdel>Quitar</button>`:""}</div></div>
     <div class="field"><label for="cr-desc">Descripción</label><textarea id="cr-desc" data-crf="desc" maxlength="1500" placeholder="Aspecto, ropa, manías, cómo hablas…">${esc(d.desc)}</textarea></div>
-    ${c?`<p class="note">Ideas de tu comunidad (${c.n}): ${esc(c.adj)}.</p>`:""}</section>
-   <section class="block"><span class="tab-label">Preguntas de trasfondo</span><p class="note">Responde las que quieras.</p>
-    ${ci.preg.map((q,i)=>`<div class="field"><label for="cr-p${i}">${esc(q)}</label><textarea id="cr-p${i}" data-crfp="${i}" maxlength="600">${esc(d.preg[i]||"")}</textarea></div>`).join("")}</section>`;
+    ${c?`<p class="note">Ideas de tu comunidad (${c.n}): ${esc(c.adj)}.</p>`:""}</section>`;
 }
 function crExp(d){
   return `<p class="note">Dos Experiencias a +2: algo de tu pasado que te ayuda en las tiradas (un oficio, un talento, una forma de ser). Por ejemplo: <i>Marinero curtido</i>, <i>Me crié en la calle</i>, <i>Nadie me engaña</i>.</p>
@@ -929,10 +981,6 @@ function crCartas(d){const c=CLASES[d.clase],N=crCartasN(d);
   return `<p class="note">Elige ${N} cartas de dominio de nivel 1 de ${c.dom.map(x=>DOMINIOS[x].n).join(" y ")}${N>2?" (una de ellas por «Preparado»)":""}. Puedes coger las dos del mismo dominio. Toca una para elegirla.</p>
    ${c.dom.map(dm=>`<section class="block"><span class="tab-label">${DOMINIOS[dm].n}</span><div class="crcards">${CARTAS_DOMINIO.filter(x=>x.d===dm&&x.lv===1).map(x=>{const on=d.cartas.includes(x.id);
      return `<button class="crcard${on?" on":""}" data-crcarta="${x.id}" aria-pressed="${on}" ${!on&&d.cartas.length>=N?"disabled":""}>${domainCard(x)}</button>`}).join("")}</div></section>`).join("")}`;
-}
-function crConex(d){const ci=CLASE_INFO[d.clase];
-  return `<p class="note">En la primera sesión, hazle una de estas preguntas a otro PJ (o inventa la tuya). Apunta aquí lo que te contesten, o déjalo para luego.</p>
-   ${ci.conex.map((q,i)=>`<div class="field"><label for="cr-c${i}">${esc(q)}</label><textarea id="cr-c${i}" data-crfc="${i}" maxlength="400">${esc(d.conex[i]||"")}</textarea></div>`).join("")}`;
 }
 function crFin(d){const c=crCalc(d),cl=CLASES[d.clase];
   return `<div class="fields"><div class="field"><label for="cr-n">Nombre del personaje</label><input id="cr-n" data-crf="n" value="${esc(d.n)}" maxlength="40"></div>
@@ -1144,7 +1192,6 @@ function viewPersonaje(st){
     <div class="cards cdrop small" data-drop="baul">${h.baul.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="baul">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Vacío. Arrastra aquí una carta de la mano.</p>`}</div></section>
    </div>
    ${(p.desc||h.desc)?`<section class="block deco"><span class="tab-label">Descripción</span><p class="pre">${esc(p.desc||h.desc)}</p></section>`:""}
-   ${h.preg.some(x=>x.a)||h.conex.some(x=>x.a)?`<section class="block deco"><span class="tab-label">Trasfondo y conexiones</span>${[...h.preg,...h.conex].filter(x=>x.a).map(x=>`<p class="qa"><b>${esc(x.q)}</b><br>${esc(x.a)}</p>`).join("")}</section>`:""}
    ${h.notas.trim()?`<section class="block deco"><span class="tab-label">Notas</span><p class="pre">${esc(h.notas)}</p></section>`:""}
   </div>`;
 }
@@ -1157,9 +1204,6 @@ function hojaEditar(st,h,k){
     <span class="btns">${where==="uso"?`<button class="btn ghost" data-cmove="${id}" data-to="baul" ${dis()}>Al baúl</button>`:`<button class="btn ghost" data-cmove="${id}" data-to="uso" ${dis(h.cartas.length>=5)}>A la mano</button>`}
     <button class="btn warn" data-cdel="${id}" ${dis()}>Quitar</button></span></div>`};
   const AJ=[["ev","Evasión",k.ev],["pg","Puntos de golpe",k.pg],["es","Estrés",k.es],["arm","Puntuación de armadura",k.arm],["um","Umbrales",`${k.mayor} / ${k.grave}`],["comp","Competencia",k.comp]];
-  const qa=(L,pre,lab)=>L.length?`<span class="lab">${lab}</span>${L.map((x,i)=>`<div class="field"><label for="${pre}${i}">${esc(x.q)}</label><textarea id="${pre}${i}" data-hqa="${pre==="hq-"?"preg":"conex"}.${i}" maxlength="600">${esc(x.a)}</textarea></div>`).join("")}`:"";
-  // Preguntas de la clase que aún no ha contestado
-  const ci=CLASE_INFO[h.clase];const preg=ci?ci.preg.map(q=>h.preg.find(x=>x.q===q)||{q,a:""}):h.preg;
   return `<section class="block deco"><header><span class="tab-label">Quién eres</span></header>
     <div class="crphoto">${p.img?`<img src="${p.img}" alt="Retrato">`:`<span class="init" aria-hidden="true">${esc((p.n||"?")[0])}</span>`}
      <div class="btns"><label class="btn ghost" for="pj-img">${p.img?"Cambiar foto":"Subir foto"}</label><input type="file" id="pj-img" accept="image/*" hidden>${p.img?`<button class="btn warn" data-pjimgdel>Quitar foto</button>`:""}</div></div>
@@ -1174,7 +1218,6 @@ function hojaEditar(st,h,k){
      <span class="lab">Baúl</span>${h.baul.map(id=>crow(id,"baul")).join("")||`<p class="empty">Vacío.</p>`}</div>
     <div class="btns"><select id="add-card" aria-label="Carta de dominio">${opts}</select><button class="btn" data-cadd ${dis()}>Añadir</button></div>
     <label class="toggle"><input type="checkbox" id="all-doms" ${ui.allDoms?"checked":""}> Mostrar todos los dominios y niveles</label></section>
-   <section class="block deco"><span class="tab-label">Trasfondo y conexiones</span>${qa(preg,"hq-","Preguntas de trasfondo")}${qa(h.conex,"hc-","Conexiones")}</section>
    <section class="block deco"><span class="tab-label">Ajustes a mano</span><p class="note">Todo se calcula solo con tu clase, ascendencia, equipo y subidas. Usa esto solo para algo que la hoja no sepa (un objeto, una carta, una cicatriz…).</p>
     ${AJ.map(([kk,l,v])=>`<div class="erow"><span class="lab">${l} <small class="note">(ahora ${v})</small></span>${step("aj."+kk,sgn(+h.aj[kk]||0),l)}</div>`).join("")}</section>
    <section class="block deco"><span class="tab-label">Notas</span><label class="note" for="hf-notas">Lo que quieras recordar.</label>
@@ -1259,11 +1302,6 @@ function tileArt(x){
   return `<svg class="tart" viewBox="0 0 120 120" aria-hidden="true">${scene(120,120,tint,glyph,x.it?ARTE[x.it.id]:x.g?.w?ARTE[x.g.w.id]:null,{cy:58,size:70})}</svg>`;
 }
 const nameOf=x=>x.it?cap(x.it.n.replace("Receta: ","")):x.g?.n||x.o?.n||"?";
-function tile(x,where){
-  const fits=x.g?.slot||"",sel=ui.sel===x.ref;
-  return `<button class="tile${sel?" sel":""}" data-ref="${esc(x.ref)}" data-fits="${fits}" data-where="${where}" ${fits?"data-drag":""} aria-pressed="${sel}">
-    ${tileArt(x)}${x.q>1?`<span class="qty num">×${x.q}</span>`:""}<span class="tn">${esc(nameOf(x))}</span></button>`;
-}
 function fullCard(st,pj,x){
   if(x.it)return itemCard(x.it);
   if(x.g?.w)return weaponCard(x.g.w);
@@ -1271,28 +1309,65 @@ function fullCard(st,pj,x){
   const o=x.o||st.pjs[pj].propios[x.ref.slice(2)];
   return `<div class="pcard deco"><span class="black-label">${PTIPO[o.tipo]||"Objeto"}${o.h===2?" · dos manos":""}</span><h3>${esc(o.n)}</h3>${o.d?`<p class="pre">${esc(o.d)}</p>`:`<p class="empty">Sin descripción.</p>`}</div>`;
 }
+// Qué es cada ficha (para filtrar) y su rareza (para el color del marco)
+function kindOf(x){if(x.it)return x.it.k==="cons"?"cons":x.it.k==="rec"?"rec":"obj";if(x.g?.w)return "arma";if(x.g?.a)return "armadura";
+  const t=x.o?.tipo;return t==="pri"||t==="sec"?"arma":t==="arm"?"armadura":t==="cons"?"cons":"obj"}
+function rarOf(x){if(x.it)return x.it.r;const g=x.g?.w||x.g?.a;if(g)return "t"+(g.tier||2);return "p"}
+const RARN={c:"Común",pc:"Poco común",r:"Raro",rec:"Receta",t1:"Tier 1",t2:"Tier 2",t3:"Tier 3",t4:"Tier 4",p:"Propio"};
+const KINDS=[["todo","Todo"],["arma","Armas"],["armadura","Armaduras"],["cons","Consumibles"],["obj","Objetos"],["rec","Recetas"]];
+const KICON={arma:"⚔",armadura:"⛨",cons:"⚗",obj:"◆",rec:"✎"};
+function tile(x,where){
+  const fits=x.g?.slot||"",sel=ui.sel===x.ref,k=kindOf(x);
+  return `<button class="tile r-${rarOf(x)}${sel?" sel":""}" data-ref="${esc(x.ref)}" data-fits="${fits}" data-where="${where}" ${fits?"data-drag":""} aria-pressed="${sel}" title="${esc(nameOf(x))}">
+    ${tileArt(x)}<span class="kic" aria-hidden="true">${KICON[k]}</span>${x.q>1?`<span class="qty num">×${x.q}</span>`:""}<span class="tn">${esc(nameOf(x))}</span></button>`;
+}
+// Lo que cambia en la hoja si se equipa (o se quita) una pieza: se prueba sobre una copia del estado
+function compara(st,ref,slot){let n;try{n=A.slot(structuredClone(st),ui.me,ref,slot)}catch(e){return {err:e.message}}
+  const a=calcHoja(st,ui.me),b=calcHoja(n,ui.me),D=[];
+  const num=(l,x,y,inv)=>{if(x!==y)D.push({l,x,y,up:inv?y<x:y>x})};
+  num("Evasión",a.ev,b.ev);num("Armadura",a.arm,b.arm);num("Umbral mayor",a.mayor,b.mayor);num("Umbral grave",a.grave,b.grave);
+  for(const [r,nm] of RASGOS)num(nm,a.r[r],b.r[r]);
+  const at=k=>k.ataques.map(t=>`${t.n} ${t.dmg}`).join(" · ")||"Sin arma";if(at(a)!==at(b))D.push({l:"Ataques",x:at(a),y:at(b),txt:true});
+  return {D}}
 function viewInventario(st){
-  const p=PJ[ui.me],s=st.pjs[ui.me],h=st.hojas[ui.me];
-  const top=`<div class="hero idrow"><div><span class="sub">${esc(CLASES[h.clase].n)} · ${esc(p.j)}</span><h1>${esc(p.n)}</h1></div>${seg("inv")}</div>`;
+  const p=PJ[ui.me],s=st.pjs[ui.me],h=st.hojas[ui.me],k=calcHoja(st,ui.me);
   const L=owned(st,ui.me);
+  const top=`<div class="hero idrow"><div class="pjtop">${p.img?`<img class="pjface" src="${p.img}" alt="">`:""}<div><span class="sub">${esc(CLASES[h.clase]?.n||"")} · Nivel ${h.nivel}</span><h1>${esc(p.n)}</h1></div></div>${seg("inv")}</div>`;
   if(ui.edit.inv)return top+invEditar(st,s,L);
-  const all=[...L];["arma","sec","armadura"].forEach(k=>{if(s[k])all.push({ref:s[k],g:gearInfo(st,ui.me,s[k]),q:1,o:s[k].startsWith("p:")?s.propios[s[k].slice(2)]:null})});
+  const all=[...L];["arma","sec","armadura"].forEach(kk=>{if(s[kk])all.push({ref:s[kk],g:gearInfo(st,ui.me,s[kk]),q:1,o:s[kk].startsWith("p:")?s.propios[s[kk].slice(2)]:null})});
   const selX=ui.sel&&all.find(x=>x.ref===ui.sel);if(ui.sel&&!selX)ui.sel=null;
-  const eslot=k=>{const r=s[k],x=r&&all.find(y=>y.ref===r),can=selX&&selX.g?.slot===k&&selX.ref!==r;
-    return `<div class="eslot${can?" can":""}" data-drop="${k}"><span class="elab">${SLOTN[k]}</span>${x?tile(x,k):`<button class="tile empty" data-slotpick="${k}" ${can?"":"tabindex=\"-1\""}><span class="tn">Vacío</span></button>`}</div>`};
-  const bolsaN=s.bolsa.length;
+  const atk=r=>k.ataques.find(a=>a.n===gearInfo(st,ui.me,r)?.w?.n);
+  const eslot=kk=>{const r=s[kk],x=r&&all.find(y=>y.ref===r),can=selX&&selX.g?.slot===kk&&selX.ref!==r;
+    const info=!x?"":kk==="armadura"?(x.g?.a?`Umbrales ${k.mayor} / ${k.grave} · Armadura ${k.arm}`:"Sin datos"):(a=>a?`${a.dmg} ${a.tipo} · ${a.alc}`:"Sin datos")(atk(r));
+    const blocked=kk==="sec"&&s.arma&&gearInfo(st,ui.me,s.arma)?.h===2;
+    return `<div class="eslot${can?" can":""}${x?" full":""}" data-drop="${kk}"><span class="elab">${SLOTN[kk]}</span>
+      ${x?tile(x,kk):`<button class="tile empty" data-slotpick="${kk}"><span class="kic big" aria-hidden="true">${KICON[kk==="armadura"?"armadura":"arma"]}</span><span class="tn">${blocked?"Manos ocupadas":"Vacío"}</span></button>`}
+      <div class="einfo">${x?`<b>${esc(nameOf(x))}</b><small>${esc(info)}</small>`:`<small class="note">${blocked?"Tu arma principal es a dos manos.":"Toca para ver qué puedes equipar."}</small>`}</div></div>`};
+  const cnt=kk=>kk==="todo"?L.length:L.filter(x=>kindOf(x)===kk).length;
+  const fil=ui.ifil||"todo",F=fil==="todo"?L:L.filter(x=>kindOf(x)===fil);
+  const pips=n=>Array.from({length:BOLSA_MAX},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("");
   let det="";
-  if(selX){const eqd=["arma","sec","armadura"].find(k=>s[k]===selX.ref),btn=[];
-    if(selX.g?.slot&&!eqd)btn.push(`<button class="btn" data-eq="${esc(selX.ref)}" data-slot="${selX.g.slot}" ${dis()}>Equipar como ${SLOTN[selX.g.slot].toLowerCase()}</button>`);
-    if(eqd)btn.push(`<button class="btn ghost" data-eq="${esc(selX.ref)}" data-slot="" ${dis()}>Quitar del hueco</button>`);
-    if(selX.it?.k==="cons")btn.push(`<button class="btn ghost" data-use="${selX.it.id}" ${dis()}>Usar uno</button>`);
-    if(selX.it?.k==="rec")btn.push(`<button class="btn ghost" data-brew="${selX.it.id}" ${dis()}>Preparar</button>`);
-    if(selX.o?.tipo==="cons")btn.push(`<button class="btn ghost" data-puse="${selX.ref.slice(2)}" ${dis()}>Usar uno</button>`);
-    det=`<section class="block invdet"><div class="detcard">${fullCard(st,ui.me,selX)}</div><div class="btns">${btn.join("")}<button class="btn ghost" data-sel="">Cerrar</button></div></section>`}
-  return top+`<p class="note invhelp">Arrastra un arma o armadura a su hueco, o tócala y luego toca el hueco. Para quitarla, arrástrala a la lista.</p>
-   <div class="invgrid"><section class="block equip"><span class="tab-label">Equipado</span><div class="eslots">${eslot("arma")}${eslot("sec")}${eslot("armadura")}</div>
-     <p class="note">Bolsa de armas: ${bolsaN} de ${BOLSA_MAX}.</p></section>
-    <section class="block bag"><span class="tab-label">Lo que llevas</span><div class="tiles" data-drop="lista">${L.length?L.map(x=>tile(x,"lista")).join(""):`<p class="empty">Nada por ahora. Añade tus cosas en Editar.</p>`}</div></section></div>${det}`;
+  if(selX){const eqd=["arma","sec","armadura"].find(kk=>s[kk]===selX.ref),btn=[];
+    if(selX.g?.slot&&!eqd)btn.push(`<button class="btn" data-eq="${esc(selX.ref)}" data-slot="${selX.g.slot}" ${dis()}>Equipar</button>`);
+    if(eqd)btn.push(`<button class="btn ghost" data-eq="${esc(selX.ref)}" data-slot="" ${dis()}>Quitar</button>`);
+    if(selX.it?.k==="cons")btn.push(`<button class="btn" data-use="${selX.it.id}" ${dis()}>Usar uno</button>`);
+    if(selX.it?.k==="rec")btn.push(`<button class="btn" data-brew="${selX.it.id}" ${dis()}>Preparar</button>`);
+    if(selX.o?.tipo==="cons")btn.push(`<button class="btn" data-puse="${selX.ref.slice(2)}" ${dis()}>Usar uno</button>`);
+    const cmp=selX.g?.slot?compara(st,selX.ref,eqd?null:selX.g.slot):null;
+    const cmpH=!cmp?"":cmp.err?`<p class="note warnt">${esc(cmp.err)}</p>`:cmp.D.length?`<div class="cmp"><span class="lab">${eqd?"Si lo quitas":"Si lo equipas"}</span>${cmp.D.map(d=>d.txt?`<div class="cl"><span>${d.l}</span><small>${esc(d.y)}</small></div>`
+      :`<div class="cl"><span>${d.l}</span><b class="${d.up?"up":"down"}">${d.x} → ${d.y} ${d.up?"▲":"▼"}</b></div>`).join("")}</div>`:`<p class="note">No cambia tus números.</p>`;
+    det=`<aside class="invdet" aria-label="Detalle"><div class="detcard">${fullCard(st,ui.me,selX)}</div>
+      <div class="dmeta"><span class="rtag r-${rarOf(selX)}">${RARN[rarOf(selX)]||""}</span>${selX.q>1?`<span class="note">Llevas ${selX.q}</span>`:""}${eqd?`<span class="note">Equipado</span>`:""}</div>
+      ${cmpH}<div class="btns">${btn.join("")}<button class="btn ghost" data-sel="">Cerrar</button></div></aside>`}
+  return top+`<div class="invgrid${selX?" withdet":""}">
+    <section class="block equip"><span class="tab-label">Equipado</span><div class="eslots">${eslot("arma")}${eslot("sec")}${eslot("armadura")}</div>
+     <div class="cstats"><div><span class="lab">Evasión</span><b class="num">${k.ev}</b></div><div><span class="lab">Armadura</span><b class="num">${k.arm}</b></div>
+      <div><span class="lab">Umbrales</span><b class="num">${k.mayor}<small>/</small>${k.grave}</b></div><div><span class="lab">Bolsa</span><span class="pips" title="Armas de la armería en la bolsa: ${s.bolsa.length} de ${BOLSA_MAX}">${pips(s.bolsa.length)}</span></div></div></section>
+    <section class="block bag"><header class="baghead"><span class="tab-label">Mochila</span><span class="note">${L.length} cosa${L.length===1?"":"s"}</span></header>
+     <div class="ifil" role="tablist">${KINDS.filter(([kk])=>kk==="todo"||cnt(kk)).map(([kk,l])=>`<button role="tab" data-ifil="${kk}" aria-selected="${fil===kk}">${kk!=="todo"?`<span aria-hidden="true">${KICON[kk]}</span> `:""}${l} <small class="num">${cnt(kk)}</small></button>`).join("")}</div>
+     <div class="tiles" data-drop="lista">${F.length?F.map(x=>tile(x,"lista")).join(""):`<p class="empty">${L.length?"Nada de este tipo.":"Nada por ahora. Añade tus cosas en Editar."}</p>`}</div>
+     <p class="note invhelp">Arrastra un arma o armadura a su hueco, o tócala y pulsa Equipar. Para quitarla, arrástrala a la mochila.</p></section>
+    ${det}</div>`;
 }
 function invEditar(st,s,L){
   const others=PJS.filter(x=>x.id!==ui.me);
@@ -1372,8 +1447,8 @@ function dmPartida(st){
     <p class="note">Los jugadores crean su personaje al entrar. Cuando subas el nivel del grupo, a cada uno le sale el aviso para subir en su hoja.</p>
     <div class="erow"><span class="lab">Nivel del grupo</span><span class="step"><button data-gnivel="-1" aria-label="Bajar nivel" ${dis(nv<=1)}>−</button><span class="v num">${nv}</span><button data-gnivel="1" aria-label="Subir nivel" ${dis(nv>=10)}>+</button></span></div>
     <div class="pjrows">${L.map(p=>{const h=st.hojas[p.id];return `<div class="pjrow">${retrato(p,"mini-face")}<div><b>${esc(p.n)}</b><small class="note">${esc(pjLinea(st,p))} · ${esc(p.j||"")}</small></div>
-      <span class="state ${h.nivel<nv?"shut":"open"}">${h.nivel<nv?`Le falta subir a ${nv}`:"Al día"}</span><button class="btn ghost" data-verpj="${p.id}">Ver hoja</button></div>`}).join("")||`<p class="note">Aún no se ha creado ningún personaje.</p>`}</div>
-    <p class="note">Para borrar un personaje o cambiar su ficha, ve al Compendio → Personajes jugadores.</p></section>
+      <span class="state ${h.nivel<nv?"shut":"open"}">${h.nivel<nv?`Le falta subir a ${nv}`:"Al día"}</span><span class="btns"><button class="btn ghost" data-verpj="${p.id}">Ver hoja</button><button class="btn warn" data-pjborrar="${p.id}" ${dis()}>${ui.pjborrar===p.id?"¿Seguro? Pulsa otra vez":"Borrar"}</button></span></div>`}).join("")||`<p class="note">Aún no se ha creado ningún personaje.</p>`}</div>
+    <p class="note">Borrar quita al personaje con su hoja, su inventario y sus puntos de tienda; lo que llevara de la armería vuelve a la tienda. No se puede deshacer.</p></section>
    <section class="block deco"><header><h2>Notas del vault</h2></header>
     <p class="note">${nNotas?`${nNotas} notas cargadas; ${nComp} compartidas con algún PJ.`:"Todavía no hay notas."} Las notas completas solo las puede leer tu cuenta de DM.</p>
     <div class="btns"><button class="btn" data-import ${dis()}>${nNotas?"Volver a importar el vault":"Importar el vault"}</button></div>
@@ -1596,6 +1671,7 @@ function render(){
   let body;
   if(Store.mode==="wait")body=`<div class="deco" style="margin-top:24px"><h2>Abriendo la puerta…</h2><p class="note">Cargando el estado de la partida.</p></div>`;
   else if(Store.mode==="error"&&!st)body=`<div class="deco" style="margin-top:24px"><h2>No hay conexión</h2><p class="note">Recarga la página. Si sigue igual, avisa al DM.</p></div>`;
+  else if(!ui.me&&!ui.canDM&&!Saber.tried&&ls.get("v-dmkey"))body=`<div class="deco" style="margin-top:24px"><h2>Entrando como DM…</h2><p class="note">Este navegador recuerda tu contraseña.</p></div>`;
   else if(!ui.me&&!ui.canDM)body=meEspera&&!Contenido.listo?`<div class="deco" style="margin-top:24px"><h2>Abriendo la puerta…</h2><p class="note">Cargando los personajes.</p></div>`:viewPick(st);
   else if(!st)body=`<div class="deco" style="margin-top:24px"><h2>La partida aún no ha empezado</h2><p class="note">El DM tiene que prepararla: cinco PJs con 3 vales y la tienda llena.</p>
     ${ui.canDM?`<div class="btns" style="margin-top:12px"><button class="btn" data-start ${dis()}>Empezar partida</button></div>`:""}</div>`;
@@ -1743,6 +1819,10 @@ document.addEventListener("click",e=>{
     else hit=false;
     if(hit){render();return}}
   if(d.gnivel)return act(st=>A.nivelGrupo(st,(st.mundo.nivel||1)+(+d.gnivel)),"Nivel del grupo cambiado.");
+  if(d.pjborrar){const id=d.pjborrar;if(ui.pjborrar!==id){ui.pjborrar=id;render();return}ui.pjborrar=null;
+    const n=PJ[id]?.n||"El personaje";if(ui.me===id)ui.me=null;
+    // Primero la ficha: mientras siga en la lista, el estado le vuelve a crear la hoja
+    Contenido.quitar("pjs",id).then(()=>act(st=>A.borrarPJ(st,id),`${n} borrado.`)).catch(e=>{console.error(e);toast("No se pudo borrar del todo.",true)});return}
   if(d.verpj){ui.me=d.verpj;ui.sel=null;Peek.clear();return go({view:"personaje"})}
   if(b.hasAttribute("data-bajar")){if(!ui.confirmBajar){ui.confirmBajar=true;b.textContent="Pulsa otra vez para deshacerla";return}ui.confirmBajar=false;return act(st=>A.bajar(st,ui.me),"Subida deshecha.")}
   if(b.hasAttribute("data-pjimgdel")){pjGuardar({img:null});return}
@@ -1755,8 +1835,10 @@ document.addEventListener("click",e=>{
   if(d.stab)return go({stab:d.stab});
 
   if(d.filt){ui.filt=d.filt;render();return}
+  if(d.ifil){ui.ifil=d.ifil;render();return}
+  if(d.slotpick){ui.ifil=d.slotpick==="armadura"?"armadura":"arma";render();return}
   if(d.wf){ui.wf=d.wf;render();return}
-  if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;render();if(ui.sel&&innerWidth<820)$(".invdet")?.scrollIntoView({block:"nearest",behavior:"smooth"});return}
+  if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;render();return}
   if(d.sel!==undefined){ui.sel=null;render();return}
   if(d.eq!==undefined){const r=d.eq,to=d.slot||null;ui.sel=null;return act(st=>A.slot(st,ui.me,r,to))}
   if(d.devolver)return act(st=>A.devolver(st,ui.me,d.devolver),"Devuelta.");
@@ -1858,9 +1940,7 @@ document.addEventListener("keydown",e=>{
 document.addEventListener("input",e=>{const t=e.target;
   if(ui.crear&&ui.cr){const c=ui.cr,D=t.dataset;
     if(D.crf){c[D.crf]=t.value;crSave();render();return}
-    if(D.crfe!==undefined){c.exp[+D.crfe]=t.value;crSave();render();return}
-    if(D.crfp!==undefined){c.preg[D.crfp]=t.value;crSave();return}
-    if(D.crfc!==undefined){c.conex[D.crfc]=t.value;crSave();return}}
+    if(D.crfe!==undefined){c.exp[+D.crfe]=t.value;crSave();render();return}}
   if(t.id==="sub-exp"&&ui.subir){ui.subir.exp=t.value;render();return}
   if(t.id==="cq"){ui.cq=t.value;render();return}
   if(t.id==="ci-q"){ui.ciq=t.value;render();return}
@@ -1882,9 +1962,6 @@ document.addEventListener("change",e=>{
   if(t.id==="cr-img"||t.id==="pj-img"){const f=t.files[0];t.value="";if(!f)return;
     reducirImagen(f).then(d=>{if(t.id==="cr-img"){ui.cr.img=d;crSave();render()}else pjGuardar({img:d})}).catch(err=>toast(err.message,true));return}
   if(t.dataset?.pjf){const k=t.dataset.pjf,v=t.value.slice(0,k==="desc"?1500:40).trim();if(k!=="desc"&&!v){toast("No puede quedar vacío.",true);render();return}pjGuardar({[k]:v});return}
-  if(t.dataset?.hqa){const [L,i]=t.dataset.hqa.split("."),v=t.value.slice(0,600);
-    act(st=>A.hoja(st,ui.me,h=>{if(L==="conex"){if(h.conex[+i])h.conex[+i].a=v;return}
-      const ci=CLASE_INFO[h.clase],M=ci?ci.preg.map(q=>h.preg.find(x=>x.q===q)||{q,a:""}):h.preg;if(M[+i])M[+i]={...M[+i],a:v};h.preg=M.filter(x=>x.a.trim())}),"Guardado.");return}
   if(t.id==="import-file"){const f=t.files[0];t.value="";if(!f)return;
     f.text().then(x=>Saber.importar(JSON.parse(x))).then(n=>toast(`${n} notas importadas.`)).catch(err=>{console.error(err);toast(err instanceof SyntaxError?"Ese archivo no es el del vault.":err.message||"No se pudo importar.",true)});return}
   if(t.dataset?.pf){const [id,k]=t.dataset.pf.split("."),v=k==="h"?+t.value:t.value.slice(0,k==="d"?400:60);act(st=>A.propio(st,ui.me,id,{[k]:v}),"Guardado.");return}
