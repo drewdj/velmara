@@ -111,12 +111,12 @@ function weaponCard(w){
   const tipo=w.g==="sec"?"Arma secundaria":"Arma principal";
   const [dado,tipoD]=w.d.split(" ");
   return `<div class="dh-card" tabindex="0">${cardSVG(glyphFor("arma",w.id),ARTE[w.id],"EQUIPO",{kind:"hex",big:dado,small:tipoD==="mág"?"mágico":"físico"},TINT[tipoD==="mág"?"mag":"fis"])}
-   <div class="cbody"><h4>${escC(w.n)}</h4><div class="ctype">${tipo}${w.hf?" · H&amp;F":""}</div>
+   <div class="cbody"><h4>${escC(w.n)}</h4><div class="ctype">${tipo} · Tier ${w.tier||2}${w.hf?" · H&amp;F":""}</div>
    <div class="ctrait">${escC(w.tr)}, ${escC(w.a)}</div>${w.f?`<p class="clamp">${fmtFeature(w.f)}</p>`:""}</div>${hands(w.h)}</div>`;
 }
 function armorCard(a){
   return `<div class="dh-card" tabindex="0">${cardSVG("armadura",ARTE[a.id],"EQUIPO",{kind:"shield",big:a.sc,small:"puntuación"},TINT.arm)}
-   <div class="cbody"><h4>${escC(a.n)}</h4><div class="ctype">Armadura${a.hf?" · H&amp;F":""}</div>
+   <div class="cbody"><h4>${escC(a.n)}</h4><div class="ctype">Armadura · Tier ${a.tier||2}${a.hf?" · H&amp;F":""}</div>
    <div class="ctrait">Umbrales ${escC(a.u.replace(/ /g,""))}</div>${a.f?`<p class="clamp">${fmtFeature(a.f)}</p>`:""}</div>
    <span class="slots" aria-label="${a.sc} espacios de armadura">${`<svg viewBox="0 0 24 27">${SHIELD}</svg>`.repeat(a.sc)}</span></div>`;
 }
