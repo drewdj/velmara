@@ -511,6 +511,7 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .wbody .prose h2{font-size:1.25rem}.wbody .prose h3{font-size:1.1rem}
 .wgrip{position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 50%,var(--gold) 50%,var(--gold) 60%,transparent 60%,transparent 70%,var(--gold) 70%,var(--gold) 80%,transparent 80%)}
 .wshops{display:grid;gap:8px}
+.tcard{min-height:150px}.tcard .btn{justify-self:start;margin-top:6px}
 .wshop{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border:1px solid var(--line);padding:8px 10px}
 .wshop>div{flex:1 1 160px;display:grid}
 .wshare{border:1px dashed var(--line);padding:8px 10px;display:grid;gap:8px}
@@ -595,16 +596,16 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=23"></script>
-<script src="js/datos.js?v=23"></script>
-<script src="js/dominios.js?v=23"></script>
-<script src="js/reglas.js?v=23"></script>
-<script src="js/store.js?v=23"></script>
-<script src="js/cartas.js?v=23"></script>
-<script src="js/mapa.js?v=23"></script>
-<script src="js/contenido.js?v=23"></script>
-<script src="js/saber.js?v=23"></script>
-<script src="js/mundo.js?v=23"></script>
+<script src="js/firebase-config.js?v=24"></script>
+<script src="js/datos.js?v=24"></script>
+<script src="js/dominios.js?v=24"></script>
+<script src="js/reglas.js?v=24"></script>
+<script src="js/store.js?v=24"></script>
+<script src="js/cartas.js?v=24"></script>
+<script src="js/mapa.js?v=24"></script>
+<script src="js/contenido.js?v=24"></script>
+<script src="js/saber.js?v=24"></script>
+<script src="js/mundo.js?v=24"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -634,7 +635,7 @@ const MARK=`<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id
 function header(st){
   const me=ui.me&&st?.pjs?.[ui.me];
   const lt={live:"En vivo",local:"Modo prueba",wait:"Conectando…",error:"Sin conexión",offline:"Reconectando…"}[Store.mode];
-  const inShop=ui.view==="mundo"&&ui.tienda&&TIENDA[ui.tienda]&&me; // los puntos solo pintan algo dentro de la tienda
+  const inShop=ui.view==="tiendas"&&ui.tienda&&TIENDA[ui.tienda]&&me; // los puntos solo pintan algo dentro de la tienda
   const who=ui.canDM?`<span class="dmtag">DM</span><select id="dm-pj" aria-label="Ver la hoja de"><option value="">Ver la hoja de…</option>${PJS.map(p=>`<option value="${p.id}" ${p.id===ui.me?"selected":""}>${esc(p.n)}</option>`).join("")}</select>${inShop?shopCoins(st,ui.tienda):""}<button class="linkbtn" data-logout>Salir</button>`
     :ui.me?`<span class="nm">${esc(PJ[ui.me].n)}</span>${inShop?shopCoins(st,ui.tienda):""}<button class="linkbtn" data-switch>Cambiar personaje</button>`:"";
   return `<header class="top"><button class="brand" data-home>${MARK}<span>Velmara</span></button>
@@ -662,9 +663,10 @@ function shopRows(st,id){const T=shopsAt(id);if(!T.length)return "";
   return `<div class="wshops">${T.map(t=>{const s=st.mundo.tiendas[t.id]||{};
     return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub||"")}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`}
 function nav(st){
-  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(ui.canDM?[["dm","Mesa del DM"]]:[])];
-  const dot=openShops(st).length?`<i class="dot" title="Hay algo abierto"></i>`:"";
-  return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="mundo"?dot:""}</button>`).join("")}</nav>`;
+  const nOpen=openShops(st).length,shops=nOpen||ui.view==="tiendas"; // sin tiendas abiertas no hay pestaña
+  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(shops?[["tiendas","Tiendas"]]:[]),...(ui.canDM?[["dm","Mesa del DM"]]:[])];
+  const dot=nOpen?`<i class="dot" title="Hay tiendas abiertas"></i>`:"";
+  return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="tiendas"?dot:""}</button>`).join("")}</nav>`;
 }
 const seg=k=>`<div class="seg" role="tablist" aria-label="Modo"><button role="tab" data-mode="${k}" data-v="0" aria-selected="${!ui.edit[k]}">Ver</button><button role="tab" data-mode="${k}" data-v="1" aria-selected="${!!ui.edit[k]}">Editar</button></div>`;
 
@@ -688,15 +690,19 @@ function loreFor(st){
   const E={};
   if(asDM()){for(const [id,e] of Object.entries(Saber.dm))E[id]={...e,dm:true}}
   else for(const [id,e] of Object.entries(Saber.visibleFor(ui.me)))E[id]={...e};
-  for(const l of LUGARES)if(asDM()||st.mundo.lugares[l.id]?.visible)E[l.id]=E[l.id]||{n:l.n,cat:"lugares",sub:l.sub,txt:l.desc,pub:l.desc};
+  for(const l of LUGARES)if(asDM())E[l.id]=E[l.id]||{n:l.n,cat:"lugares",sub:l.sub,txt:l.desc,pub:l.desc};
   return E;
 }
 const plain=s=>String(s||"").replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,a,b)=>b||a).replace(/[*#>_]/g,"").replace(/(^|\n)\s*([-•]|\d+\.)\s+/g,"$1").replace(/\s+/g," ").trim();
 function whoSees(id){const p=Saber.pub[id]?.para;if(!p)return "Nadie";if(p.todos)return "Todos";const n=PJS.filter(x=>p[x.id]).map(x=>x.n);return n.length?n.join(", "):"Nadie"}
 // Mundo = mapa de Velmara de fondo (js/mundo.js). Aquí solo queda la tienda, que es una pantalla aparte.
-function viewMundo(st){
+function viewMundo(st){return ""}
+// Tiendas: solo las abiertas (el DM puede entrar también en las cerradas desde Partida)
+function viewTiendas(st){
   if(ui.tienda&&TIENDA[ui.tienda]&&!TIENDA[ui.tienda].borrado&&(st.mundo.tiendas[ui.tienda]?.abierta||ui.canDM))return viewTienda(st,ui.tienda);
-  ui.tienda=null;return "";
+  ui.tienda=null;const T=openShops(st);
+  return `<div class="hero"><span class="tab-label">Abiertas ahora</span><h1>Tiendas</h1></div>`+(T.length?`<div class="places">${T.map(t=>`<button class="pjcard deco tcard" data-tienda="${t.id}"><span class="nm">${esc(t.n)}</span>${t.sub?`<span class="cl">${esc(t.sub)}</span>`:""}${t.cita?`<span class="note">«${esc(t.cita)}»</span>`:""}<span class="btn">Entrar</span></button>`).join("")}</div>`
+    :`<div class="deco"><p class="note">Ahora mismo no hay ninguna tienda abierta.</p></div>`);
 }
 // Lo que pinta el mapa: entradas con su marcador (pos) y, para el DM, si aún no lo ve nadie (oculto)
 function mundoEntries(){
@@ -730,7 +736,7 @@ function entryBody(id){
 const catalog=(t,k)=>Object.entries(t.items||{}).filter(([ref])=>ref[0]===k&&refX(ref)&&!refX(ref).borrado).map(([ref,e])=>({ref,e,x:refX(ref)}));
 function viewTienda(st,id){
   const t=TIENDA[id],s=st.mundo.tiendas[id]||{abierta:false,nota:""},lid=t.lugar;
-  const crumbs=`<div class="crumbs"><button data-ent="">Mundo</button><i>/</i>${lid?`<button data-ent="${lid}">${esc(lugarN(lid))}</button><i>/</i>`:""}<span>${esc(t.n)}</span></div>`;
+  const crumbs=`<div class="crumbs"><button data-view="tiendas">Tiendas</button><i>/</i><span>${esc(t.n)}</span></div>`;
   const hero=`<div class="hero"><span class="sub">${esc(t.sub||"")}</span><h1>${esc(t.n)}</h1>${t.desc?`<p>${esc(t.desc)}</p>`:""}${t.cita?`<p class="quote">«${esc(t.cita)}»</p>`:""}${s.nota?`<div class="notice"><b>Aviso</b>${esc(s.nota)}</div>`:""}</div>`;
   if(!s.abierta&&!ui.canDM)return crumbs+hero+`<div class="deco"><h2>Cerrada</h2><p class="note">Volved cuando el DM la abra.</p></div>`;
   // El DM puede mirar siempre; para comprar o coger equipo elige antes un PJ
@@ -998,7 +1004,7 @@ const cardArt=(id,w,h,img,glyph)=>`<svg class="ctart" viewBox="0 0 ${w} ${h}" ar
 function knownCards(st,kind){
   const V=CARDV[kind],E=Object.fromEntries(Object.entries(Saber.visibleFor(ui.me)).filter(([,e])=>V.ok(e)));
   // Los lugares de la tienda que el DM ha hecho visibles cuentan aunque no tengan nota compartida
-  if(kind==="lugares")for(const l of LUGARES)if(!E[l.id]&&(st.mundo.lugares[l.id]?.visible||PJ[ui.me]?.prueba))E[l.id]={n:l.n,cat:"lugares",sub:l.sub,txt:l.desc};
+  if(kind==="lugares")for(const l of LUGARES)if(!E[l.id]&&PJ[ui.me]?.prueba)E[l.id]={n:l.n,cat:"lugares",sub:l.sub,txt:l.desc};
   return Object.entries(E).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es"));
 }
 function viewCartas(st,kind){
@@ -1262,11 +1268,11 @@ function render(){
   else{
     if(!ui.me&&["personaje","inventario","contactos","lugares"].includes(ui.view))ui.view="mundo";
     if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
-    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
+    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,tiendas:viewTiendas,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
     body=nav(st)+V(st);
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
-  showMundo(!!(st&&(ui.me||ui.canDM)&&ui.view==="mundo"&&!ui.tienda));
+  showMundo(!!(st&&(ui.me||ui.canDM)&&ui.view==="mundo"));
   const ae=document.activeElement;let sel=null;try{sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}
   const keep=["TEXTAREA","INPUT"].includes(ae?.tagName)&&ae.type!=="checkbox"&&ae.id?{id:ae.id,v:ae.value,sel}:null;
   const dsc=$("#cdrawer")?.scrollTop;
@@ -1338,12 +1344,12 @@ document.addEventListener("click",e=>{
   if(d.login!==undefined){ui.login=d.login==="1";ui.loginErr="";render();if(ui.login)$("#dm-pw")?.focus();return}
   if(b.hasAttribute("data-logout")){Saber.logout();ui.me=ls.get("v-pj-own")||null;if(!PJ[ui.me])ui.me=null;ls.set("v-pj",ui.me);return go({view:"personaje"})}
   if(d.me){ui.me=d.me;ls.set("v-pj",d.me);ls.set("v-pj-own",d.me);return go({view:"personaje"})}
-  if(d.view)return go({view:d.view,...(d.view==="mundo"?{tienda:null,ent:null}:{}),sel:null});
+  if(d.view)return go({view:d.view,...(d.view==="mundo"?{ent:null}:{}),tienda:null,sel:null});
   if(d.mode){ui.edit[d.mode]=d.v==="1";ui.sel=null;render();return}
   if(d.ent!==undefined){go({view:"mundo",tienda:null,ent:null});if(d.ent)Mundo.open(d.ent);return}
   if(d.cat){ui.cat=d.cat;ls.set("v-cat",d.cat);render();return}
   if(d.lugar!==undefined)return go({ent:d.lugar||null,tienda:null});
-  if(d.tienda)return go({view:"mundo",tienda:d.tienda,...(d.stabgo?{stab:d.stabgo}:{})});
+  if(d.tienda)return go({view:"tiendas",tienda:d.tienda,...(d.stabgo?{stab:d.stabgo}:{})});
   if(d.stab)return go({stab:d.stab});
 
   if(d.filt){ui.filt=d.filt;render();return}
