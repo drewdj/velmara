@@ -3,6 +3,9 @@
    medallón; abajo, el texto sobre papel. Un toque en la carta muestra el texto entero.
    Si existe ARTE[id] (ruta a una imagen), se usa como ilustración. */
 const ARTE={}; // p. ej. ARTE["baston-corto"]="img/equipo/baston-corto.png"
+// Ilustraciones de las cartas de dominio que ya están en img/cartas/{id}.webp
+const ARTE_DOM=new Set("get-back-up not-good-enough whirlwind a-soldiers-bond reckless scramble versatile-fighter deadly-focus fortified-armor champions-edge vitality battle-hardened rage-up blade-touched glancing-blow battle-cry frenzy gore-and-glory reapers-strike battle-monster onslaught".split(" "));
+const arteDom=id=>ARTE[id]||(ARTE_DOM.has(id)?`img/cartas/${id}.webp`:null);
 
 const escC=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
@@ -140,7 +143,7 @@ function miniCard(it,qty){
 function domainCard(c){
   const D=DOMINIOS[c.d];
   return `<div class="dh-card dom" tabindex="0" style="--dom:${D.c}"><svg class="cframe" viewBox="0 0 740 640" aria-hidden="true">
-   <svg width="740" height="600" viewBox="0 0 740 600">${scene(740,600,[D.c,mix(D.c,"#140D24")],c.d,ARTE[c.id],{cy:300,size:300,emblem:true})}</svg>
+   <svg width="740" height="600" viewBox="0 0 740 600">${scene(740,600,[D.c,mix(D.c,"#140D24")],c.d,arteDom(c.id),{cy:300,size:300,emblem:true})}</svg>
    <path d="M60 0 H200 V230 L130 270 L60 230Z" fill="${D.c}" stroke="#FAC472" stroke-width="6"/>
    <text x="130" y="120" class="d-lv" text-anchor="middle">${c.lv}</text><text x="130" y="175" class="d-dn" text-anchor="middle">${escC(D.n.toUpperCase())}</text>
    <circle cx="650" cy="80" r="52" fill="#FBF7EE" stroke="#F9A72B" stroke-width="8"/>

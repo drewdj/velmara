@@ -811,18 +811,18 @@ details.feats[open] summary::after{content:"▴"}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=29"></script>
-<script src="js/datos.js?v=29"></script>
-<script src="js/dominios.js?v=29"></script>
-<script src="js/reglas.js?v=29"></script>
-<script src="js/store.js?v=29"></script>
-<script src="js/creacion.js?v=29"></script>
-<script src="js/cartas.js?v=29"></script>
-<script src="js/mapa.js?v=29"></script>
-<script src="js/contenido.js?v=29"></script>
-<script src="js/saber.js?v=29"></script>
-<script src="js/mundo.js?v=29"></script>
-<script src="js/libro.js?v=29"></script>
+<script src="js/firebase-config.js?v=30"></script>
+<script src="js/datos.js?v=30"></script>
+<script src="js/dominios.js?v=30"></script>
+<script src="js/reglas.js?v=30"></script>
+<script src="js/store.js?v=30"></script>
+<script src="js/creacion.js?v=30"></script>
+<script src="js/cartas.js?v=30"></script>
+<script src="js/mapa.js?v=30"></script>
+<script src="js/contenido.js?v=30"></script>
+<script src="js/saber.js?v=30"></script>
+<script src="js/mundo.js?v=30"></script>
+<script src="js/libro.js?v=30"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1783,7 +1783,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=29")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=30")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){
