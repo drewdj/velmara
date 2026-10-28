@@ -194,8 +194,9 @@ tr:last-child td{border-bottom:0}
 .spell .sd{display:none}
 .open .spells{gap:10px}.open .spell .sd{display:block;margin-top:2px}
 .dh-card.dom{box-shadow:0 0 0 2px var(--dom),0 10px 28px rgb(0 0 0 / .4)}
-.dh-card.dom .ctype{color:var(--dom)}
+.dh-card.dom .ctype{color:var(--dom)}.dh-card.dom .cbody h4{margin-top:2.5cqw}
 .d-lv{font-family:var(--cond);font-weight:700;font-size:96px;fill:#fff}
+.d-ty{font-family:var(--cond);font-weight:700;font-size:30px;letter-spacing:3px;fill:#fff}
 .d-dn{font-family:var(--cond);font-weight:700;font-size:26px;letter-spacing:2px;fill:#fff}
 .d-rc{font-family:var(--cond);font-weight:700;font-size:44px;fill:var(--violet)}
 .minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:18px}
@@ -811,18 +812,18 @@ details.feats[open] summary::after{content:"▴"}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=30"></script>
-<script src="js/datos.js?v=30"></script>
-<script src="js/dominios.js?v=30"></script>
-<script src="js/reglas.js?v=30"></script>
-<script src="js/store.js?v=30"></script>
-<script src="js/creacion.js?v=30"></script>
-<script src="js/cartas.js?v=30"></script>
-<script src="js/mapa.js?v=30"></script>
-<script src="js/contenido.js?v=30"></script>
-<script src="js/saber.js?v=30"></script>
-<script src="js/mundo.js?v=30"></script>
-<script src="js/libro.js?v=30"></script>
+<script src="js/firebase-config.js?v=31"></script>
+<script src="js/datos.js?v=31"></script>
+<script src="js/dominios.js?v=31"></script>
+<script src="js/reglas.js?v=31"></script>
+<script src="js/store.js?v=31"></script>
+<script src="js/creacion.js?v=31"></script>
+<script src="js/cartas.js?v=31"></script>
+<script src="js/mapa.js?v=31"></script>
+<script src="js/contenido.js?v=31"></script>
+<script src="js/saber.js?v=31"></script>
+<script src="js/mundo.js?v=31"></script>
+<script src="js/libro.js?v=31"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1783,7 +1784,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=30")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=31")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){

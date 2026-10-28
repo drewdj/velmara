@@ -5,6 +5,8 @@
 const ARTE={}; // p. ej. ARTE["baston-corto"]="img/equipo/baston-corto.png"
 // Ilustraciones de las cartas de dominio que ya están en img/cartas/{id}.webp
 const ARTE_DOM=new Set("get-back-up not-good-enough whirlwind a-soldiers-bond reckless scramble versatile-fighter deadly-focus fortified-armor champions-edge vitality battle-hardened rage-up blade-touched glancing-blow battle-cry frenzy gore-and-glory reapers-strike battle-monster onslaught".split(" "));
+// Símbolos de dominio (viewBox 250×250) para el banderín, junto al nivel
+const DOM_ICON={Blade:'<path d="M214 14h2c13 24.1 12 54.5 4.4 80.1a109 109 0 0 1-24.9 42.8A136 136 0 0 1 160 165l-2.3 1.4c-1.8 1.2-1.8 1.2-4.7 2.6l-3-1 1.2-2.8c6-14.2 11.1-30 5.8-45.2a26 26 0 0 0-15-14.2c-16.3-5.5-33.5 1.2-48.2 8.3q-5.2 2.6-10 5.8C82 121 82 121 80 121c1.4-4 3.4-7.3 5.8-10.9 9.5-15 16-33.6 12.5-51.6a43 43 0 0 0-11-20.1C86 37 86 37 86 35q5.9 1.9 11.5 4.4c20 8.6 40 17 61.9 19.2l3.6.4 1 2c-12.2 4.8-25 5.7-38 7a87 87 0 0 0 64-11c14.7-10.3 20.6-26 24-43"/><path d="M127 111v3l-5.6 4.8q-18 14.5-31.4 33.2l-1.2 1.7a134 134 0 0 0-26.4 76l-.1 3.6-.3 8.7a367 367 0 0 1-15.5-14l-2.2-2q-5.1-4.8-10-9.8-3.5-3.5-7.2-6.6L24 207c3.4-10.6 15.8-17.1 24.7-22.9q3.8-2.4 7.3-5.1l-18 4c7.7-15.6 18.6-23.5 34-31q-7.5.7-15 2a92 92 0 0 1 54.4-39.6q7.8-2 15.6-3.4"/>'};
 const arteDom=id=>ARTE[id]||(ARTE_DOM.has(id)?`img/cartas/${id}.webp`:null);
 
 const escC=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -145,11 +147,12 @@ function domainCard(c){
   return `<div class="dh-card dom" tabindex="0" style="--dom:${D.c}"><svg class="cframe" viewBox="0 0 740 640" aria-hidden="true">
    <svg width="740" height="600" viewBox="0 0 740 600">${scene(740,600,[D.c,mix(D.c,"#140D24")],c.d,arteDom(c.id),{cy:300,size:300,emblem:true})}</svg>
    <path d="M60 0 H200 V230 L130 270 L60 230Z" fill="${D.c}" stroke="#FAC472" stroke-width="6"/>
-   <text x="130" y="120" class="d-lv" text-anchor="middle">${c.lv}</text><text x="130" y="175" class="d-dn" text-anchor="middle">${escC(D.n.toUpperCase())}</text>
+   <text x="130" y="120" class="d-lv" text-anchor="middle">${c.lv}</text>${DOM_ICON[c.d]?`<g transform="translate(88 136) scale(.336)" fill="#fff">${DOM_ICON[c.d]}</g>`:`<text x="130" y="175" class="d-dn" text-anchor="middle">${escC(D.n.toUpperCase())}</text>`}
    <circle cx="650" cy="80" r="52" fill="#FBF7EE" stroke="#F9A72B" stroke-width="8"/>
    <path d="M646 46 L622 86 H642 L636 114 L662 74 H642Z" fill="${D.c}"/><text x="676" y="112" class="d-rc" text-anchor="middle">${c.rc}</text>
    <rect y="596" width="740" height="44" fill="#FBF7EE"/><path d="M0 600 H740" stroke="${D.c}" stroke-width="12"/><path d="M0 612 H740" stroke="#F9A72B" stroke-width="4"/>
-  </svg><div class="cbody"><h4>${escC(c.n)}</h4><div class="ctype">Nivel ${c.lv} · ${escC(D.n)} · ${TIPO_CARTA[c.ty]}</div>
+   <rect x="250" y="578" width="240" height="50" rx="25" fill="${D.c}" stroke="#F9A72B" stroke-width="4"/><text x="370" y="614" class="d-ty" text-anchor="middle">${escC(TIPO_CARTA[c.ty].toUpperCase())}</text>
+  </svg><div class="cbody"><h4>${escC(c.n)}</h4>
    ${c.ty==="Grimoire"&&spells(c.t).length>1?`<div class="spells en" lang="en">${spells(c.t).map(([n,d])=>`<div class="spell"><b>${escC(n)}</b><span class="sd">${escC(d)}</span></div>`).join("")}</div>`
      :`<p class="clamp en" lang="en">${escC(c.t).replace(/\n/g,"<br>")}</p>`}</div></div>`;
 }
