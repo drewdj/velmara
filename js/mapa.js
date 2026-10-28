@@ -1,7 +1,7 @@
 /* Mapa interactivo de la Zona Norte.
    Coordenadas en un lienzo de 1000×1000 sobre la imagen. Todo se guarda en Firebase bajo
-   tienda/mapa: items (marcas, trazos, líneas, zonas y textos), sesiones (nombre, número y resumen)
-   y conf (escala y sesión actual). Cada cosa dibujada recuerda en qué sesión se puso, y la línea
+   tienda/mapa: items (marcas, trazos, líneas, zonas y textos), sesiones (nombre, número y resumen),
+   grupos (con la ruta que siguió cada uno en cada sesión) y conf (escala y sesión actual). Cada cosa dibujada recuerda en qué sesión se puso, y la línea
    de tiempo de debajo enseña el mapa hasta la sesión elegida. Sin Firebase funciona en memoria. */
 const Mapa=(()=>{
   const S=1000,IMG_LO="img/zona-norte-2048.webp",IMG_HI="img/zona-norte.webp";
@@ -29,9 +29,9 @@ const Mapa=(()=>{
   const WIDTHS=[2,4,8];
 
   let el,svg,ctx,ref=null,mode="local",mounted=false,hiLoaded=false,fitted=false;
-  let data={items:{},sesiones:{},conf:{kmAncho:420,kmDia:30,actual:null}};
+  let data={items:{},sesiones:{},grupos:{},conf:{kmAncho:420,kmDia:30,actual:null}};
   let view={x:0,y:0,w:S},tool="mover",color=COLORS[0],width=4;
-  let draft=null,sel=null,ruler=null,ses=null,sesManual=false,setOpen=false,confirmDel=null;
+  let draft=null,sel=null,ruler=null,tpos=null,sesManual=false,setOpen=false,confirmDel=null,gName="";
   let pointers=new Map(),gesture=null,tdrag=false;
 
   const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -49,11 +49,16 @@ const Mapa=(()=>{
   const sesList=()=>{const A=Object.entries(data.sesiones).filter(([,x])=>x).sort((a,b)=>a[1].num-b[1].num);
     const cur=data.sesiones[data.conf.actual];return isDM()?A:cur?A.filter(([,x])=>x.num<=cur.num):[]};
   const sesNum=id=>data.sesiones[id]?.num??-Infinity;
-  function curSes(){const L=sesList();if(!L.length)return null;
-    if(!sesManual||!L.some(([id])=>id===ses))ses=L.some(([id])=>id===data.conf.actual)?data.conf.actual:L[L.length-1][0];return ses}
-  // Lo de sesiones posteriores a la elegida no se ve; lo de las anteriores, más apagado
-  const inTime=it=>{const c=curSes();return !c||sesNum(it.ses)<=sesNum(c)};
-  const isOld=it=>{const c=curSes();return c&&it.ses!==c};
+  // La línea de tiempo no va a saltos: tpos es continuo (0 = primera sesión, 1 = segunda…).
+  // Entre dos sesiones se está viviendo la siguiente: los grupos avanzan por su ruta.
+  function tNow(){const L=sesList();if(!L.length)return null;
+    if(!sesManual||tpos==null||tpos>L.length-1){const a=L.findIndex(([id])=>id===data.conf.actual);tpos=a>=0?a:L.length-1}return tpos}
+  const curIdx=()=>{const t=tNow();return t==null?null:Math.ceil(t-1e-6)};
+  function curSes(){const i=curIdx();return i==null?null:sesList()[i][0]}
+  const sesIdx=id=>sesList().findIndex(([x])=>x===id);
+  // Lo de sesiones posteriores no se ve; lo de las anteriores, más apagado. Lo de antes de las sesiones se ve siempre.
+  const inTime=it=>{const i=curIdx();if(i==null||!it.ses)return true;const j=sesIdx(it.ses);return j>=0&&j<=i};
+  const isOld=it=>{const i=curIdx();return i!=null&&it.ses&&sesIdx(it.ses)<i};
 
   /* ---------- Datos ---------- */
   function connect(){
@@ -62,7 +67,7 @@ const Mapa=(()=>{
     try{
       const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
       ref=app.database().ref("tienda/mapa");mode="live";
-      for(const col of ["items","sesiones"]){
+      for(const col of ["items","sesiones","grupos"]){
         const r=ref.child(col);
         r.on("child_added",s=>{data[col][s.key]=fixItem(s.val());later()});
         r.on("child_changed",s=>{data[col][s.key]=fixItem(s.val());later()});
@@ -71,7 +76,8 @@ const Mapa=(()=>{
       ref.child("conf").on("value",s=>{data.conf={...data.conf,...(s.val()||{})};later()});
     }catch(e){console.error(e);mode="local"}
   }
-  function fixItem(v){if(v?.pts&&!Array.isArray(v.pts))v.pts=Object.values(v.pts);return v}
+  function fixItem(v){if(v?.pts&&!Array.isArray(v.pts))v.pts=Object.values(v.pts);
+    if(v?.rutas)for(const [k2,r] of Object.entries(v.rutas))if(!Array.isArray(r))v.rutas[k2]=Object.values(r);return v}
   let drawT=0;
   const later=()=>{clearTimeout(drawT);drawT=setTimeout(()=>{draw();pop();timeline();settings()},16)};
   function put(col,id,obj){
@@ -91,7 +97,7 @@ const Mapa=(()=>{
       <div class="map-stage" id="mstage">
         <svg id="msvg" xmlns="http://www.w3.org/2000/svg">
           <image id="mimg" href="${IMG_LO}" x="0" y="0" width="${S}" height="${S}"/>
-          <g id="gl-area"></g><g id="gl-draw"></g><g id="gl-pin"></g><g id="gl-draft"></g>
+          <g id="gl-area"></g><g id="gl-draw"></g><g id="gl-grp"></g><g id="gl-pin"></g><g id="gl-draft"></g>
         </svg>
         <div class="map-zoom"><button data-mz="1" aria-label="Acercar">+</button><button data-mz="-1" aria-label="Alejar">−</button><button data-mz="0" aria-label="Ver todo">⤢</button></div>
         <div class="map-pop" id="mpop" hidden></div>
@@ -107,7 +113,7 @@ const Mapa=(()=>{
   const visibleNow=()=>svg&&document.body.contains(svg)&&svg.getBoundingClientRect().width>0;
   // Al volver a la pestaña del mapa: encajar si hacía falta y redibujar con lo que llegó mientras tanto
   let lastDM=null;
-  function refresh(refit){if(!visibleNow())return;if(lastDM!==isDM()){lastDM=isDM();sesManual=false;sel=null}if(refit||!fitted){fit();fitted=true}else applyView();tools();draw();pop();hint();timeline();settings()}
+  function refresh(refit){if(!visibleNow())return;if(lastDM!==isDM()){lastDM=isDM();sesManual=false;sel=null;if(draft?.t==="ruta"){draft=null;tool="mover"}}if(refit||!fitted){fit();fitted=true}else applyView();tools();draw();pop();hint();timeline();settings()}
   function fit(){const r=svg.getBoundingClientRect(),a=r.width/Math.max(1,r.height);
     if(a>=1){view.w=S*a;view.x=-(view.w-S)/2;view.y=0}else{view.w=S;view.x=0;view.y=-(S/a-S)/2}applyView()}
   function applyView(){
@@ -127,23 +133,24 @@ const Mapa=(()=>{
     svg.addEventListener("wheel",e=>{e.preventDefault();zoomAt(e.deltaY<0?1.2:1/1.2,e.clientX,e.clientY)},{passive:false});
     svg.addEventListener("pointerdown",down);svg.addEventListener("pointermove",move);
     svg.addEventListener("pointerup",up);svg.addEventListener("pointercancel",up);
-    svg.addEventListener("dblclick",e=>{if(draft&&["line","area"].includes(draft.t)){e.preventDefault();finish()}});
+    svg.addEventListener("dblclick",e=>{if(draft&&["line","area","ruta"].includes(draft.t)){e.preventDefault();finish()}});
     el.addEventListener("click",click);el.addEventListener("change",change);el.addEventListener("input",input);
     // Línea de tiempo: se arrastra con el ratón o el dedo y se queda en la sesión más cercana
     const tm=el.querySelector("#mtime");
     tm.addEventListener("pointerdown",e=>{const tr=e.target.closest("#mtrack");if(!tr)return;tdrag=true;tr.setPointerCapture(e.pointerId);scrub(e.clientX);e.preventDefault()});
     tm.addEventListener("pointermove",e=>{if(tdrag)scrub(e.clientX)});
     const stop=()=>{tdrag=false};tm.addEventListener("pointerup",stop);tm.addEventListener("pointercancel",stop);
-    tm.addEventListener("keydown",e=>{if(!e.target.closest("#mtrack"))return;const L=sesList(),i=L.findIndex(([id])=>id===curSes());
-      if(e.key==="ArrowLeft"&&i>0){pick(L[i-1][0]);e.preventDefault()}if(e.key==="ArrowRight"&&i<L.length-1){pick(L[i+1][0]);e.preventDefault()}});
+    tm.addEventListener("keydown",e=>{if(!e.target.closest("#mtrack"))return;const n=sesList().length,t=tNow();if(t==null)return;
+      if(e.key==="ArrowLeft"){setT(Math.max(0,Math.ceil(t-1e-6)-1));e.preventDefault()}if(e.key==="ArrowRight"){setT(Math.min(n-1,Math.floor(t+1e-6)+1));e.preventDefault()}});
   }
-  function scrub(x){const tr=el.querySelector("#mtrack"),L=sesList();if(!tr||!L.length)return;
-    const r=tr.getBoundingClientRect(),f=Math.min(1,Math.max(0,(x-r.left)/r.width)),i=L.length===1?0:Math.round(f*(L.length-1));
-    if(L[i][0]!==ses||!sesManual)pick(L[i][0])}
-  function pick(id){ses=id;sesManual=true;sel=null;draw();pop();timeline()}
+  // Cerca de una sesión se queda justo en ella; en medio, donde lo sueltes
+  function scrub(x){const tr=el.querySelector("#mtrack"),n=sesList().length;if(!tr||!n)return;
+    const r=tr.getBoundingClientRect(),f=Math.min(1,Math.max(0,(x-r.left)/r.width));let t=n===1?0:f*(n-1);
+    const near=Math.round(t);if(Math.abs(t-near)*r.width/Math.max(1,n-1)<8)t=near;setT(t)}
+  function setT(t){if(t===tpos&&sesManual)return;const was=curSes();tpos=t;sesManual=true;if(curSes()!==was)sel=null;draw();pop();timeline();if(isDM())settings()}
   function key(e){
     if(!visibleNow()||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
-    if(e.key==="Escape"){draft=null;ruler=null;sel=null;draw();pop();hint()}
+    if(e.key==="Escape"){if(tool==="ruta"){tool="mover";tools()}draft=null;ruler=null;sel=null;draw();pop();hint()}
     if(e.key==="Enter"&&draft)finish();
     if(e.key==="Backspace"&&draft?.pts?.length){draft.pts.pop();draw()}
     if((e.key==="Delete")&&sel&&canEdit(data.items[sel]||{}))removeSel();
@@ -163,6 +170,8 @@ const Mapa=(()=>{
     if(tool==="draw"){draft={t:"draw",pts:[[r1(p.x),r1(p.y)]],color,w:width};return}
     if(tool==="ruler"){ruler={a:p,b:p};draw();return}
     if(["line","area"].includes(tool)){if(!draft)draft={t:tool,pts:[],color,w:width};draft.pts.push([r1(p.x),r1(p.y)]);draw();hint();return}
+    // Ruta de un grupo: toques sueltos o arrastrando, como un lápiz
+    if(tool==="ruta"&&draft?.t==="ruta"){draft.pts.push([r1(p.x),r1(p.y)]);gesture={ruta:true};drawDraft();hint();return}
     if(tool==="pin"){const id=uid();put("items",id,{t:"pin",x:r1(p.x),y:r1(p.y),icon:"marca",color,title:"",note:"",...base()});sel=id;setTool("mover");pop();setTimeout(()=>el.querySelector("#md-title")?.focus(),30);return}
     if(tool==="text"){const id=uid();put("items",id,{t:"text",x:r1(p.x),y:r1(p.y),text:"Texto",size:18,color,...base()});sel=id;setTool("mover");pop();setTimeout(()=>el.querySelector("#md-text")?.select(),30);return}
   }
@@ -175,6 +184,7 @@ const Mapa=(()=>{
       if(Math.abs(e.clientX-gesture.sx)+Math.abs(e.clientY-gesture.sy)>4)gesture.click=false;
       view.x=gesture.vx-(e.clientX-gesture.sx)*f;view.y=gesture.vy-(e.clientY-gesture.sy)*f;applyView();return}
     if(gesture?.drag){const it=data.items[gesture.drag];it.x=r1(p.x-gesture.ox);it.y=r1(p.y-gesture.oy);gesture.moved=true;draw();return}
+    if(gesture?.ruta&&draft?.t==="ruta"){const l=draft.pts[draft.pts.length-1];if(!l||Math.hypot(p.x-l[0],p.y-l[1])>k()*6){draft.pts.push([r1(p.x),r1(p.y)]);drawDraft()}return}
     if(draft?.t==="draw"){const l=draft.pts[draft.pts.length-1];if(Math.hypot(p.x-l[0],p.y-l[1])>k()*2){draft.pts.push([r1(p.x),r1(p.y)]);drawDraft()}return}
     if(ruler){ruler.b=p;drawDraft();return}
   }
@@ -190,6 +200,8 @@ const Mapa=(()=>{
   }
   function finish(){
     if(!draft)return;const d=draft;draft=null;
+    if(d.t==="ruta"){const g=data.grupos[d.g],sid=curSes();setTool("mover");if(!g||!sid||!d.pts.length)return;
+      const pts=d.pts.length>2?simplify(d.pts,k()*1.5):d.pts;g.rutas={...(g.rutas||{}),[sid]:pts};put("grupos",d.g,g);return}
     if((d.t==="line"&&d.pts.length<2)||(d.t==="area"&&d.pts.length<3)){draw();hint();return}
     const id=uid();put("items",id,{t:d.t,pts:d.pts,color:d.color,w:r1(d.w*k()),title:"",note:"",...base()});
     sel=id;draw();pop();hint();
@@ -224,12 +236,33 @@ const Mapa=(()=>{
         if(it.title&&view.w<S*1.1)pin+=`<text x="${it.x}" y="${it.y+K*14}" class="m-label" font-size="${K*13}" text-anchor="middle"${dim}>${esc(it.title)}</text>`}
       if(it.t==="text")pin+=`<text data-id="${id}" class="m-text${selCls(id)}" x="${it.x}" y="${it.y}" font-size="${it.size*K}" fill="${it.color}" text-anchor="middle"${dim}>${esc(it.text)}</text>`;
     }
-    svg.querySelector("#gl-area").innerHTML=area;svg.querySelector("#gl-draw").innerHTML=drw;svg.querySelector("#gl-pin").innerHTML=pin;
+    let grp="";for(const [id,g] of Object.entries(data.grupos)){if(!g?.rutas)continue;const s2=gState(g);if(!s2)continue;
+      for(const tr of s2.old)grp+=`<path d="${pathD(tr)}" fill="none" stroke="${g.color}" stroke-width="${K*3}" stroke-dasharray="${K*8} ${K*6}" stroke-linecap="round" opacity=".5"/>`;
+      if(s2.trail.length>1)grp+=`<path d="${pathD(s2.trail)}" fill="none" stroke="${g.color}" stroke-width="${K*4}" stroke-linecap="round" stroke-linejoin="round"/><path d="${pathD(s2.trail)}" fill="none" stroke="#FDFCF7" stroke-width="${K*1.2}" stroke-dasharray="${K*2} ${K*6}" stroke-linecap="round"/>`;
+      grp+=token(id,g,s2.pos,K)}
+    svg.querySelector("#gl-area").innerHTML=area;svg.querySelector("#gl-draw").innerHTML=drw;svg.querySelector("#gl-pin").innerHTML=pin;svg.querySelector("#gl-grp").innerHTML=grp;
     drawDraft();
   }
+  // Camino del grupo en la sesión i: empieza donde acabó en la anterior que tenga ruta
+  function prevEnd(g,L,i){for(let j=i-1;j>=0;j--){const r=g.rutas?.[L[j][0]];if(r?.length)return r[r.length-1]}return null}
+  function gPath(g,L,i){const pv=prevEnd(g,L,i),r=g.rutas?.[L[i][0]]||[];return pv?[pv,...r]:r.slice()}
+  // Punto a una fracción f del recorrido, y el tramo ya hecho
+  function along(pts,f){const cum=[0];for(let i=1;i<pts.length;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+    const L=cum[cum.length-1],d=L*Math.min(1,Math.max(0,f));if(!L)return {pos:pts[pts.length-1],trail:pts.slice(0,1)};
+    let i=1;while(i<cum.length-1&&cum[i]<d)i++;const s=(cum[i]-cum[i-1])||1,q=(d-cum[i-1])/s;
+    const pos=[r1(pts[i-1][0]+(pts[i][0]-pts[i-1][0])*q),r1(pts[i-1][1]+(pts[i][1]-pts[i-1][1])*q)];return {pos,trail:[...pts.slice(0,i),pos]}}
+  function gState(g){const L=sesList(),t=tNow();if(t==null)return null;const i=Math.ceil(t-1e-6),f=i===0?1:t-(i-1);
+    const path=gPath(g,L,i);if(!path.length)return null;const {pos,trail}=along(path,f);
+    const old=[];for(let j=0;j<i;j++){const pj=gPath(g,L,j);if(pj.length>1)old.push(pj)}return {pos,trail,old}}
+  function token(id,g,pos,K){const r=K*13,ini=(g.n||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+    return `<g class="m-token"><circle cx="${pos[0]}" cy="${pos[1]}" r="${r}" fill="${g.color}" stroke="#FDFCF7" stroke-width="${K*2.5}"/>
+      <text x="${pos[0]}" y="${pos[1]+K*4.5}" font-size="${K*12}" text-anchor="middle" class="m-ini">${esc(ini)}</text>
+      <text x="${pos[0]}" y="${pos[1]+r+K*14}" font-size="${K*13}" text-anchor="middle" class="m-label">${esc(g.n)}</text></g>`}
   function drawDraft(){
     const K=k();let h="";
-    if(draft){const d=draft;
+    if(draft?.t==="ruta"){const g=data.grupos[draft.g],L=sesList(),pv=g&&prevEnd(g,L,curIdx()),pts=pv?[pv,...draft.pts]:draft.pts;
+      if(pts.length)h+=`<path d="${pathD(pts)}" fill="none" stroke="${g?.color||color}" stroke-width="${K*4}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${K*8} ${K*5}"/>`+pts.slice(-1).map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${K*6}" fill="${g?.color||color}" stroke="#FDFCF7" stroke-width="${K*2}"/>`).join("")}
+    else if(draft){const d=draft;
       if(d.t==="area"&&d.pts.length)h+=`<path d="${pathD(d.pts)} Z" fill="${d.color}" fill-opacity=".2" stroke="${d.color}" stroke-width="${d.w*K}"/>`;
       else h+=`<path d="${d.t==="draw"?smoothD(d.pts):pathD(d.pts)}" fill="none" stroke="${d.color}" stroke-width="${d.w*K}" stroke-linecap="round" stroke-linejoin="round"/>`;
       if(d.t!=="draw")h+=d.pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${K*4}" fill="#FDFCF7" stroke="#1B1230" stroke-width="${K}"/>`).join("");
@@ -243,7 +276,7 @@ const Mapa=(()=>{
   /* ---------- Barra de herramientas, ficha flotante, línea de tiempo y ajustes ---------- */
   // En móvil la línea de tiempo va debajo: al elegir algo que se hace sobre el mapa, traerlo a la vista
   function showStage(){const st=el.querySelector("#mstage"),r=st.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)st.scrollIntoView({block:"center",behavior:"smooth"})}
-  function setTool(t){tool=t;if(t!=="mover"){showStage();sel=null;pop()}if(!["line","area"].includes(t))draft=null;ruler=null;tools();hint();draw()}
+  function setTool(t){tool=t;if(t!=="mover"){showStage();sel=null;pop()}if(!["line","area","ruta"].includes(t))draft=null;ruler=null;tools();hint();draw()}
   function tools(){
     el.querySelector(".map-shell").dataset.tool=tool;
     el.querySelector("#mtools").innerHTML=TOOLS.map(([id,n,d])=>`<button class="mtool" data-tool="${id}" aria-pressed="${tool===id}" title="${n}" aria-label="${n}"><svg viewBox="0 0 24 24"><path d="${d}"/></svg></button>`).join("")
@@ -254,8 +287,9 @@ const Mapa=(()=>{
   function hint(){
     const h=el?.querySelector("#mhint");if(!h)return;
     const msg={pin:"Toca el mapa para poner un punto.",draw:"Arrastra para pintar.",line:"Toca para añadir puntos. Doble toque o Intro para terminar.",
-      area:"Toca para marcar las esquinas de la zona. Doble toque o Intro para cerrar.",text:"Toca donde quieras escribir.",ruler:"Arrastra para medir."}[tool];
-    const finishBtn=draft&&["line","area"].includes(draft.t)?`<button class="btn" data-finish>Terminar</button><button class="btn ghost" data-cancel-draft>Cancelar</button>`:"";
+      area:"Toca para marcar las esquinas de la zona. Doble toque o Intro para cerrar.",text:"Toca donde quieras escribir.",ruler:"Arrastra para medir.",
+      ruta:draft?.t==="ruta"?`Ruta de ${esc(data.grupos[draft.g]?.n||"el grupo")} en ${esc(data.sesiones[curSes()]?.n||"esta sesión")}: toca o arrastra por el camino. Un solo toque lo coloca. Doble toque o Intro para terminar.`:""}[tool];
+    const finishBtn=draft&&["line","area","ruta"].includes(draft.t)?`<button class="btn" data-finish>Terminar</button><button class="btn ghost" data-cancel-draft>Cancelar</button>`:"";
     h.innerHTML=msg?`<span>${msg}</span>${finishBtn}`:"";h.hidden=!msg;
   }
   const typing=box=>box.contains(document.activeElement)&&/INPUT|TEXTAREA/.test(document.activeElement.tagName); // no pisar lo que se está escribiendo
@@ -279,16 +313,16 @@ const Mapa=(()=>{
   }
   // Línea de tiempo de sesiones, debajo del mapa
   function timeline(){
-    const box=el?.querySelector("#mtime");if(!box)return;const L=sesList(),c=curSes();
+    const box=el?.querySelector("#mtime");if(!box)return;const L=sesList(),c=curSes(),t=tNow();
     if(!L.length){box.innerHTML=isDM()?`<p class="note">Crea la primera sesión en los ajustes de abajo para que lo que se dibuje quede guardado por sesiones.</p>`:"";box.hidden=!isDM();return}
     box.hidden=false;
-    const pos=i=>L.length===1?50:i/(L.length-1)*100,ci=Math.max(0,L.findIndex(([id])=>id===c)),cur=L[ci][1];
+    const pos=i=>L.length===1?50:i/(L.length-1)*100,ci=curIdx(),cur=L[ci][1],mid=t<ci-1e-6;
     const act=data.conf.actual;
-    box.innerHTML=`<div class="mtrack" id="mtrack" tabindex="0" role="slider" aria-label="Sesión" aria-valuemin="1" aria-valuemax="${L.length}" aria-valuenow="${ci+1}" aria-valuetext="${esc(cur.n)}">
-        <div class="mtline"></div><div class="mtfill" style="width:${pos(ci)}%"></div>
-        ${L.map(([id,x],i)=>`<span class="mtnode${i<=ci?" on":""}${id===act?" act":""}" style="left:${pos(i)}%" title="${esc(x.n)}"><i></i><small>${esc(String(x.num))}</small></span>`).join("")}
-        <span class="mthandle" style="left:${pos(ci)}%"></span></div>
-      <div class="mtinfo"><b>${esc(cur.n)}</b>${c===act?`<span class="mtnow">Sesión actual</span>`:""}${cur.resumen?`<p>${esc(cur.resumen)}</p>`:`<p class="note">Sin resumen todavía.</p>`}</div>`;
+    box.innerHTML=`<div class="mtrack" id="mtrack" tabindex="0" role="slider" aria-label="Sesión" aria-valuemin="0" aria-valuemax="${L.length-1}" aria-valuenow="${Math.round(t*100)/100}" aria-valuetext="${esc(cur.n)}">
+        <div class="mtline"></div><div class="mtfill" style="width:${pos(t)}%"></div>
+        ${L.map(([id,x],i)=>`<span class="mtnode${i<=t+1e-6?" on":""}${id===act?" act":""}" style="left:${pos(i)}%" title="${esc(x.n)}"><i></i><small>${esc(String(x.num))}</small></span>`).join("")}
+        <span class="mthandle" style="left:${pos(t)}%"></span></div>
+      <div class="mtinfo"><b>${mid?"Durante la ":""}${esc(cur.n)}</b>${c===act&&!mid?`<span class="mtnow">Sesión actual</span>`:""}${cur.resumen?`<p>${esc(cur.resumen)}</p>`:`<p class="note">Sin resumen todavía.</p>`}</div>`;
   }
   // Ajustes del DM: sesiones y escala. Van debajo para no molestar.
   function settings(){
@@ -304,9 +338,19 @@ const Mapa=(()=>{
           ${id===act?`<span class="mtnow">Actual</span>`:`<button class="btn ghost" data-sesact="${id}">Hacer actual</button>`}
           <button class="btn warn" data-sesdel="${id}">${confirmDel===id?"¿Seguro?":"Borrar"}</button></div>
           <textarea id="ms-r-${id}" data-sesf="resumen" data-ses="${id}" maxlength="2000" placeholder="Resumen que verán los jugadores" aria-label="Resumen">${esc(x.resumen||"")}</textarea></div>`).join("")||`<p class="note">Todavía no hay sesiones.</p>`}</div></section>
+      <section><h3>Grupos</h3>${grpSet()}</section>
       <section><h3>Distancias</h3><div class="mrow2"><label class="mlab" for="m-km">Ancho del mapa (km)</label><input type="number" id="m-km" min="10" max="5000" value="${data.conf.kmAncho||420}">
         <label class="mlab" for="m-kmd">Km por día de viaje</label><input type="number" id="m-kmd" min="1" max="200" value="${data.conf.kmDia||30}"></div></section></details>`;
   }
+  function grpSet(){const G=Object.entries(data.grupos).filter(([,g])=>g),sid=curSes(),sn=esc(data.sesiones[sid]?.n||"");
+    return `<p class="note">${sid?`Las rutas se dibujan en la sesión que marque la línea de tiempo: ahora, <b>${sn}</b>. Cada ruta empieza donde acabó el grupo la sesión anterior.`:"Crea antes una sesión."}</p>
+      <div class="msesl">${G.map(([id,g])=>{const has=sid&&g.rutas?.[sid]?.length;return `<div class="mses"><div class="msesh"><i class="mgdot" style="background:${g.color}"></i>
+        <input type="text" id="mg-n-${id}" data-gname="${id}" value="${esc(g.n)}" maxlength="40" aria-label="Nombre del grupo">
+        <button class="btn" data-gruta="${id}" ${sid?"":"disabled"}>${has?"Redibujar":"Dibujar"} ruta en ${sn||"la sesión"}</button>
+        ${has?`<button class="btn ghost" data-grutadel="${id}">Quitar esa ruta</button>`:""}
+        <button class="btn warn" data-gdel="${id}">${confirmDel===id?"¿Seguro?":"Borrar"}</button></div>
+        <div class="mcolors">${COLORS.map(c=>`<button class="mcolor" data-gcolor="${c}" data-g="${id}" aria-pressed="${g.color===c}" style="--c:${c}" aria-label="Color ${c}"></button>`).join("")}</div></div>`}).join("")||`<p class="note">Todavía no hay grupos.</p>`}</div>
+      <div class="ctrow"><input type="text" id="mg-new" value="${esc(gName)}" placeholder="Nombre del grupo, por ejemplo: Los jugadores" maxlength="40" aria-label="Nombre del grupo nuevo"><button class="btn" data-gnew>Crear grupo</button></div>`}
   function removeSel(){if(sel)del("items",sel);sel=null;pop()}
 
   function click(e){
@@ -317,20 +361,27 @@ const Mapa=(()=>{
     if(d.mz!==undefined){const r=svg.getBoundingClientRect();if(d.mz==="0"){fit();draw()}else zoomAt(d.mz==="1"?1.5:1/1.5,r.left+r.width/2,r.top+r.height/2);return}
     if(b.hasAttribute("data-undo")){const mine=Object.entries(data.items).filter(([,it])=>it?.by===me()).sort((a,b2)=>b2[1].ts-a[1].ts)[0];if(mine)del("items",mine[0]);else ctx.toast("No hay nada tuyo que deshacer.");return}
     if(b.hasAttribute("data-finish"))return finish();
-    if(b.hasAttribute("data-cancel-draft")){draft=null;draw();hint();return}
+    if(b.hasAttribute("data-cancel-draft")){if(draft?.t==="ruta"){tool="mover";tools()}draft=null;draw();hint();return}
     if(b.hasAttribute("data-closepop")){sel=null;draw();pop();return}
     const it=sel&&data.items[sel];
     if(d.setcolor&&it){it.color=d.setcolor;put("items",sel,it);return}
     if(b.hasAttribute("data-delsel"))return removeSel();
     if(d.golugar)return ctx.goLugar(d.golugar);
-    if(b.hasAttribute("data-newses")){const num=Math.max(0,...Object.values(data.sesiones).filter(Boolean).map(x=>+x.num||0))+1,id="s"+uid();
-      put("sesiones",id,{n:`Sesión ${num}`,num,resumen:"",ts:Date.now()});setConf({actual:id});ses=id;sesManual=false;setOpen=true;settings();timeline();draw();return}
-    if(d.sesact){setConf({actual:d.sesact});ses=d.sesact;sesManual=false;draw();timeline();return}
+    if(b.hasAttribute("data-newses")){const S0=Object.values(data.sesiones).filter(Boolean),num=S0.length?Math.max(...S0.map(x=>+x.num||0))+1:0,id="s"+uid();
+      put("sesiones",id,{n:`Sesión ${num}`,num,resumen:"",ts:Date.now()});setConf({actual:id});sesManual=false;setOpen=true;settings();timeline();draw();return}
+    if(d.sesact){setConf({actual:d.sesact});sesManual=false;draw();timeline();return}
+    if(b.hasAttribute("data-gnew")){const n=(el.querySelector("#mg-new")?.value||"").trim();if(!n)return ctx.toast("Ponle un nombre al grupo.",true);
+      gName="";put("grupos","g"+uid(),{n,color,rutas:{},by:me(),ts:Date.now()});return}
+    if(d.gruta){if(!curSes())return;tool="ruta";draft={t:"ruta",g:d.gruta,pts:[]};sel=null;tools();hint();draw();pop();showStage();return}
+    if(d.grutadel){const g=data.grupos[d.grutadel],sid=curSes();if(g?.rutas&&sid){delete g.rutas[sid];put("grupos",d.grutadel,g)}return}
+    if(d.gcolor){const g=data.grupos[d.g];if(g){g.color=d.gcolor;put("grupos",d.g,g)}return}
+    if(d.gdel){if(confirmDel!==d.gdel){confirmDel=d.gdel;settings();return}confirmDel=null;del("grupos",d.gdel);return}
     if(d.sesdel){if(confirmDel!==d.sesdel){confirmDel=d.sesdel;settings();return}confirmDel=null;
       if(data.conf.actual===d.sesdel)setConf({actual:null});del("sesiones",d.sesdel);return}
   }
   function change(e){
     const t=e.target,it=sel&&data.items[sel];
+    if(t.dataset.gname){const g=data.grupos[t.dataset.gname];if(g){g.n=t.value.trim().slice(0,40)||g.n;t.blur();put("grupos",t.dataset.gname,g)}return}
     if(t.id==="m-km")return setConf({kmAncho:Math.max(10,+t.value||420)});
     if(t.id==="m-kmd")return setConf({kmDia:Math.max(1,+t.value||30)});
     if(t.dataset.sesf){const x=data.sesiones[t.dataset.ses];if(!x)return;const f=t.dataset.sesf;
@@ -338,7 +389,7 @@ const Mapa=(()=>{
     if(it&&["md-title","md-note","md-text","md-size"].includes(t.id)){const f={"md-title":"title","md-note":"note","md-text":"text","md-size":"size"}[t.id];
       it[f]=t.type==="range"?+t.value:t.value;t.blur();return put("items",sel,it)}
   }
-  function input(e){const t=e.target;
+  function input(e){const t=e.target;if(t.id==="mg-new")gName=t.value;
     if(t.id==="md-size"&&sel&&data.items[sel]){data.items[sel].size=+t.value;draw()}}
   document.addEventListener("toggle",e=>{if(e.target.id==="msetd")setOpen=e.target.open},true);
 
