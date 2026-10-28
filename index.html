@@ -577,16 +577,16 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=21"></script>
-<script src="js/datos.js?v=21"></script>
-<script src="js/dominios.js?v=21"></script>
-<script src="js/reglas.js?v=21"></script>
-<script src="js/store.js?v=21"></script>
-<script src="js/cartas.js?v=21"></script>
-<script src="js/mapa.js?v=21"></script>
-<script src="js/contenido.js?v=21"></script>
-<script src="js/saber.js?v=21"></script>
-<script src="js/mundo.js?v=21"></script>
+<script src="js/firebase-config.js?v=22"></script>
+<script src="js/datos.js?v=22"></script>
+<script src="js/dominios.js?v=22"></script>
+<script src="js/reglas.js?v=22"></script>
+<script src="js/store.js?v=22"></script>
+<script src="js/cartas.js?v=22"></script>
+<script src="js/mapa.js?v=22"></script>
+<script src="js/contenido.js?v=22"></script>
+<script src="js/saber.js?v=22"></script>
+<script src="js/mundo.js?v=22"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -664,11 +664,13 @@ function viewPick(){
 
 /* ---------- Mundo: lo que sabe cada personaje ---------- */
 // Entradas que ve quien mira: el DM todas (notas del vault y lugares); un PJ, lo compartido con él y los lugares abiertos
+// El DM que elige «Ver la hoja de…» un PJ ve el mundo como ese PJ, para probar
+const asDM=()=>ui.canDM&&!ui.me;
 function loreFor(st){
   const E={};
-  if(ui.canDM){for(const [id,e] of Object.entries(Saber.dm))E[id]={...e,dm:true}}
+  if(asDM()){for(const [id,e] of Object.entries(Saber.dm))E[id]={...e,dm:true}}
   else for(const [id,e] of Object.entries(Saber.visibleFor(ui.me)))E[id]={...e};
-  for(const l of LUGARES)if(ui.canDM||st.mundo.lugares[l.id]?.visible)E[l.id]=E[l.id]||{n:l.n,cat:"lugares",sub:l.sub,txt:l.desc,pub:l.desc};
+  for(const l of LUGARES)if(asDM()||st.mundo.lugares[l.id]?.visible)E[l.id]=E[l.id]||{n:l.n,cat:"lugares",sub:l.sub,txt:l.desc,pub:l.desc};
   return E;
 }
 const plain=s=>String(s||"").replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,a,b)=>b||a).replace(/[*#>_]/g,"").replace(/(^|\n)\s*([-•]|\d+\.)\s+/g,"$1").replace(/\s+/g," ").trim();
@@ -683,8 +685,8 @@ function mundoEntries(){
   const st=Store.state;if(!st)return {};
   const E=loreFor(st);
   for(const [id,e] of Object.entries(E)){
-    e.pos=ui.canDM?Saber.posOf(id):(e.pos||DEF_POS[id]||null);
-    if(ui.canDM)e.oculto=!Saber.pub[id]&&!(LUGARES.some(l=>l.id===id)&&st.mundo.lugares[id]?.visible);
+    e.pos=asDM()?Saber.posOf(id):(ui.canDM&&Saber.posOf(id))||e.pos||DEF_POS[id]||null;
+    if(asDM())e.oculto=!Saber.pub[id]&&!(LUGARES.some(l=>l.id===id)&&st.mundo.lugares[id]?.visible);
   }
   return E;
 }
@@ -694,9 +696,9 @@ function entryBody(id){
   const st=Store.state,E=mundoEntries(),e=E[id];if(!e)return "";
   const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
   const l=LUGARES.find(x=>x.id===id),lm=l&&st.mundo.lugares[id];
-  const shops=(lm?.nota&&(lm.visible||ui.canDM)?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:"")+shopRows(st,id);
+  const shops=(lm?.nota&&(lm.visible||asDM())?`<div class="notice"><b>Aviso</b>${esc(lm.nota)}</div>`:"")+shopRows(st,id);
   const meta=(e.img?`<img class="wimg" src="${e.img}" alt="">`:"")+(e.estado?`<p class="note">${esc(e.estado)}</p>`:"");
-  if(!ui.canDM)return meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
+  if(!asDM())return meta+`<article class="prose">${mdHTML(e.txt||"",link)}</article>`+shops;
   const pub=Saber.pub[id],para=pub?.para||{};
   const share=e.dm?`<details class="wshare" ${pub?"":"open"}><summary>Lo ve: <b>${esc(whoSees(id))}</b></summary>
      <div class="chips"><button class="chip" data-para="todos" data-id="${id}" aria-pressed="${!!para.todos}">Todos</button>${PJS.filter(p=>!p.prueba).map(p=>`<button class="chip" data-para="${p.id}" data-id="${id}" aria-pressed="${!!(para.todos||para[p.id])}" ${para.todos?"disabled":""}>${esc(p.n)}</button>`).join("")}</div>
@@ -1154,7 +1156,7 @@ function showMap(on){
   const r=$("#maproot");if(r.hidden===!on&&!(on&&!mapMounted))return;
   r.hidden=!on;if(!on)return;
   if(!mapMounted){mapMounted=true;Mapa.mount(r,{me:()=>ui.me,isDM:()=>ui.canDM,pjName:id=>PJ[id]?.n,
-    lugares:()=>LUGARES.filter(l=>Store.state?.mundo?.lugares?.[l.id]?.visible||ui.canDM),
+    lugares:()=>LUGARES.filter(l=>Store.state?.mundo?.lugares?.[l.id]?.visible||asDM()),viewAs:()=>ui.canDM&&!!ui.me,
     goLugar:id=>go({view:"mundo",ent:id,tienda:null}),toast})}
   else Mapa.refresh();
 }
@@ -1163,7 +1165,7 @@ function showMap(on){
 let mundoMounted=false;
 function showMundo(on){
   const r=$("#mundoroot");r.hidden=!on;if(!on)return;
-  if(!mundoMounted){mundoMounted=true;Mundo.mount(r,{entries:mundoEntries,body:entryBody,nowHTML:mundoNow,isDM:()=>ui.canDM,
+  if(!mundoMounted){mundoMounted=true;Mundo.mount(r,{entries:mundoEntries,body:entryBody,nowHTML:mundoNow,isDM:asDM,
     setPos:(id,x,y)=>Saber.setPos(id,x,y).catch(e=>{console.error(e);toast("No se pudo guardar el marcador.",true)})})}
   else Mundo.refresh();
 }
@@ -1367,7 +1369,7 @@ document.addEventListener("change",e=>{
     const tid=ui.cid;shopItems(tid,I=>({...I,[ref]:{...(I[ref]||{}),[k]:v}}));
     if(k==="s"&&Store.state)act(st=>A.setStock(st,tid,ref,v)); // las unidades que pones son las que hay ahora
     return}
-  if(t.id==="dm-pj"){ui.me=t.value||null;ui.sel=null;render();return}
+  if(t.id==="dm-pj"){ui.me=t.value||null;ui.sel=null;Peek.clear();render();if(mapMounted)Mapa.refresh();return}
   if(t.id==="all-doms"){ui.allDoms=t.checked;render();return}
   if(t.id==="import-file"){const f=t.files[0];t.value="";if(!f)return;
     f.text().then(x=>Saber.importar(JSON.parse(x))).then(n=>toast(`${n} notas importadas.`)).catch(err=>{console.error(err);toast(err instanceof SyntaxError?"Ese archivo no es el del vault.":err.message||"No se pudo importar.",true)});return}

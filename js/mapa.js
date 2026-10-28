@@ -39,7 +39,7 @@ const Mapa=(()=>{
   const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
   const r1=n=>Math.round(n*10)/10;
-  const isDM=()=>ctx.isDM()&&!asPlayer;
+  const isDM=()=>ctx.isDM()&&!asPlayer&&!ctx.viewAs?.();
   const me=()=>ctx.isDM()?"dm":ctx.me();
   const who=by=>by==="dm"?"DM":(ctx.pjName(by)||"Alguien");
   const canEdit=it=>ctx.isDM()||it.by===me();
