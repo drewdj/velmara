@@ -1,4 +1,4 @@
-/* Contenido editable por el DM: personajes, armas, armaduras y objetos de la tienda.
+/* Contenido editable por el DM: personajes, armas, armaduras, objetos, tiendas y cartas de dominio.
    Lo que hay en js/datos.js es la base; en Firebase (tienda/contenido/{col}/{id}) se guardan los cambios
    y lo nuevo. Al cargar se mezcla todo y se reconstruyen las tablas (PJ, ITEM, WEAPON, ARMOR), así el resto
    de la web no nota la diferencia. {borrado:true} quita una entrada; img es una imagen ya reducida (data URL). */
@@ -7,7 +7,8 @@ const COLS={
   armas:{n:"Armas",arr:WEAPONS,map:WEAPON},
   armaduras:{n:"Armaduras",arr:ARMORS,map:ARMOR},
   objetos:{n:"Objetos y consumibles",arr:ITEMS,map:ITEM},
-  tiendas:{n:"Tiendas",arr:TIENDAS,map:TIENDA}
+  tiendas:{n:"Tiendas",arr:TIENDAS,map:TIENDA},
+  cartas:{n:"Cartas de dominio",arr:CARTAS_DOMINIO,map:CARTA}
 };
 const BASE=Object.fromEntries(Object.entries(COLS).map(([k,c])=>[k,c.arr.map(x=>structuredClone(x))]));
 const Contenido={
@@ -32,7 +33,7 @@ const Contenido={
       for(const x of all)c.map[x.id]=x;
     }
     for(const key in ARTE)delete ARTE[key];
-    for(const k of ["armas","armaduras","objetos"])for(const x of COLS[k].arr)if(x.img)ARTE[x.id]=x.img;
+    for(const k of ["armas","armaduras","objetos","cartas"])for(const x of COLS[k].arr)if(x.img)ARTE[x.id]=x.img;
   },
   esBase:(col,id)=>BASE[col].some(x=>x.id===id),
   // Guarda solo lo que difiere de la base (o todo, si es nuevo)

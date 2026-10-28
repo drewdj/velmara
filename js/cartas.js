@@ -153,12 +153,12 @@ function domainCard(c){
    <rect y="596" width="740" height="44" fill="#FBF7EE"/><path d="M0 600 H740" stroke="${D.c}" stroke-width="12"/><path d="M0 612 H740" stroke="#F9A72B" stroke-width="4"/>
    <rect x="250" y="578" width="240" height="50" rx="25" fill="${D.c}" stroke="#F9A72B" stroke-width="4"/><text x="370" y="614" class="d-ty" text-anchor="middle">${escC(TIPO_CARTA[c.ty].toUpperCase())}</text>
   </svg><div class="cbody"><h4>${escC(c.n)}</h4>
-   ${c.ty==="Grimoire"&&spells(c.t).length>1?`<div class="spells en" lang="en">${spells(c.t).map(([n,d])=>`<div class="spell"><b>${escC(n)}</b><span class="sd">${escC(d)}</span></div>`).join("")}</div>`
-     :`<p class="clamp en" lang="en">${escC(c.t).replace(/\n/g,"<br>")}</p>`}</div></div>`;
+   ${c.ty==="Grimoire"&&spells(c.t).length>1?`<div class="spells">${spells(c.t).map(([n,d])=>`<div class="spell"><b>${escC(n)}</b><span class="sd">${escC(d)}</span></div>`).join("")}</div>`
+     :`<p class="clamp dtx">${escC(c.t).replace(/\n/g,"<br>")}</p>`}</div></div>`;
 }
 // Un grimorio trae varios hechizos seguidos ("Nombre: efecto. Nombre: efecto."): los separamos
 function spells(t){
-  const re=/(?:^|(?<=[.!)”"]\s))([A-Z][^.:]{1,30}):\s/g,out=[];let m,last=null;
+  const re=/(?:^|(?<=[.!)”"]\s))([A-ZÁÉÍÓÚÑ][^.:]{1,40}):\s/g,out=[];let m,last=null;
   while((m=re.exec(t))){if(last)last[1]=t.slice(last.end,m.index).trim();last={0:m[1],1:"",end:re.lastIndex};out.push(last)}
   if(last)last[1]=t.slice(last.end).trim();
   return out.map(x=>[x[0],x[1]]);

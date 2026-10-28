@@ -188,7 +188,7 @@ tr:last-child td{border-bottom:0}
 .cbody{background:#FBF7EE;border-radius:0 0 10px 10px}
 .clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .open .clamp{-webkit-line-clamp:unset;display:block}
-.clamp.en{font-size:.92em}
+.clamp.dtx{font-size:.92em}
 .spells{display:grid;gap:4px;font-size:.92em}
 .spell b{display:block;font-family:var(--cond);font-size:1.05em;letter-spacing:.03em;text-transform:uppercase;color:var(--dom,#281C45)}
 .spell .sd{display:none}
@@ -812,18 +812,18 @@ details.feats[open] summary::after{content:"▴"}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=31"></script>
-<script src="js/datos.js?v=31"></script>
-<script src="js/dominios.js?v=31"></script>
-<script src="js/reglas.js?v=31"></script>
-<script src="js/store.js?v=31"></script>
-<script src="js/creacion.js?v=31"></script>
-<script src="js/cartas.js?v=31"></script>
-<script src="js/mapa.js?v=31"></script>
-<script src="js/contenido.js?v=31"></script>
-<script src="js/saber.js?v=31"></script>
-<script src="js/mundo.js?v=31"></script>
-<script src="js/libro.js?v=31"></script>
+<script src="js/firebase-config.js?v=33"></script>
+<script src="js/datos.js?v=33"></script>
+<script src="js/dominios.js?v=33"></script>
+<script src="js/reglas.js?v=33"></script>
+<script src="js/store.js?v=33"></script>
+<script src="js/creacion.js?v=33"></script>
+<script src="js/cartas.js?v=33"></script>
+<script src="js/mapa.js?v=33"></script>
+<script src="js/contenido.js?v=33"></script>
+<script src="js/saber.js?v=33"></script>
+<script src="js/mundo.js?v=33"></script>
+<script src="js/libro.js?v=33"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1507,7 +1507,7 @@ function dmPartida(st){
 
 // Colecciones del Compendio. Las de "lore" viven en las notas del DM (Saber); las demás en Contenido.
 const CCOLS=[["personas","Personas","lore"],["lugares","Lugares","lore"],["organizaciones","Organizaciones","lore"],["mundo","Mundo","lore"],["cronica","Crónica","lore"],
-  ["pjs","Personajes jugadores"],["armas","Armas"],["armaduras","Armaduras"],["objetos","Objetos"],["tiendas","Tiendas"]];
+  ["pjs","Personajes jugadores"],["armas","Armas"],["armaduras","Armaduras"],["objetos","Objetos"],["cartas","Cartas de dominio"],["tiendas","Tiendas"]];
 const isLore=c=>["personas","lugares","organizaciones","mundo","cronica"].includes(c);
 const ALC=["Cuerpo a cuerpo","Muy Cercana","Cercana","Lejana","Muy Lejana"];
 // Campos de cada ficha: [clave, etiqueta, tipo, opciones]
@@ -1522,7 +1522,9 @@ const CFIELDS={
     ["s","Unidades al ponerlo en una tienda (vacío = sin límite)","num"],["p","Precio por defecto (vacío = según rareza: 1, 2 o 4)","num"],["t","Efecto","area"],["img","Imagen","img"]],
   tiendas:[["n","Nombre"],["sub","Subtítulo (qué vende)"],["lugar","Lugar","sel",()=>lugarOpts()],["desc","Descripción","area"],["cita","Frase de la tienda"],
     ["moneda","Nombre de los puntos (vales, monedas, favores…)"],["modo","Cómo se pagan","sel",[["pj","Cada personaje tiene los suyos"],["grupo","Bolsa común del grupo"]]],
-    ["inicial","Puntos al empezar (por PJ, o en la bolsa común)","num"],["botes","Botes para juntar puntos entre varios","sel",[["true","Sí"],["false","No"]]]]
+    ["inicial","Puntos al empezar (por PJ, o en la bolsa común)","num"],["botes","Botes para juntar puntos entre varios","sel",[["true","Sí"],["false","No"]]]],
+  cartas:[["n","Nombre"],["d","Dominio","sel",()=>Object.entries(DOMINIOS).map(([k,v])=>[k,v.n])],["lv","Nivel","sel",[1,2,3,4,5,6,7,8,9,10].map(n=>[n,"Nivel "+n])],
+    ["ty","Tipo","sel",Object.entries(TIPO_CARTA)],["rc","Coste de recuperación","num"],["t","Texto","area"],["img","Ilustración","img"]]
 };
 // Lugares donde poner una tienda: los de las notas y los de la Mesa
 function lugarOpts(){const o=new Map([["","(sin lugar)"]]);for(const l of LUGARES)o.set(l.id,l.n);
@@ -1530,12 +1532,12 @@ function lugarOpts(){const o=new Map([["","(sin lugar)"]]);for(const l of LUGARE
 function compList(col){
   if(isLore(col))return Object.entries(Saber.dm).filter(([,e])=>e.cat===col).map(([id,e])=>({id,n:e.n,sub:e.sub,img:e.img,shared:!!Saber.pub[id],x:e}));
   const c=COLS[col],all=Object.values(c.map);
-  return all.map(x=>({id:x.id,n:x.n,sub:col==="pjs"?x.c:col==="objetos"?RAR[x.r]?.n:col==="armas"?x.d:col==="tiendas"?[lugarN(x.lugar),`${Object.keys(x.items||{}).length} a la venta`].filter(Boolean).join(" · "):x.u,img:x.img,borrado:x.borrado,x}));
+  return all.map(x=>({id:x.id,n:x.n,sub:col==="pjs"?x.c:col==="objetos"?RAR[x.r]?.n:col==="armas"?x.d:col==="tiendas"?[lugarN(x.lugar),`${Object.keys(x.items||{}).length} a la venta`].filter(Boolean).join(" · "):col==="cartas"?`${DOMINIOS[x.d]?.n||x.d} · nivel ${x.lv}`:x.u,img:x.img,borrado:x.borrado,x}));
 }
 function compRec(col,id){
   if(id==="__new")return isLore(col)?{n:"",cat:col,sub:"",estado:"",txt:"",pub:"",tipo:col==="personas"?"npc":""}:
     col==="armas"?{n:"",tier:2,g:"fis",tr:"Agilidad",a:"Cuerpo a cuerpo",d:"",h:1,f:""}:col==="armaduras"?{n:"",tier:2,u:"",sc:4,f:""}:col==="objetos"?{n:"",r:"c",k:"cons",s:1,t:""}:
-    col==="tiendas"?{n:"",sub:"",lugar:"",desc:"",cita:"",moneda:"vales",modo:"pj",inicial:3,botes:true,items:{}}:{n:"",j:"",c:""};
+    col==="tiendas"?{n:"",sub:"",lugar:"",desc:"",cita:"",moneda:"vales",modo:"pj",inicial:3,botes:true,items:{}}:col==="cartas"?{n:"",d:"Blade",lv:1,ty:"Ability",rc:1,t:""}:{n:"",j:"",c:""};
   if(isLore(col)){const e=Saber.dm[id];return e&&{...e,pub:Saber.pub[id]?.txt??e.pub??""}}
   const x=COLS[col].map[id];if(!x)return null;
   return (col==="armas"||col==="armaduras")?{tier:2,...x}:{...x};
@@ -1552,12 +1554,15 @@ const CFAC={
     ["a","Alcance",x=>x.a,ALC.map(a=>[a,a])],["h","Carga",x=>String(x.h),[["1","Una mano"],["2","Dos manos"]]],F_RASGO,F_SRC],
   armaduras:[F_TIER,F_RASGO,F_SRC],
   objetos:[["k","Tipo",x=>x.k,[["cons","Consumible"],["obj","Reutilizable"],["rec","Receta"]]],["r","Rareza",x=>x.r,Object.entries(RAR).filter(([k])=>k!=="rec").map(([k,v])=>[k,v.n])],F_SRC],
+  cartas:[["d","Dominio",x=>x.d,Object.entries(DOMINIOS).map(([k,v])=>[k,v.n])],["lv","Nivel",x=>String(x.lv),[1,2,3,4,5,6,7,8,9,10].map(n=>[String(n),"Nivel "+n])],
+    ["ty","Tipo",x=>x.ty,Object.entries(TIPO_CARTA)],["art","Ilustración",x=>arteDom(x.id)?"si":"no",[["si","Con ilustración"],["no","Sin ilustración"]]]],
   personas:F_LORE,lugares:F_LORE,organizaciones:F_LORE,mundo:F_LORE,cronica:F_LORE
 };
 const WG={fis:"Armas principales físicas",mag:"Armas principales mágicas",sec:"Armas secundarias"};
 const CGRP={
   armas:x=>[tierOf(x)*10+({fis:0,mag:1,sec:2}[x.g]??3),`Tier ${tierOf(x)} · ${WG[x.g]||"Armas"}`],
   armaduras:x=>[tierOf(x),`Tier ${tierOf(x)} · Armaduras`],
+  cartas:x=>[Object.keys(DOMINIOS).indexOf(x.d)*100+(+x.lv||0),`${DOMINIOS[x.d]?.n||x.d} · Nivel ${x.lv}`],
   objetos:x=>x.k==="rec"?[90,"Recetas"]:[(x.k==="cons"?0:40)+(({c:0,pc:1,r:2})[x.r]??3),`${x.k==="cons"?"Consumibles":"Reutilizables"} · ${RAR[x.r]?.n||""}`]
 };
 const cfil=()=>(ui.cf[ui.ccol]=ui.cf[ui.ccol]||{});
@@ -1566,6 +1571,7 @@ function compCard(col,it){const x=it.x||{};
   if(col==="armas")return weaponCard(x);
   if(col==="armaduras")return armorCard(x);
   if(col==="objetos")return itemCard(x);
+  if(col==="cartas")return DOMINIOS[x.d]&&TIPO_CARTA[x.ty]?domainCard(x):"";
   const glyph=col==="personas"?"persona":col==="lugares"?"lugar":col==="tiendas"?"objeto":"gema";
   return `<span class="ctmini">${cardArt(it.id,120,130,it.img,glyph)}<span class="ctn">${esc(it.n||"(sin nombre)")}</span>${it.sub?`<span class="cts">${esc(it.sub)}</span>`:""}${isLore(col)?`<i class="cdot${it.shared?" on":""}" title="${it.shared?"Lo conoce algún PJ":"No lo conoce nadie"}"></i>`:""}</span>`;
 }
@@ -1588,7 +1594,7 @@ function viewCompendio(st){
   // Secciones: por tier y tipo, o por tipo y rareza; lo retirado al final
   const G=new Map();
   for(const it of L){const [k,l]=it.borrado?[999,"Retirado"]:CGRP[col]?CGRP[col](it.x||{}):[0,""];if(!G.has(k))G.set(k,{l,it:[]});G.get(k).it.push(it)}
-  const big=["armas","armaduras","objetos"].includes(col);
+  const big=["armas","armaduras","objetos","cartas"].includes(col);
   const body=[...G].sort((a,b)=>a[0]-b[0]).map(([,g])=>`${g.l?`<h3 class="cgh">${esc(g.l)} <small>${g.it.length}</small></h3>`:""}
     <div class="${big?"cards ccards":"ctlist ccards"}">${g.it.map(it=>`<div class="cpick${it.borrado?" off":""}${it.id===ui.cid?" sel":""}" data-cpick="${esc(it.id)}" role="button" tabindex="0" aria-label="Editar ${esc(it.n)}">${compCard(col,it)}</div>`).join("")}</div>`).join("");
   const empty=`<div class="deco"><p class="note">${isLore(col)&&!Object.keys(Saber.dm).length?"Aún no hay notas: importa el vault en «Partida» o crea una con «Nuevo».":all.length?"Nada coincide con la búsqueda o los filtros.":"Todavía no hay nada. Pulsa «Nuevo»."}</p></div>`;
@@ -1603,9 +1609,10 @@ function compPreview(col){
     return `<article class="ctbig">${cardArt(x.id,600,260,img,g)}<div class="ctband"><span class="ctlab">${col==="lugares"?"Lugar":col==="personas"?"Contacto":"Nota"}</span><h2>${esc(x.n||"Sin nombre")}</h2>${x.sub?`<span class="ctsub">${esc(x.sub)}</span>`:""}</div>
       <div class="ctbody">${x.estado?`<p class="ctest"><b>Estado:</b> ${esc(x.estado)}</p>`:""}<div class="prose">${mdHTML(txt,(t,s)=>`<span class="lk">${esc(s)}</span>`)||`<p class="note">Los jugadores solo verán el nombre.</p>`}</div></div></article>`}
   if(col==="pjs")return `<div class="pjcard deco">${img?`<img class="init pimg" src="${img}" alt="">`:`<span class="init" aria-hidden="true">${esc((x.n||"?")[0])}</span>`}<span class="nm">${esc(x.n||"Sin nombre")}</span><span class="cl">${esc(x.c||"")}<br>Jugador: ${esc(x.j||"")}</span></div>`;
-  if(!["armas","armaduras","objetos"].includes(col))return "";
+  if(!["armas","armaduras","objetos","cartas"].includes(col))return "";
+  if(col==="cartas"){x.lv=+x.lv||1;x.rc=+x.rc||0}
   const old=ARTE[x.id];if(img)ARTE[x.id]=img;else delete ARTE[x.id];
-  let h="";try{h=col==="armas"?weaponCard({f:"",d:"d8 fís",...x,d:x.d||"d8 fís"}):col==="armaduras"?armorCard({...x,u:x.u||"? / ?",sc:x.sc||0}):itemCard({t:"",...x})}finally{if(old===undefined)delete ARTE[x.id];else ARTE[x.id]=old}
+  let h="";try{h=col==="armas"?weaponCard({f:"",d:"d8 fís",...x,d:x.d||"d8 fís"}):col==="armaduras"?armorCard({...x,u:x.u||"? / ?",sc:x.sc||0}):col==="cartas"?domainCard({t:"",...x}):itemCard({t:"",...x})}finally{if(old===undefined)delete ARTE[x.id];else ARTE[x.id]=old}
   return h.replace('class="dh-card','class="dh-card open');
 }
 function compEditor(col){
@@ -1625,7 +1632,7 @@ function compEditor(col){
   const retirado=r.borrado;
   const prev=compPreview(col);
   return `<div class="deco cform"><header class="chead"><span class="tab-label">${isNew?"Nuevo":esc(CCOLS.find(c=>c[0]===col)[1])}</span><h2>${esc(val("n")||"Sin nombre")}</h2>${retirado?`<span class="state shut">Retirado</span>`:""}<button class="wx" data-cclose aria-label="Cerrar el editor">✕</button></header>
-    ${prev?`<div class="cprevw"><span class="lab">Así lo ven los jugadores</span><div class="cprev"><div class="cprevc${["armas","armaduras","objetos"].includes(col)?" cardw":""}" id="cprev">${prev}</div></div></div>`:""}
+    ${prev?`<div class="cprevw"><span class="lab">Así lo ven los jugadores</span><div class="cprev"><div class="cprevc${["armas","armaduras","objetos","cartas"].includes(col)?" cardw":""}" id="cprev">${prev}</div></div></div>`:""}
     ${who}<div class="cfields">${F.map(field).join("")}</div>${col==="tiendas"&&!isNew?shopCatalogEditor(id):""}
     <div class="btns cbtns"><button class="btn" data-csave ${dis()}>${isNew?"Crear":"Guardar cambios"}</button>${ui.cdraft||ui.cimg!==undefined?`<button class="btn ghost" data-cundo>Descartar cambios</button>`:""}
      ${isNew?"":retirado?`<button class="btn ghost" data-crestore>Volver a ponerlo</button>`:`<button class="btn warn" data-cdel>${ui.cconfirm?"Pulsa otra vez para confirmar":lore?"Borrar nota":"Retirar"}</button>`}</div>
@@ -1675,7 +1682,7 @@ async function compSave(){
   const o={...r};for(const [k,v] of Object.entries(D))o[k]=v;
   if(ui.cimg!==undefined){if(ui.cimg)o.img=ui.cimg;else delete o.img}
   o.n=String(o.n||"").trim().slice(0,80);if(!o.n){toast("Ponle un nombre.",true);return}
-  for(const k of ["sc","h","inicial","tier"])if(k in o&&o[k]!=="")o[k]=+o[k];
+  for(const k of ["sc","h","inicial","tier","lv","rc"])if(k in o&&o[k]!=="")o[k]=+o[k];
   if(col==="tiendas"){o.botes=String(o.botes)==="true";o.items=o.items||{}}
   for(const k of ["s","p"])if(k in o){if(o[k]===""||o[k]==null)delete o[k];else o[k]=Math.max(0,+o[k])}
   let nid=id;
@@ -1784,7 +1791,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=31")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=33")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){
