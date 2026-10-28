@@ -1,6 +1,6 @@
 /* Mapa interactivo de la Zona Norte.
    Coordenadas en un lienzo de 1000×1000 sobre la imagen. Todo se guarda en Firebase bajo
-   tienda/mapa: items (marcas, trazos, líneas, zonas y textos), sesiones (nombre, número y resumen),
+   tienda/mapa: items (marcas, trazos, líneas, zonas y textos), sesiones (nombre y número; el texto de cada una vive en la pestaña Sesiones),
    grupos (con la ruta que siguió cada uno en cada sesión) y conf (escala y sesión actual). Cada cosa dibujada recuerda en qué sesión se puso, y la línea
    de tiempo de debajo enseña el mapa hasta la sesión elegida. Sin Firebase funciona en memoria. */
 const Mapa=(()=>{
@@ -28,7 +28,7 @@ const Mapa=(()=>{
     ["ruler","Medir","M3 16 L16 3 L21 8 L8 21Z M7 12 L9 14 M10 9 L12 11 M13 6 L15 8"]];
   const WIDTHS=[2,4,8];
 
-  let el,svg,ctx,ref=null,mode="local",mounted=false,hiLoaded=false,fitted=false;
+  let el,svg,ctx={isDM:()=>false,me:()=>null,toast:()=>{}},ref=null,mode="local",mounted=false,connected=false,sesSubs=[],hiLoaded=false,fitted=false;
   let data={items:{},sesiones:{},grupos:{},conf:{kmAncho:420,kmDia:30,actual:null}};
   let view={x:0,y:0,w:S},tool="mover",color=COLORS[0],width=4;
   let draft=null,sel=null,ruler=null,tpos=null,sesManual=false,setOpen=false,confirmDel=null,gName="";
@@ -62,6 +62,7 @@ const Mapa=(()=>{
 
   /* ---------- Datos ---------- */
   function connect(){
+    if(connected)return;connected=true;
     const cfg=window.FIREBASE_CONFIG;
     if(!cfg||!window.firebase){mode="local";return}
     try{
@@ -79,14 +80,15 @@ const Mapa=(()=>{
   function fixItem(v){if(v?.pts&&!Array.isArray(v.pts))v.pts=Object.values(v.pts);
     if(v?.rutas)for(const [k2,r] of Object.entries(v.rutas))if(!Array.isArray(r))v.rutas[k2]=Object.values(r);return v}
   let drawT=0;
-  const later=()=>{clearTimeout(drawT);drawT=setTimeout(()=>{draw();pop();timeline();settings()},16)};
+  const sesEmit=()=>sesSubs.forEach(f=>f());
+  const later=()=>{clearTimeout(drawT);drawT=setTimeout(()=>{draw();pop();timeline();settings();sesEmit()},16)};
   function put(col,id,obj){
     obj=JSON.parse(JSON.stringify(obj));
     if(mode==="live")ref.child(col).child(id).set(obj).catch(err);
-    data[col][id]=obj;draw();pop();timeline();settings();
+    data[col][id]=obj;draw();pop();timeline();settings();if(col==="sesiones")sesEmit();
   }
-  function del(col,id){if(mode==="live")ref.child(col).child(id).remove().catch(err);delete data[col][id];if(sel===id)sel=null;draw();pop();timeline();settings()}
-  function setConf(p){Object.assign(data.conf,p);if(mode==="live")ref.child("conf").update(p).catch(err);draw();timeline();settings()}
+  function del(col,id){if(mode==="live")ref.child(col).child(id).remove().catch(err);delete data[col][id];if(sel===id)sel=null;draw();pop();timeline();settings();if(col==="sesiones")sesEmit()}
+  function setConf(p){Object.assign(data.conf,p);if(mode==="live")ref.child("conf").update(p).catch(err);draw();timeline();settings();sesEmit()}
   function err(e){console.error(e);ctx.toast("No se pudo guardar en el mapa.",true)}
 
   /* ---------- Montaje ---------- */
@@ -314,7 +316,7 @@ const Mapa=(()=>{
   // Línea de tiempo de sesiones, debajo del mapa
   function timeline(){
     const box=el?.querySelector("#mtime");if(!box)return;const L=sesList(),c=curSes(),t=tNow();
-    if(!L.length){box.innerHTML=isDM()?`<p class="note">Crea la primera sesión en los ajustes de abajo para que lo que se dibuje quede guardado por sesiones.</p>`:"";box.hidden=!isDM();return}
+    if(!L.length){box.innerHTML=isDM()?`<p class="note">Crea la primera sesión en la pestaña Sesiones para que lo que se dibuje quede guardado por sesiones.</p>`:"";box.hidden=!isDM();return}
     box.hidden=false;
     const pos=i=>L.length===1?50:i/(L.length-1)*100,ci=curIdx(),cur=L[ci][1],mid=t<ci-1e-6;
     const act=data.conf.actual;
@@ -322,7 +324,7 @@ const Mapa=(()=>{
         <div class="mtline"></div><div class="mtfill" style="width:${pos(t)}%"></div>
         ${L.map(([id,x],i)=>`<span class="mtnode${i<=t+1e-6?" on":""}${id===act?" act":""}" style="left:${pos(i)}%" title="${esc(x.n)}"><i></i><small>${esc(String(x.num))}</small></span>`).join("")}
         <span class="mthandle" style="left:${pos(t)}%"></span></div>
-      <div class="mtinfo"><b>${mid?"Durante la ":""}${esc(cur.n)}</b>${c===act&&!mid?`<span class="mtnow">Sesión actual</span>`:""}${cur.resumen?`<p>${esc(cur.resumen)}</p>`:`<p class="note">Sin resumen todavía.</p>`}</div>`;
+      <div class="mtinfo"><b>${mid?"Durante la ":""}${esc(cur.n)}</b>${c===act&&!mid?`<span class="mtnow">Sesión actual</span>`:""}${ctx.sesTitulo?.(c)?`<p>${esc(ctx.sesTitulo(c))}</p>`:""}${ctx.goSesion?`<button class="btn ghost mtread" data-leerses="${c}">Leer la sesión</button>`:""}</div>`;
   }
   // Ajustes del DM: sesiones y escala. Van debajo para no molestar.
   function settings(){
@@ -331,13 +333,9 @@ const Mapa=(()=>{
     if(typing(box))return;box.hidden=false;
     const L=Object.entries(data.sesiones).filter(([,x])=>x).sort((a,b)=>b[1].num-a[1].num),act=data.conf.actual;
     box.innerHTML=`<details class="deco" ${setOpen?"open":""} id="msetd"><summary>Ajustes del mapa <small>solo DM</small></summary>
-      <section><h3>Sesiones</h3><p class="note">Lo que se dibuja queda en la sesión que marque la línea de tiempo. Los jugadores ven hasta la sesión actual.</p>
-        <div class="btns"><button class="btn" data-newses>Nueva sesión</button></div>
-        <div class="msesl">${L.map(([id,x])=>`<div class="mses${id===act?" act":""}"><div class="msesh"><input type="number" id="ms-num-${id}" data-sesf="num" data-ses="${id}" value="${x.num}" aria-label="Número" min="0">
-          <input type="text" id="ms-n-${id}" data-sesf="n" data-ses="${id}" value="${esc(x.n)}" maxlength="60" aria-label="Nombre">
-          ${id===act?`<span class="mtnow">Actual</span>`:`<button class="btn ghost" data-sesact="${id}">Hacer actual</button>`}
-          <button class="btn warn" data-sesdel="${id}">${confirmDel===id?"¿Seguro?":"Borrar"}</button></div>
-          <textarea id="ms-r-${id}" data-sesf="resumen" data-ses="${id}" maxlength="2000" placeholder="Resumen que verán los jugadores" aria-label="Resumen">${esc(x.resumen||"")}</textarea></div>`).join("")||`<p class="note">Todavía no hay sesiones.</p>`}</div></section>
+      <section><h3>Sesiones</h3><p class="note">Lo que se dibuja queda en la sesión que marque la línea de tiempo. Los jugadores ven hasta la sesión actual. Las sesiones se crean, se escriben y se borran en la pestaña Sesiones.</p>
+        <div class="msesl">${L.map(([id,x])=>`<div class="mses${id===act?" act":""}"><div class="msesh"><b class="msesn">${esc(x.n)}</b>
+          ${id===act?`<span class="mtnow">Actual</span>`:`<button class="btn ghost" data-sesact="${id}">Hacer actual</button>`}</div></div>`).join("")||`<p class="note">Todavía no hay sesiones.</p>`}</div></section>
       <section><h3>Grupos</h3>${grpSet()}</section>
       <section><h3>Distancias</h3><div class="mrow2"><label class="mlab" for="m-km">Ancho del mapa (km)</label><input type="number" id="m-km" min="10" max="5000" value="${data.conf.kmAncho||420}">
         <label class="mlab" for="m-kmd">Km por día de viaje</label><input type="number" id="m-kmd" min="1" max="200" value="${data.conf.kmDia||30}"></div></section></details>`;
@@ -367,8 +365,7 @@ const Mapa=(()=>{
     if(d.setcolor&&it){it.color=d.setcolor;put("items",sel,it);return}
     if(b.hasAttribute("data-delsel"))return removeSel();
     if(d.golugar)return ctx.goLugar(d.golugar);
-    if(b.hasAttribute("data-newses")){const S0=Object.values(data.sesiones).filter(Boolean),num=S0.length?Math.max(...S0.map(x=>+x.num||0))+1:0,id="s"+uid();
-      put("sesiones",id,{n:`Sesión ${num}`,num,resumen:"",ts:Date.now()});setConf({actual:id});sesManual=false;setOpen=true;settings();timeline();draw();return}
+    if(d.leerses)return ctx.goSesion?.(d.leerses);
     if(d.sesact){setConf({actual:d.sesact});sesManual=false;draw();timeline();return}
     if(b.hasAttribute("data-gnew")){const n=(el.querySelector("#mg-new")?.value||"").trim();if(!n)return ctx.toast("Ponle un nombre al grupo.",true);
       gName="";put("grupos","g"+uid(),{n,color,rutas:{},by:me(),ts:Date.now()});return}
@@ -376,16 +373,12 @@ const Mapa=(()=>{
     if(d.grutadel){const g=data.grupos[d.grutadel],sid=curSes();if(g?.rutas&&sid){delete g.rutas[sid];put("grupos",d.grutadel,g)}return}
     if(d.gcolor){const g=data.grupos[d.g];if(g){g.color=d.gcolor;put("grupos",d.g,g)}return}
     if(d.gdel){if(confirmDel!==d.gdel){confirmDel=d.gdel;settings();return}confirmDel=null;del("grupos",d.gdel);return}
-    if(d.sesdel){if(confirmDel!==d.sesdel){confirmDel=d.sesdel;settings();return}confirmDel=null;
-      if(data.conf.actual===d.sesdel)setConf({actual:null});del("sesiones",d.sesdel);return}
   }
   function change(e){
     const t=e.target,it=sel&&data.items[sel];
     if(t.dataset.gname){const g=data.grupos[t.dataset.gname];if(g){g.n=t.value.trim().slice(0,40)||g.n;t.blur();put("grupos",t.dataset.gname,g)}return}
     if(t.id==="m-km")return setConf({kmAncho:Math.max(10,+t.value||420)});
     if(t.id==="m-kmd")return setConf({kmDia:Math.max(1,+t.value||30)});
-    if(t.dataset.sesf){const x=data.sesiones[t.dataset.ses];if(!x)return;const f=t.dataset.sesf;
-      x[f]=f==="num"?Math.max(0,+t.value||0):t.value.trim().slice(0,f==="n"?60:2000);if(f==="n"&&!x.n)x.n=`Sesión ${x.num}`;t.blur();return put("sesiones",t.dataset.ses,x)}
     if(it&&["md-title","md-note","md-text","md-size"].includes(t.id)){const f={"md-title":"title","md-note":"note","md-text":"text","md-size":"size"}[t.id];
       it[f]=t.type==="range"?+t.value:t.value;t.blur();return put("items",sel,it)}
   }
@@ -393,5 +386,12 @@ const Mapa=(()=>{
     if(t.id==="md-size"&&sel&&data.items[sel]){data.items[sel].size=+t.value;draw()}}
   document.addEventListener("toggle",e=>{if(e.target.id==="msetd")setOpen=e.target.open},true);
 
-  return {mount,refresh};
+  /* ---------- Sesiones para la pestaña Sesiones (las crea y borra el DM desde allí) ---------- */
+  function ensure(c){if(!mounted&&c)ctx={...ctx,...c};connect()}
+  const sesData=()=>({sesiones:data.sesiones,actual:data.conf.actual});
+  function putSes(id,obj){if(obj)put("sesiones",id,obj);else{if(data.conf.actual===id)setConf({actual:null});if(data.sesiones[id])del("sesiones",id)}}
+  function setActual(id){sesManual=false;setConf({actual:id})}
+  const onSes=f=>sesSubs.push(f);
+
+  return {mount,refresh,ensure,sesData,putSes,setActual,onSes,uid};
 })();

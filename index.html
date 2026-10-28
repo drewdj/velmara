@@ -367,6 +367,48 @@ nav.main .dot{display:inline-block;width:8px;height:8px;border-radius:50%;backgr
 .cbar{display:grid;gap:8px;padding:10px 0;background:var(--night);border-bottom:1px solid var(--line);margin-bottom:8px}
 .cbar .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0}.cbar input[type=search]{flex:1;min-width:0}
 @media (min-width:821px){.cbar{position:sticky;top:0;z-index:6}.cpick{scroll-margin-top:240px}}
+/* Sesiones: libro de la crónica */
+.libro{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;align-items:start;margin-top:18px}
+.lidx{display:grid;gap:10px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;padding-right:2px}
+.lidx .btns .btn{font-size:.9rem;padding:5px 12px}
+.lits{display:grid;gap:6px}
+.lit{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;background:var(--violet);border:1px solid var(--line);border-left:3px solid var(--line)}
+.lit:hover{border-color:var(--gold-lo)}.lit:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.lit[aria-current="true"]{border-color:var(--gold);border-left-color:var(--gold);background:var(--violet-2)}
+.lnum{font-family:var(--cond);font-weight:700;font-size:1.5rem;line-height:1;color:var(--gold-hi);min-width:1.6ch;text-align:center}
+.ltx{display:grid;min-width:0}.ltx b{font-family:var(--cond);font-size:1.05rem;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ltx small{color:var(--muted);font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lnow{font-style:normal;color:var(--gold);font-size:.8rem}.lnow.off{color:var(--muted)}
+.lcol{display:grid;gap:18px;min-width:0}
+.lpage{display:grid;gap:18px;padding:26px clamp(16px,4vw,44px) 22px}
+.lhead{display:grid;gap:8px}.lhead h1,.lptit{margin:0;font-family:var(--cond);font-size:clamp(2rem,5vw,2.8rem);line-height:1.05;text-transform:uppercase;letter-spacing:.03em;color:var(--paper)}
+.ltags{display:flex;flex-wrap:wrap;gap:8px}.ltags:empty{display:none}
+.lhid{font-family:var(--cond);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border:1px dashed var(--muted);padding:0 8px}
+.ldm .btn{font-size:.9rem;padding:5px 12px}
+.ltldr{border-left:3px solid var(--gold);background:rgb(249 167 43 / .08);padding:10px 16px 6px}
+.ltldr h3{margin:0 0 6px;font-family:var(--cond);font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold-hi)}
+.ltldr ul{margin:0;padding-left:20px;display:grid;gap:4px}.ltldr li{line-height:1.45}
+.lbody{max-width:68ch;font-size:1.05rem;line-height:1.7}
+.lbody>p:first-child::first-letter{float:left;font-family:var(--cond);font-weight:700;font-size:3.4em;line-height:.85;padding:4px 8px 0 0;color:var(--gold)}
+.lfig{margin:6px 0 20px;display:grid;gap:6px}.lfig img{width:100%;max-height:70vh;object-fit:cover;border:1px solid var(--line);display:block}
+.lfig figcaption{font-size:.85rem;color:var(--muted);font-style:italic}
+.lsep{border:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:22px 0}
+.lpn{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.lpnb{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:2px;padding:6px 0;min-width:0}.lpnb:last-child{text-align:right}
+.lpnb small{font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}.lpnb b{color:var(--gold-hi);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lpnb:hover b{text-decoration:underline}.lpnb:focus-visible{outline:2px solid var(--gold)}
+.lnotas{display:grid;gap:8px}.lnotas h3{margin:0;font-family:var(--cond);text-transform:uppercase;letter-spacing:.06em;color:var(--gold-hi)}
+.lnotas textarea{width:100%;box-sizing:border-box;min-height:140px;line-height:1.5}
+.lnota{border-left:3px solid var(--line);padding-left:10px}.lnota p{margin:2px 0 0;white-space:pre-wrap}
+.ledit{display:grid;gap:12px}.ledit h2{margin:0}.ledit label{display:grid;gap:4px;font-family:var(--cond);letter-spacing:.04em}
+.ledit textarea{width:100%;box-sizing:border-box;font-family:var(--body);line-height:1.5}.ltxt{min-height:320px}
+.lrow{display:flex;flex-wrap:wrap;gap:10px}.lrow label{flex:0 0 110px}.lrow .grow{flex:1 1 200px}.lrow input{width:100%;box-sizing:border-box}
+.lfile{cursor:pointer}
+.lempty{margin-top:0}
+@media (max-width:820px){.libro{grid-template-columns:minmax(0,1fr)}
+  .lidx{position:static;max-height:none;overflow:visible}
+  .lits{display:flex;overflow-x:auto;gap:8px;padding-bottom:4px;scroll-snap-type:x proximity}
+  .lit{flex:0 0 auto;max-width:220px;scroll-snap-align:start}}
 @media (max-width:820px){.cbar>.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.cbar>.chips .chip{flex:none}}
 .cfacs{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
 .cfac{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.cfac>span{font-family:var(--cond);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:2px}
@@ -769,17 +811,18 @@ details.feats[open] summary::after{content:"▴"}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=28"></script>
-<script src="js/datos.js?v=28"></script>
-<script src="js/dominios.js?v=28"></script>
-<script src="js/reglas.js?v=28"></script>
-<script src="js/store.js?v=28"></script>
-<script src="js/creacion.js?v=28"></script>
-<script src="js/cartas.js?v=28"></script>
-<script src="js/mapa.js?v=28"></script>
-<script src="js/contenido.js?v=28"></script>
-<script src="js/saber.js?v=28"></script>
-<script src="js/mundo.js?v=28"></script>
+<script src="js/firebase-config.js?v=29"></script>
+<script src="js/datos.js?v=29"></script>
+<script src="js/dominios.js?v=29"></script>
+<script src="js/reglas.js?v=29"></script>
+<script src="js/store.js?v=29"></script>
+<script src="js/creacion.js?v=29"></script>
+<script src="js/cartas.js?v=29"></script>
+<script src="js/mapa.js?v=29"></script>
+<script src="js/contenido.js?v=29"></script>
+<script src="js/saber.js?v=29"></script>
+<script src="js/mundo.js?v=29"></script>
+<script src="js/libro.js?v=29"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -787,7 +830,7 @@ const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k
 const TAB=Math.random().toString(36).slice(2);
 const ui={cf:{},bell:false,ciq:"",cig:"",dtab:ls.get("v-dtab"),ccol:ls.get("v-ccol"),cid:null,cq:"",cdraft:null,cimg:undefined,cconfirm:false,ct:ls.get("v-ct"),lg:ls.get("v-lg"),me:ls.get("v-pj"),view:ls.get("v-view")||"personaje",ent:ls.get("v-ent"),cat:ls.get("v-cat"),tienda:ls.get("v-tienda"),
   stab:ls.get("v-stab")||"equipo",pick:null,allDoms:false,filt:"todo",wf:"fis",busy:false,canDM:false,confirmReset:false,confirmHide:false,
-  edit:{hoja:false,inv:false},sel:null,login:false,loginErr:""};
+  edit:{hoja:false,inv:false},sel:null,login:false,loginErr:"",ses:ls.get("v-ses"),ledit:false,ldraft:null,lconfirm:null};
 // Los PJs llegan con el Contenido: hasta entonces se guarda a quién eligió este dispositivo
 let meEspera=ui.me&&!PJ[ui.me]?ui.me:null;
 if(!PJ[ui.me])ui.me=null;
@@ -842,7 +885,7 @@ function shopRows(st,id){const T=shopsAt(id);if(!T.length)return "";
     return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub||"")}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`}
 function nav(st){
   const nOpen=openShops(st).length,shops=nOpen||ui.view==="tiendas"; // sin tiendas abiertas no hay pestaña
-  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["mapa","Mapa"],...(shops?[["tiendas","Tiendas"]]:[]),...(ui.canDM?[["dm","Mesa del DM"]]:[])];
+  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["sesiones","Sesiones"],["mapa","Mapa"],...(shops?[["tiendas","Tiendas"]]:[]),...(ui.canDM?[["dm","Mesa del DM"]]:[])];
   const dot=nOpen?`<i class="dot" title="Hay tiendas abiertas"></i>`:"",lv=puedeSubir(st,ui.me)?`<i class="dot lv" title="Nivel nuevo disponible">⬆</i>`:"";
   return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="tiendas"?dot:k==="personaje"?lv:""}</button>`).join("")}</nav>`;
 }
@@ -1652,9 +1695,112 @@ function showMap(on){
   r.hidden=!on;if(!on)return;
   if(!mapMounted){mapMounted=true;Mapa.mount(r,{me:()=>ui.me,isDM:()=>ui.canDM,pjName:id=>PJ[id]?.n,
     lugares:()=>LUGARES.filter(l=>Store.state?.mundo?.lugares?.[l.id]?.visible||asDM()),viewAs:()=>ui.canDM&&!!ui.me,
-    goLugar:id=>go({view:"mundo",ent:id,tienda:null}),toast})}
+    goLugar:id=>go({view:"mundo",ent:id,tienda:null}),toast,sesTitulo,
+    goSesion:id=>{ui.ses=id;ls.set("v-ses",id);ui.ledit=false;go({view:"sesiones"})}})}
   else Mapa.refresh();
 }
+
+/* ---------- Sesiones: el libro de lo que ha pasado, con las notas de cada jugador ---------- */
+// Las sesiones son las del mapa. Los jugadores ven hasta la sesión actual; el DM, todas.
+function sesOrden(){const {sesiones,actual}=Mapa.sesData(),A=Object.entries(sesiones).filter(([,x])=>x).sort((a,b)=>a[1].num-b[1].num);
+  const cur=sesiones[actual];return asDM()?A:cur?A.filter(([,x])=>x.num<=cur.num):[]}
+const sesTitulo=id=>Libro.libro[id]?.titulo||"";
+const sesPub=x=>{const c=Mapa.sesData().sesiones[Mapa.sesData().actual];return !!c&&x.num<=c.num};
+function viewSesiones(st){
+  const L=sesOrden(),{actual}=Mapa.sesData(),dm=asDM();
+  if(ui.ledit&&ui.ldraft)return `<div class="libro">${sesIndice(L,actual,dm)}${sesEditor()}</div>`;
+  if(!L.some(([id])=>id===ui.ses))ui.ses=(L.find(([id])=>id===actual)||L[L.length-1]||[])[0]||null;
+  const i=L.findIndex(([id])=>id===ui.ses);
+  if(i<0)return `<div class="libro">${dm?sesIndice(L,actual,dm):""}<div class="deco lempty"><h2>Sesiones</h2><p class="note">${dm?"Todavía no hay sesiones. Crea la primera o carga las del vault.":"El DM todavía no ha publicado ninguna sesión."}</p></div></div>`;
+  const [id,x]=L[i],b=Libro.libro[id]||{},E=mundoEntries();
+  const link=(t,txt)=>E[t]?`<button class="lk" data-ent="${t}">${esc(txt)}</button>`:`<span class="lk off">${esc(txt)}</span>`;
+  const tldr=(b.tldr||[]).filter(Boolean),txt=b.texto??x.resumen??"";
+  const pn=(j,lab)=>L[j]?`<button class="lpnb" data-lses="${L[j][0]}"><small>${lab}</small><b>${esc(Libro.libro[L[j][0]]?.titulo||L[j][1].n)}</b></button>`:"<span></span>";
+  const N=Libro.notas[id]||{},mine=ui.me?N[ui.me]?.t||"":"";
+  const otras=dm?Object.entries(N).filter(([p,v])=>v?.t&&PJ[p]):[];
+  return `<div class="libro">${sesIndice(L,actual,dm)}<div class="lcol">
+    <article class="lpage deco">
+      <header class="lhead"><span class="tab-label">${esc(x.n)}${b.lugar?` · ${esc(b.lugar)}`:""}</span>
+        <h1>${esc(b.titulo||x.n)}</h1>
+        <div class="ltags">${id===actual?`<span class="mtnow">Sesión actual</span>`:""}${dm&&!sesPub(x)?`<span class="lhid">Los jugadores aún no la ven</span>`:""}</div>
+        ${dm?`<div class="btns ldm"><button class="btn" data-ledit="${id}">Editar</button>${id===actual?"":`<button class="btn ghost" data-lact="${id}">Hacer actual</button>`}
+          <button class="btn warn" data-ldel="${id}">${ui.lconfirm===id?"¿Seguro? Se borra también del mapa":"Borrar"}</button></div>`:""}</header>
+      ${tldr.length?`<section class="ltldr"><h3>En pocas palabras</h3><ul>${tldr.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></section>`:""}
+      <div class="prose lbody">${libroHTML(txt,b.imgs,link)||`<p class="note">Todavía no hay nada escrito de esta sesión.</p>`}</div>
+      <nav class="lpn">${pn(i-1,"← Anterior")}${pn(i+1,"Siguiente →")}</nav>
+    </article>
+    ${ui.me?`<section class="lnotas deco"><h3>Tus notas</h3><p class="note">Lo que quieras apuntar de esta sesión: pistas, nombres, dudas. Se guarda solo. Lo ves tú y el DM.</p>
+      <textarea id="ln-${id}" data-lnota="${id}" maxlength="8000" placeholder="Escribe aquí…">${esc(mine)}</textarea></section>`:""}
+    ${dm?`<section class="lnotas deco"><h3>Notas de los jugadores</h3>${otras.length?otras.map(([p,v])=>`<div class="lnota"><b>${esc(PJ[p].n)}</b><p>${esc(v.t)}</p></div>`).join(""):`<p class="note">Nadie ha apuntado nada en esta sesión.</p>`}</section>`:""}
+  </div></div>`;
+}
+function sesIndice(L,actual,dm){
+  return `<aside class="lidx"><span class="tab-label">Crónica</span>
+    ${dm?`<div class="btns"><button class="btn" data-lnew>Nueva sesión</button><button class="btn ghost" data-limport>Cargar las del vault</button></div>`:""}
+    <div class="lits">${L.slice().reverse().map(([id,x])=>{const b=Libro.libro[id]||{};
+      return `<button class="lit" data-lses="${id}" aria-current="${id===ui.ses&&!ui.ledit}"><span class="lnum">${esc(String(x.num))}</span><span class="ltx"><b>${esc(b.titulo||x.n)}</b><small>${esc(b.lugar||x.n)}</small></span>${id===actual?`<i class="lnow" title="Sesión actual">●</i>`:dm&&!sesPub(x)?`<i class="lnow off" title="Sin publicar">◌</i>`:""}</button>`}).join("")}</div></aside>`;
+}
+function sesEditor(){
+  const d=ui.ldraft;
+  return `<div class="lcol"><section class="deco ledit"><h2>${d.nuevo?"Nueva sesión":"Editar sesión"}</h2>
+    <div class="lrow"><label>Número<input type="number" id="le-num" min="0" value="${esc(d.num)}"></label>
+      <label class="grow">Nombre corto<input type="text" id="le-n" maxlength="60" value="${esc(d.n)}" placeholder="Sesión 4"></label></div>
+    <div class="lrow"><label class="grow">Título<input type="text" id="le-titulo" maxlength="80" value="${esc(d.titulo)}" placeholder="La niebla se disipa"></label>
+      <label class="grow">Lugar<input type="text" id="le-lugar" maxlength="60" value="${esc(d.lugar)}" placeholder="Lunaris"></label></div>
+    <label>En pocas palabras <small class="note">una idea por línea, tres como mucho</small><textarea id="le-tldr" rows="3" maxlength="600">${esc(d.tldr)}</textarea></label>
+    <label>Qué pasó <small class="note">## para títulos, **negrita**, - listas, --- para separar y [[Nota]] para enlazar</small><textarea id="le-texto" class="ltxt" maxlength="40000">${esc(d.texto)}</textarea></label>
+    <div class="btns"><label class="btn ghost lfile">Añadir imagen<input type="file" id="le-img" accept="image/*" hidden></label>
+      <span class="note">La imagen entra donde está el cursor. Cambia el pie de foto entre los corchetes.</span></div>
+    <div class="btns"><button class="btn" data-lsave ${dis()}>Guardar</button><button class="btn ghost" data-lcancel>Cancelar</button></div>
+    <p class="note">Los jugadores ven las sesiones hasta la actual. La actual se cambia desde la página de la sesión o en el mapa.</p></section>
+    <article class="lpage deco"><span class="tab-label">Vista previa</span><div id="lprev">${sesPrev()}</div></article></div>`;
+}
+function sesPrev(){const d=ui.ldraft,E=mundoEntries(),link=(t,txt)=>E[t]?`<span class="lk">${esc(txt)}</span>`:`<span class="lk off">${esc(txt)}</span>`;
+  const T=d.tldr.split("\n").map(s=>s.trim()).filter(Boolean);
+  return `<h1 class="lptit">${esc(d.titulo||d.n||"Sin título")}</h1>${T.length?`<section class="ltldr"><h3>En pocas palabras</h3><ul>${T.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></section>`:""}
+    <div class="prose lbody">${libroHTML(d.texto,d.imgs,link)}</div>`}
+function sesAbrirEditor(id){
+  const S=Mapa.sesData().sesiones;
+  if(!id){const nums=Object.values(S).filter(Boolean).map(x=>+x.num||0),num=nums.length?Math.max(...nums)+1:1;
+    ui.ldraft={nuevo:true,id:"s"+Mapa.uid(),num,n:`Sesión ${num}`,titulo:"",lugar:"",tldr:"",texto:"",imgs:{}}}
+  else{const x=S[id],b=Libro.libro[id]||{};
+    ui.ldraft={id,num:x.num,n:x.n,titulo:b.titulo||"",lugar:b.lugar||"",tldr:(b.tldr||[]).join("\n"),texto:b.texto??x.resumen??"",imgs:{...(b.imgs||{})}}}
+  ui.ledit=true;render();scrollTo({top:0});
+}
+async function sesGuardar(){
+  const d=ui.ldraft,x=Mapa.sesData().sesiones[d.id]||{},num=Math.max(0,Math.round(+d.num||0));
+  const used=new Set([...d.texto.matchAll(/\(img:([\w-]+)\)/g)].map(m=>m[1])),imgs={};
+  for(const [k,v] of Object.entries(d.imgs||{}))if(used.has(k))imgs[k]=v;
+  const o={titulo:d.titulo.trim(),lugar:d.lugar.trim(),tldr:d.tldr.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,6),texto:d.texto,...(Object.keys(imgs).length?{imgs}:{})};
+  ui.busy=true;render();
+  try{const ses={n:d.n.trim()||`Sesión ${num}`,num,ts:x.ts||Date.now()};Mapa.putSes(d.id,ses);await Libro.guardar(d.id,o);
+    if(d.nuevo&&!Mapa.sesData().actual)Mapa.setActual(d.id);
+    ui.ses=d.id;ls.set("v-ses",d.id);ui.ledit=false;ui.ldraft=null;toast("Sesión guardada.")}
+  catch(e){console.error(e);toast("No se pudo guardar la sesión.",true)}
+  ui.busy=false;render();
+}
+// Cargar los resúmenes del vault (data/sesiones-vault.json). No pisa lo que ya esté escrito en la web.
+async function sesImportar(){
+  ui.busy=true;render();
+  try{
+    const V=await (await fetch("data/sesiones-vault.json?v=29")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    // Los resúmenes que se escribieron en el mapa pasan al libro
+    for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
+    for(const e of V){
+      let id=Object.keys(S).find(k=>S[k]&&+S[k].num===e.num);
+      if(!id){id="s"+Mapa.uid();Mapa.putSes(id,{n:`Sesión ${e.num}`,num:e.num,ts:Date.now()})}
+      const b=Libro.libro[id];if(b?.titulo||b?.tldr?.length){sk++;continue}
+      await Libro.guardar(id,{titulo:e.titulo,lugar:e.lugar||"",tldr:e.tldr||[],texto:b?.texto&&b.texto!==S[id]?.resumen?b.texto:e.texto});n++;
+    }
+    const all=Object.entries(Mapa.sesData().sesiones).filter(([,x])=>x).sort((a,b)=>b[1].num-a[1].num);
+    if(!Mapa.sesData().actual&&all.length)Mapa.setActual(all[0][0]);
+    ui.ses=Mapa.sesData().actual||ui.ses;ls.set("v-ses",ui.ses);
+    toast(n?`${n} sesiones cargadas del vault.${sk?` ${sk} ya estaban escritas y no se han tocado.`:""}`:"Todas las sesiones del vault ya estaban.");
+  }catch(e){console.error(e);toast("No se pudieron cargar las sesiones del vault.",true)}
+  ui.busy=false;render();
+}
+let lnT={};
+function sesNota(id,v){clearTimeout(lnT[id]);lnT[id]=setTimeout(()=>Libro.nota(id,ui.me,v).catch(e=>{console.error(e);toast("No se pudo guardar tu nota.",true)}),700)}
 
 /* ---------- Mundo (también fuera de #app: las ventanas abiertas sobreviven a cada render) ---------- */
 let mundoMounted=false;
@@ -1679,7 +1825,7 @@ function render(){
     if(ui.me&&(!PJ[ui.me]||!st.hojas[ui.me]))ui.me=null; // el DM lo ha borrado
     if(!ui.me&&["personaje","inventario","contactos","lugares"].includes(ui.view))ui.view="mundo";
     if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
-    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,tiendas:viewTiendas,dm:viewDM,mapa:()=>""}[ui.view]||viewMundo;
+    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,tiendas:viewTiendas,dm:viewDM,sesiones:viewSesiones,mapa:()=>""}[ui.view]||viewMundo;
     body=nav(st)+V(st);
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
@@ -1773,6 +1919,15 @@ document.addEventListener("click",e=>{
   const dz=e.target.closest(".eslot.can");if(dz&&ui.sel){const r=ui.sel;ui.sel=null;return act(st=>A.slot(st,ui.me,r,dz.dataset.drop))}
   if(ui.bell&&!e.target.closest(".bellw")){ui.bell=false;render()}
   const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+  if(d.lses){ui.ses=d.lses;ls.set("v-ses",d.lses);ui.lconfirm=null;if(ui.ledit){ui.ledit=false;ui.ldraft=null}render();scrollTo({top:0});return}
+  if(b.hasAttribute("data-lnew"))return sesAbrirEditor(null);
+  if(d.ledit)return sesAbrirEditor(d.ledit);
+  if(b.hasAttribute("data-lcancel")){ui.ledit=false;ui.ldraft=null;render();return}
+  if(b.hasAttribute("data-lsave"))return sesGuardar();
+  if(b.hasAttribute("data-limport"))return sesImportar();
+  if(d.lact){Mapa.setActual(d.lact);toast("Ahora es la sesión actual.");return}
+  if(d.ldel){if(ui.lconfirm!==d.ldel){ui.lconfirm=d.ldel;render();return}ui.lconfirm=null;Mapa.putSes(d.ldel,null);
+    Libro.borrar(d.ldel).catch(e2=>{console.error(e2);toast("No se pudo borrar.",true)});ui.ses=null;toast("Sesión borrada.");render();return}
   if(b.hasAttribute("data-home"))return go({view:ui.me?"personaje":"mundo",ent:null,tienda:null});
   if(b.hasAttribute("data-switch")){ui.me=null;ls.set("v-pj",null);render();return}
   if(d.login!==undefined){ui.login=d.login==="1";ui.loginErr="";render();if(ui.login)$("#dm-pw")?.focus();return}
@@ -1938,6 +2093,8 @@ document.addEventListener("keydown",e=>{
 });
 // Borrador del Compendio: lo escrito sobrevive a los cambios que lleguen de otros mientras editas
 document.addEventListener("input",e=>{const t=e.target;
+  if(t.dataset.lnota&&ui.me){sesNota(t.dataset.lnota,t.value);return}
+  if(ui.ledit&&ui.ldraft&&t.id?.startsWith("le-")&&t.type!=="file"){ui.ldraft[t.id.slice(3)]=t.value;const pv=$("#lprev");if(pv)pv.innerHTML=sesPrev();return}
   if(ui.crear&&ui.cr){const c=ui.cr,D=t.dataset;
     if(D.crf){c[D.crf]=t.value;crSave();render();return}
     if(D.crfe!==undefined){c.exp[+D.crfe]=t.value;crSave();render();return}}
@@ -1948,6 +2105,9 @@ document.addEventListener("input",e=>{const t=e.target;
 });
 document.addEventListener("change",e=>{
   const t=e.target;if(t.closest("#maproot"))return;
+  if(t.id==="le-img"&&ui.ldraft){const f=t.files[0];t.value="";if(!f)return;const ta=$("#le-texto"),pos=ta?ta.selectionEnd:ui.ldraft.texto.length;
+    reducirImagen(f,1200).then(dURL=>{const d=ui.ldraft;if(!d)return;const k=Mapa.uid();d.imgs[k]=dURL;const T=d.texto,ins=`${T&&!T.slice(0,pos).endsWith("\n")?"\n":""}\n![Pie de foto](img:${k})\n\n`;
+      d.texto=T.slice(0,pos)+ins+T.slice(pos);render()}).catch(err=>toast(err.message,true));return}
   if(t.id==="para-sel"&&ui.pick)ui.pick.para=t.value;
   if(t.id==="cf-imgfile"){const f=t.files[0];t.value="";if(!f)return;reducirImagen(f).then(d=>{ui.cimg=d;render()}).catch(err=>toast(err.message,true));return}
   if(t.id?.startsWith("cf-")){ui.cdraft={...(ui.cdraft||{}),[t.id.slice(3)]:t.value};if(t.tagName==="SELECT")render();return}
@@ -2023,6 +2183,10 @@ Store.subs.push(render);
 render();
 Contenido.subs.push(()=>{if(meEspera&&Contenido.listo){if(PJ[meEspera]&&!ui.me)ui.me=meEspera;meEspera=null}if(Store.state)Store.state=Store.fix(Store.state);render();if(mapMounted)Mapa.refresh()});
 Contenido.init();
+Libro.subs.push(()=>{if(ui.view==="sesiones")render()});
+Mapa.onSes(()=>{if(ui.view==="sesiones")render()});
+Mapa.ensure({isDM:()=>ui.canDM,me:()=>ui.me,toast});
+Libro.init();
 Store.init(Nope).then(()=>{Saber.init();render()});
 </script>
 </body>

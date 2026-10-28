@@ -1,0 +1,90 @@
+[
+ {
+  "num": 1,
+  "titulo": "La Forja perdida",
+  "lugar": "Dientes del Vacío",
+  "tldr": [
+   "Thalemis os contrata en Lunaris para investigar luces imposibles en los picos del norte.",
+   "Un guardián de hielo mata a Mora; Toro desaparece.",
+   "Bajo el lago helado, un taller arcano y un artefacto custodiado por una figura espectral."
+  ],
+  "texto": "Cada uno, por vuestras propias razones —necesidad, ambición o ganas de descubrir— acabasteis en **Lunaris**, un asentamiento costero donde aún se respira esperanza.\n\nAllí conocisteis a **Thalemis**, un comerciante obsesionado con los artefactos de la civilización perdida. Os habló de luces imposibles en los picos del norte y os ofreció una buena recompensa si las investigabais… y volvíais vivos.\n\nAceptasteis. Tras unas semanas de preparación partisteis con los gemelos **Mora y Toro**, guías velofríos expertos en sobrevivir en las Tierras Vaciadas.\n\n## La travesía\nDurante un mes recorristeis los **Dientes del Vacío**, hasta casi agotar los suministros. Cuando ya pensabais abandonar, decidisteis dar un último intento.\n\nEntre valles helados alcanzasteis un pico parecido al que describía Thalemis, con una tormenta eléctrica y una ventisca pisándoos los talones. Una avalancha os cortó el paso y encontrasteis refugio en una **caverna** con un lago congelado, iluminado por plantas bioluminiscentes.\n\n## El Guardián del Umbral\nMientras descansabais, unas luces empezaron a brillar bajo el hielo. Al intentar liberarlas despertasteis algo antiguo: una gigantesca figura de hielo que emergió del lago. Al alzarse atravesó el cráneo de **Mora**, que murió en el acto.\n\nEl combate fue duro, pero derrotasteis al guardián. Tras el descanso, **Toro había desaparecido**.\n\n## Las Ruinas Heladas\nEl coloso había abierto un hueco en el lago que dejaba ver una **puerta de piedra** que latía con luz. Al otro lado había un antiguo **taller arcano**:\n\n- **El Taller**: un proyector mostraba planos imposibles, artefactos que sustituían extremidades e incluso ojos. Recuperasteis un cilindro con cristales y una pequeña esfera con forma de ojo.\n- **La Oficina Congelada**: documentos atrapados bajo el hielo; la sala amenazaba con hundirse y no pudisteis leerlos.\n- **El Almacén**: entre los restos, una **esfera luminosa** de intenso resplandor.\n- **La Sala de Descanso**: una carta a medio escribir de quienes vivieron allí.\n\nUsasteis la **esfera de luz** para activar otra puerta, y quedó atrapada en el mecanismo.\n\n## La Forja Central\nMás allá, en una gran sala, un **artefacto con anillos giratorios** flotaba sobre un pedestal y desprendía una niebla densa. Al acercaros, la oscuridad cobró forma: fragmentos de los propios artefactos se alzaron, unidos por una **figura espectral** que os cerró el paso."
+ },
+ {
+  "num": 2,
+  "titulo": "Vuelta a Lunaris",
+  "lugar": "Lunaris",
+  "tldr": [
+   "Derrotáis a la sombra de humo y metal; la Forja se derrumba.",
+   "Descenso por la montaña hasta Lunaris. Galeryon ve un cartel de «Se Busca» con su misma espada.",
+   "Entregáis el artefacto a Thalemis. Esa noche, la niebla ataca Lunaris."
+  ],
+  "texto": "En lo más hondo de la Forja os aguardaba una criatura nacida de la sombra: un ser sin rostro, de humo y metal, que custodiaba el artefacto. Varios caísteis al borde del abismo, pero ganasteis.\n\n![La sombra que guardaba el artefacto](img/sesiones/s2-sombra.webp)\n\nAl caer la criatura, la estructura empezó a derrumbarse. Recuperasteis el **orbe de luz** que habíais usado para abrir la puerta y encontrasteis un pasadizo estrecho hacia la superficie.\n\n## El descenso\nSalisteis a la **cima de la montaña**, aunque habíais entrado por su base. En el horizonte, junto a la costa, brillaba débil pero constante el **faro de Lunaris**.\n\n![Desde la cima, el faro de Lunaris](img/sesiones/s2-cima.webp)\n\nBajando encontrasteis un **árbol cubierto de nieve**, solitario entre el hielo. Cavasteis un refugio, encendisteis una hoguera y aprovechasteis para estudiar los documentos de la Forja y el misterioso artefacto.\n\n![El refugio bajo el árbol nevado](img/sesiones/s2-arbol.webp)\n\nMás adelante, un **abismo de hielo** cortaba el camino. Os atasteis por parejas y bajasteis la pared, entre marcas y restos de otras expediciones.\n\n![El abismo de hielo](img/sesiones/s2-abismo.webp)\n\nUno de vosotros resbaló, pero entre todos lo sujetasteis.\n\n![El resbalón](img/sesiones/s2-resbalon.webp)\n\n## Lunaris\nDías después, los muros de madera de **Lunaris** aparecieron entre la bruma. En el tablón de la casa de la alcaldesa, **Galeryon** vio un cartel de *«Se Busca»*: un elfo desconocido… con una espada idéntica a la suya.\n\nVisitasteis a **Lorasys**, maestra de **C.O.R.A.**, para investigar el artefacto. Aun así se lo entregasteis a **Thalemis**, que ya había contratado a otra compañía de mercenarios para llevarlo a **Aelrennor**, donde lo esperaba su comprador.\n\nParecía el final de una larga jornada. Pero esa noche, mientras descansabais en el taller de Lorasys, **sonaron las campanas** de la torre vigía. Luego un rugido lejano. Luego los gritos. **La niebla se acercaba.**\n\nEn la plaza visteis cómo una **masa de carne y hierro** salía del humo y derribaba las puertas de la muralla como si fueran de papel. Lunaris estaba bajo ataque.\n\n![Lunaris bajo ataque](img/sesiones/s2-ataque.webp)"
+ },
+ {
+  "num": 3,
+  "titulo": "Salvar a Lunaris",
+  "lugar": "Lunaris",
+  "tldr": [
+   "Solo vosotros y unos guardias frenáis a la horda.",
+   "Chimpok salva a José (Tolón) subiéndolo a una torre.",
+   "Tras abatir a las abominaciones gigantes, avanza una muralla de carne y cuerpos."
+  ],
+  "texto": "Tras la caída del muro de Lunaris, solo vosotros y un puñado de guardias os interpusisteis entre la horda y la gente indefensa de la ciudad.\n\nEl combate fue brutal. Los guardias fueron cayendo uno a uno hasta que solo quedó **José (Tolón)**. Acorralado por unas abominaciones cuadrúpedas, escapó en el último momento cuando **Chimpok** corrió a ayudarle a trepar a una de las torres de la muralla.\n\nMientras, el resto os enfrentasteis a varias abominaciones gigantes. Tras una lucha larga y desesperada, las abatisteis. Durante unos instantes, el campo quedó cubierto de cadáveres… y de paz.\n\nPero la calma duró poco. Más allá de los cuerpos se alzó una visión aterradora: una **muralla de carne y cuerpos** que avanzaba lentamente hacia vosotros."
+ },
+ {
+  "num": 4,
+  "titulo": "La niebla se disipa",
+  "lugar": "Lunaris",
+  "tldr": [
+   "Galeryon recuerda cómo robó la espada y huyó de Gaen Gwynyr.",
+   "El faro se enciende y la horda se retira sin atacar.",
+   "Thalemis aparece torturado y muerto; el artefacto ha desaparecido. Tolón trabajaba para los Monjes Silentes."
+  ],
+  "texto": "## Un recuerdo\nGaleryon recuerda su vida en **Gaen Gwynyr**, una ciudad militar élfica marcada por el orden y la perfección. Allí era un extraño: observado, juzgado y rechazado por su linaje. Algunos compañeros —Torrek, Liraen e Ilwen— le ofrecían raros momentos de camaradería, pero el desprecio constante acabó por romper algo en él. Aquella noche robó la espada y huyó de Gaen.\n\n## El faro\nTras las primeras oleadas llegó la **alcaldesa** con el resto de la guardia. Os contó que **Lorasys** había enviado a uno de sus guardias al faro para hacer algo.\n\nEn medio del caos, **Tolón** volvió de repente, cubierto de sangre… que no era suya.\n\nLa masa de criaturas siguió avanzando hacia el puerto, despacio gracias a vosotros, hasta que **el faro se encendió**. Su luz quemaba y derretía la carne de las criaturas, pero no bastó: se amontonaron unas sobre otras formando un túnel de cuerpos, y por él avanzó una criatura gigantesca hasta quedar a pocos metros.\n\nEntonces ocurrió algo extraño. La criatura **se dio la vuelta**, y con ella toda la horda. Sin atacar, se retiraron a la niebla y dejaron un mar de cadáveres.\n\n## Lo que quedó\n**Fungrino** leyó a varios elfos caídos con su don: la emoción dominante era **miedo**. La niebla los había atacado días antes. En la confusión, Tolón volvió a desaparecer.\n\nGaleryon preguntó a la alcaldesa por su espada. Ella contó que luchó en la **Guerra de las Raíces y las Escamas**, donde salvó al Alto Mariscal de Gaen, que le regaló aquella espada.\n\nEn la taberna buscasteis a **Thalemis**. Estaba muerto, colgado en su habitación y brutalmente torturado. El artefacto había desaparecido, igual que los hombres que debían protegerlo.\n\nLunaris no tiene recursos para enfrentarse a algo así: la alcaldesa os pidió que viajarais a **Aelrennor** a pedir ayuda, y os dio un par de armas mejores para el camino.\n\nAntes de partir encontrasteis un **túnel oculto** en la taberna. Dentro yacía el cadáver de Tolón. Fungrino percibió esta vez **deber**: la visión mostró a José en el puerto, recibiendo órdenes de los **Monjes Silentes**."
+ },
+ {
+  "num": 5,
+  "titulo": "Tras el artefacto",
+  "lugar": "El Cruce",
+  "tldr": [
+   "Lorasys pide a C.O.R.A. que vaya a Aelrennor a ver a su hermana Mintra.",
+   "Abominaciones enterradas e inmóviles en un claro; atajo por unas minas.",
+   "Derrotáis a los falsos mercenarios junto a El Cruce; la tierra alrededor del fuerte está removida."
+  ],
+  "texto": "Cuando por fin llegó la calma a Lunaris, **C.O.R.A.** se reunió con su maestra **Lorasys**. Cansada y sin muchas explicaciones, le dijo que lo mejor era viajar a **Aelrennor** y ver a su hermana **Mintra**, que quizá podría ayudar con el artefacto desaparecido.\n\nTras descansar en el taller, os metisteis en el **túnel de la taberna** siguiendo el rastro de los monjes. Había huellas y restos del paso de caballos: el grupo de mercenarios había pasado hacía poco.\n\n## Lo que había bajo tierra\nLlegasteis a una zona circular con la tierra completamente revuelta. Al excavar descubristeis que estaba **llena de abominaciones, inmóviles**. Volvisteis un momento a Lunaris para avisar antes de seguir.\n\n## Las minas\nPara no perder tiempo tomasteis un atajo por unas **minas abandonadas**. Os persiguieron criaturas de los túneles y os perdisteis varias veces, pero salisteis a una colina junto a un pequeño fuerte: **El Cruce**.\n\nDesde allí visteis por fin a los «mercenarios». Tras un combate breve e intenso los derrotasteis, aunque uno escapó. Entre sus cosas había unas **pulseras** que parecían identificarlos; os las quedasteis.\n\nAl acercaros al fuerte, algo no encajaba: toda la tierra alrededor estaba removida, como si algo hubiera salido de debajo del suelo…"
+ },
+ {
+  "num": 6,
+  "titulo": "El Cruce",
+  "lugar": "El Cruce",
+  "tldr": [
+   "El capitán Zoron cuenta que los Monjes Silentes entraron disfrazados de mercaderes y sabotearon el fuerte.",
+   "Emboscáis a monjes junto a un bosque; uno huye. La espada rota de Galeryon brilla cerca del artefacto.",
+   "Atrapados entre unos jinetes que llegan de una muralla de luz y una ola de niebla."
+  ],
+  "texto": "El Cruce seguía en pie, pero por poco: zonas quemadas, madera rota y defensas improvisadas con muebles, cajas y estacas recién afiladas.\n\nDentro os recibió un grupo de mercenarios atrincherados y agotados. Su líder era el **capitán Zoron**, antiguo miembro del **Ejército de Gaen**. Os contó que los **Monjes Silentes** no entraron por la fuerza: llegaron como mercaderes con un carro de bienes y, la madrugada antes de partir, sabotearon las defensas, mataron a varios y huyeron al norte.\n\nCon el fuerte dañado y poca gente, Zoron no podía perseguirlos. Os pidió que avisarais a **Gaen Gwynyr** o a **Aelrennor**; él también mandaría mensajeros en cuanto pudiera. Aun así, decidisteis seguir tras el artefacto.\n\n## El carro\nHoras al norte, junto a la entrada de un bosque, encontrasteis a unos monjes descargando cajas de un carro demasiado grande para pasar entre los árboles. Acabasteis con casi todos; **uno escapó a caballo**.\n\nDespués, la **espada rota de Galeryon** empezó a brillar: el artefacto estaba cerca. Buscasteis sin encontrar nada, y la luz se fue apagando. Lo que buscabais había estado allí… y se alejaba.\n\n**Chimpok** trepó para mirar desde lo alto y vio una gran **muralla de luz** entre los árboles. De ella salió un grupo de jinetes hacia vosotros, entre ellos el monje que había huido.\n\nEl cielo se oscureció y desde El Cruce se levantó una **ola de niebla**, espesa y agitándose con violencia. El artefacto estaba cerca, pero estabais atrapados entre dos enemigos y se os acababa el tiempo."
+ },
+ {
+  "num": 7,
+  "titulo": "El campamento de los monjes",
+  "lugar": "Bosque al norte de El Cruce",
+  "tldr": [
+   "Seguís a los monjes hasta su campamento y entráis con distracciones.",
+   "La niebla choca contra el campamento; los monjes la repelen con unos polvos.",
+   "Matáis a un gigante con forma de simio y al líder que huía con el artefacto."
+  ],
+  "texto": "Los monjes salieron de la espesura y, al ver la muralla de niebla, dieron media vuelta. Los seguisteis hasta su **campamento**, donde empezaron a discutir. Estudiasteis sus patrullas: estaban despistados y la mayoría recogía para marcharse.\n\nA lo lejos, algo explotó.\n\n## El asalto\nTras un descanso corto y un plan, os lanzasteis sobre el campamento: entrasteis por varios puntos, creasteis distracciones y os colasteis por una parte rota de la muralla hasta la **gran tienda del centro**, que saqueasteis.\n\nLa niebla chocó contra el campamento, pero los monjes estaban preparados: unos **polvos** la repelían y luchaban con fiereza contra las abominaciones del Vacío.\n\nAun así os descubrieron. Mientras intentabais huir con el artefacto, un gran **pilar de piedra, carne y metal** empezó a aplastar a los monjes y sus defensas, abriendo camino a las abominaciones. El pilar era parte de una **criatura enorme con forma de simio**: trepasteis por ella y acabasteis con su vida.\n\nEl **líder** de los monjes aprovechó el caos para escapar con el artefacto, pero acabasteis con él rápidamente.\n\nNo había tiempo que perder, pero estabais exhaustos: decidisteis descansar hasta la mañana siguiente."
+ },
+ {
+  "num": 8,
+  "titulo": "Rumbo a Aelrennor",
+  "lugar": "Camino a Aelrennor",
+  "tldr": [
+   "Una red de micelio negro os atrapa de noche; Fungrino revive los recuerdos de unos soldados de Loma Dorada.",
+   "Nadir, oficial de Zoron, os libera: El Cruce ha estallado.",
+   "Viajáis con una caravana de heridos; C.O.R.A. ejecuta al monje. Llegáis a Aelrennor, con soldados de Aelrennor y de Gaen."
+  ],
+  "texto": "Durante la noche, de un grupo de abominaciones con forma de hongo brotó una **red de micelio negro** que os cubrió a todos y fue absorbiendo vuestra energía.\n\n## El recuerdo\n**Fungrino** entró en conexión con esos seres y revivió sus últimos recuerdos: cinco hermanos, **Phang, Pheng, Phing, Phong y Phung**, del ejército de **Loma Dorada**, en una de sus expediciones al Vacío. Formaban un grupo de reconocimiento que había encontrado algo bajo tierra, protegido por algo. El **hijo de Fungrino** dirigía el grupo y pasaba la información a los altos mandos.\n\nLos enviaron a reconocer el terreno. Llegaron a las ruinas de una antigua torre, con varios caballos atados descansando en la niebla. Los soltaron para que nadie pudiera escapar y bajaron por unas escaleras al subsuelo.\n\nAlguien había pasado hacía poco. Pronto oyeron ruidos y vieron luces: se escondieron en un hueco mientras una estampida de gente pasaba huyendo de algo. Al seguir adelante se toparon con unas **criaturas negras** que se tambaleaban por suelo y paredes; las abatieron, pero uno de los hermanos perdió un brazo.\n\nAl fondo encontraron una sala con una compuerta abierta y un pequeño **habitáculo rodeado de un metal oscuro**. Estaba vacío. Entonces el techo se hundió y un **pico enorme** lo atravesó, llevándose a uno de los hermanos. Solo uno llegó a la superficie, donde un **ser gigante** destrozaba las filas del ejército de Loma Dorada. Allí lo atacaron… y el trance se rompió.\n\n## Nadir\nFungrino abrió los ojos sin poder moverse. Una figura sacó una espada y rajó la malla: era **Nadir**, uno de los oficiales de Zoron. Os liberó a todos y os contó que algo había hecho **estallar El Cruce**. Un pequeño grupo de supervivientes llevaba a los heridos a Aelrennor con la ayuda de un mercader.\n\nEn el camino encontrasteis la caravana: mercenarios variopintos y, en un carro, el cuerpo quemado de **Zoron**. Seguía vivo, pero no por mucho tiempo. A la cabeza iba un carro blindado, desde el que un corpulento **mercader jorobado** os dio la bienvenida.\n\n## El monje\nDurante el viaje interrogasteis al monje, que parecía dispuesto a hablar. Pero cuando dijo que su misión era **acabar con todos los artefactos** de estas tierras, **C.O.R.A.** lo ejecutó al instante.\n\nTras varios días de viaje en silencio llegasteis a las puertas de **Aelrennor**, donde os esperaban muchos soldados: no solo de Aelrennor, también de **Gaen**."
+ }
+]
