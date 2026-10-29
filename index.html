@@ -891,21 +891,21 @@ nav.main .gi{display:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=46"></script>
-<script src="js/datos.js?v=46"></script>
-<script src="js/dominios.js?v=46"></script>
-<script src="js/reglas.js?v=46"></script>
-<script src="js/store.js?v=46"></script>
-<script src="js/creacion.js?v=46"></script>
-<script src="js/chatarra.js?v=46"></script>
-<script src="js/dom-iconos.js?v=46"></script>
-<script src="js/cartas.js?v=46"></script>
-<script src="js/mapa.js?v=46"></script>
-<script src="js/contenido.js?v=46"></script>
-<script src="js/saber.js?v=46"></script>
-<script src="js/mundo.js?v=46"></script>
-<script src="js/libro.js?v=46"></script>
-<script src="js/recorte.js?v=46"></script>
+<script src="js/firebase-config.js?v=47"></script>
+<script src="js/datos.js?v=47"></script>
+<script src="js/dominios.js?v=47"></script>
+<script src="js/reglas.js?v=47"></script>
+<script src="js/store.js?v=47"></script>
+<script src="js/creacion.js?v=47"></script>
+<script src="js/chatarra.js?v=47"></script>
+<script src="js/dom-iconos.js?v=47"></script>
+<script src="js/cartas.js?v=47"></script>
+<script src="js/mapa.js?v=47"></script>
+<script src="js/contenido.js?v=47"></script>
+<script src="js/saber.js?v=47"></script>
+<script src="js/mundo.js?v=47"></script>
+<script src="js/libro.js?v=47"></script>
+<script src="js/recorte.js?v=47"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1385,7 +1385,7 @@ function hojaEditar(st,h,k){
 }
 
 /* ---------- Subir de nivel ---------- */
-function subNuevo(st){return {a:[],exp:"",carta:""}}
+function subNuevo(st){return {a:[],exp:"",carta:"",ctr:[]}}
 const avCoste=S=>S.a.reduce((t,a)=>t+(AV[a.k].coste||1),0);
 // Qué le falta a un avance elegido para estar completo
 function avFalta(h,a,n){
@@ -1401,6 +1401,7 @@ function subFalta(h,S,n){
   if(avCoste(S)!==2)return "Elige dos avances.";
   for(const a of S.a){const f=avFalta(h,a,n);if(f)return f}
   if(!S.carta)return "Elige tu carta de dominio nueva.";
+  if(h.sub==="bestia"&&(S.ctr||[]).length!==ctrNecesarias(h,S))return "Elige el entrenamiento de tu compañero.";
   return "";
 }
 function cartasElegibles(h,n,ya){const own=new Set([...h.cartas,...h.baul,...ya]);
@@ -1459,6 +1460,10 @@ function viewSubir(st){
    <section class="block deco"><span class="tab-label">3 · Umbrales</span><p>Tus umbrales suben 1: de ${k.mayor} / ${k.grave} a ${k.mayor+1} / ${k.grave+1}.</p></section>
    <section class="block deco"><span class="tab-label">4 · Carta de dominio nueva</span><p class="note">De nivel ${n} o menor, de ${dominiosDe(h).map(x=>DOMINIOS[x].n).join(", ")}. Si ya tienes 5 en la mano, va al baúl.</p>
     ${pickCartas(h,n,"data-snueva",S.carta,ya)}</section>
+   ${h.sub==="bestia"?(()=>{const need=ctrNecesarias(h,S),P=S.ctr||[];return `<section class="block deco"><span class="tab-label">5 · Entrenamiento de tu compañero</span>
+    <p class="note">Elige ${need} opci${need===1?"ón":"ones"} para ${esc(h.comp?.n||"tu compañero")}. Llevas ${P.length} de ${need}.</p>
+    ${P.length?`<div class="btns">${P.map((x,i)=>`<button class="chip" data-sctrq="${i}" aria-pressed="true">${esc((COMP_TR.find(c=>c[0]===(x.id==="vd"||x.id==="va"?"vic":x.id))||[])[1]||x.id)}${x.id==="vd"?" (dado)":x.id==="va"?" (alcance)":""} ✕</button>`).join("")}</div>`:""}
+    ${P.length<need?ctrPicker(h,P,"sctr"):""}</section>`})():""}
    <div class="crnav"><button class="btn ghost" data-subirno>Cancelar</button>${fal?`<span class="note">${esc(fal)}</span>`:"<span></span>"}<button class="btn" data-subirok ${dis(!!fal)}>Subir a nivel ${n}</button></div></div>`;
 }
 
@@ -1634,12 +1639,8 @@ const viewContactos=st=>viewCartas(st,"contactos"),viewLugares=st=>viewCartas(st
 /* ---------- Chatarra: piezas comunes del grupo, recetas y lo fabricado (js/chatarra.js) ---------- */
 // Hoja del compañero animal (ranger Vinculado a la bestia). La foto va en la ficha del PJ (compImg), no en el estado.
 function compHoja(st,h,p){const c=h.comp||{},k=compCalc(h),t=c.tr||{},comp=calcHoja(st,ui.me).comp,es=Math.min(+c.es||0,k.es),lib=k.total-k.usados;
-  const tr=COMP_TR.map(([id,n,d,max])=>{const v=id==="vic"?(+t.vd||0)+(+t.va||0):id==="intel"?Object.values(t.intel||{}).reduce((a,b)=>a+(+b||0),0):+t[id]||0;
-    const add=id==="vic"?`<span class="btns"><button class="btn ghost" data-ctr="vd" ${dis(lib<1||v>=max||(+t.vd||0)>=3)}>+ Dado</button><button class="btn ghost" data-ctr="va" ${dis(lib<1||v>=max||(+t.va||0)>=4)}>+ Alcance</button></span>`
-      :id==="intel"?`<span class="btns"><select id="ctr-intel" aria-label="Experiencia">${k.exp.map((e,i)=>`<option value="${i}">${esc(e.n||"Experiencia "+(i+1))}</option>`).join("")}</select><button class="btn ghost" data-ctr="intel" ${dis(lib<1||v>=max)}>+1</button></span>`
-      :`<button class="btn ghost" data-ctr="${id}" ${dis(lib<1||v>=max)}>Elegir</button>`;
-    return `<div class="ctr${v?" on":""}"><div class="ctrh"><span class="cbx">${Array.from({length:max},(_,i)=>`<i class="${i<v?"on":""}"></i>`).join("")}</span><b>${n}</b></div><small class="note">${d}</small>
-      <div class="ctrb">${add}${v?`<button class="linkbtn" data-ctrq="${id}" ${dis()}>Quitar una</button>`:""}</div></div>`}).join("");
+  // En la hoja solo se ve lo que ya tiene; se elige al subir de nivel (si quedan opciones sin elegir, aquí se pueden recuperar)
+  const tr=lib>0?ctrPicker(h,[],"ctr"):compTrResumen(h);
   return `<section class="block deco compa"><span class="tab-label">Compañero animal</span>
     <div class="compgrid"><div class="compimg">${p.compImg?`<img src="${p.compImg}" alt="" class="wimg">`:`<span class="init" aria-hidden="true">🐾</span>`}
       <div class="btns"><label class="btn ghost" for="comp-img">${p.compImg?"Cambiar":"Subir imagen"}</label><input type="file" id="comp-img" accept="image/*" hidden>${p.compImg?`<button class="btn warn" data-compimgdel>Quitar</button>`:""}</div></div>
@@ -1651,8 +1652,30 @@ function compHoja(st,h,p){const c=h.comp||{},k=compCalc(h),t=c.tr||{},comp=calcH
       <div class="field"><label for="comp-atk">Cómo ataca</label><input id="comp-atk" data-hfield="comp.atk" value="${esc(c.atk||"")}" maxlength="80" placeholder="Muerde, embiste, araña…"></div></div></div>
     <span class="lab">Experiencias del compañero</span><p class="note">Tiene tantas como tú; cada una empieza a +2. Para que te ayude, haz una tirada de Lanzamiento y gasta 1 Esperanza para sumar una de sus Experiencias.</p>
     <div class="fields">${k.exp.map((e,i)=>`<div class="field"><label for="comp-e${i}">Experiencia ${i+1} <b class="num">+${e.b}</b></label><input id="comp-e${i}" data-cexp="${i}" value="${esc(e.n)}" maxlength="60"></div>`).join("")}</div>
-    <span class="lab">Entrenamiento · ${k.usados} de ${k.total}</span><p class="note">Cada vez que subes de nivel eliges una opción${h.sub==="bestia"?"; la especialización da una más y la maestría dos más":""}.${lib>0?` Te queda${lib===1?"":"n"} <b>${lib}</b>.`:""}</p>
-    <div class="ctrs">${tr}</div></section>`}
+    <span class="lab">Entrenamiento</span>${lib>0?`<p class="note">Te queda${lib===1?"":"n"} <b>${lib}</b> por elegir de niveles anteriores.</p>`:`<p class="note">Se elige al subir de nivel (una por nivel; la especialización da una más y la maestría dos más).</p>`}
+    ${tr}</section>`}
+// Opciones de entrenamiento que ya tiene el compañero
+function compTrResumen(h){const t=h.comp?.tr||{},k=compCalc(h),L=[];
+  for(const [id,n,d] of COMP_TR){
+    if(id==="intel"){for(const [i,v] of Object.entries(t.intel||{}))if(+v>0)L.push([`${n} ×${v}`,`+${v} a «${k.exp[+i]?.n||"Experiencia "+(+i+1)}».`]);continue}
+    if(id==="vic"){if(+t.vd)L.push([`${n} (dado) ×${t.vd}`,`Daño ${k.dado}.`]);if(+t.va)L.push([`${n} (alcance) ×${t.va}`,`Alcance ${k.alc}.`]);continue}
+    if(+t[id])L.push([`${n}${+t[id]>1?` ×${t[id]}`:""}`,d])}
+  return L.length?`<div class="ctrs">${L.map(([n,d])=>`<div class="ctr on"><b>${esc(n)}</b><small class="note">${esc(d)}</small></div>`).join("")}</div>`:`<p class="empty">Todavía ninguna.</p>`}
+// Elegir entrenamiento: attr "ctr" (en la hoja, se guarda al momento) o "sctr" (en el asistente de subir de nivel; picks pendientes)
+function ctrPicker(h,picks,attr){const t=h.comp?.tr||{},k=compCalc(h);
+  const cnt=id=>(id==="vic"?(+t.vd||0)+(+t.va||0):id==="intel"?Object.values(t.intel||{}).reduce((a,b)=>a+(+b||0),0):+t[id]||0)+picks.filter(x=>x.id===id||(id==="vic"&&(x.id==="vd"||x.id==="va"))).length;
+  const vd=(+t.vd||0)+picks.filter(x=>x.id==="vd").length,va=(+t.va||0)+picks.filter(x=>x.id==="va").length;
+  return `<div class="ctrs">${COMP_TR.map(([id,n,d,max])=>{const v=cnt(id),full=v>=max;
+    const add=id==="vic"?`<span class="btns"><button class="btn ghost" data-${attr}="vd" ${dis(full||vd>=3)}>+ Dado</button><button class="btn ghost" data-${attr}="va" ${dis(full||va>=4)}>+ Alcance</button></span>`
+      :id==="intel"?`<span class="btns"><select id="${attr}-intel" aria-label="Experiencia">${k.exp.map((e,i)=>`<option value="${i}">${esc(e.n||"Experiencia "+(i+1))}</option>`).join("")}</select><button class="btn ghost" data-${attr}="intel" ${dis(full)}>+1</button></span>`
+      :`<button class="btn ghost" data-${attr}="${id}" ${dis(full)}>Elegir</button>`;
+    return `<div class="ctr${v?" on":""}"><div class="ctrh"><span class="cbx">${Array.from({length:max},(_,i)=>`<i class="${i<v?"on":""}"></i>`).join("")}</span><b>${n}</b></div><small class="note">${d}</small><div class="ctrb">${add}</div></div>`}).join("")}</div>`}
+// Aplica a la hoja las opciones elegidas
+function aplicarCtr(h,picks){h.comp=h.comp||{};const t=h.comp.tr=h.comp.tr||{};
+  for(const x of picks){if(x.id==="intel"){t.intel=t.intel||{};t.intel[x.i]=(+t.intel[x.i]||0)+1}else t[x.id]=(+t[x.id]||0)+1}}
+// Cuántas opciones de entrenamiento toca elegir al subir a nivel n (contando si en esta subida mejora la subclase)
+function ctrNecesarias(h,S){if(h.sub!=="bestia")return 0;const k=compCalc(h),n=(h.nivel||1)+1,ns=Math.min(3,nivelSub(h)+(S.a.some(a=>a.k==="sub")?1:0));
+  return Math.max(0,(n-1)+(ns>=2?1:0)+(ns>=3?2:0)-k.usados)}
 function chEnHoja(st){const H=Object.values(st.chatarra?.hechos||{}).filter(x=>x.pj===ui.me);if(!H.length)return "";
   const au=H.filter(x=>x.tipo==="aumento").length;
   return `<section class="block deco"><span class="tab-label">Aumentos y artilugios</span><p class="note">Ranuras de aumento: ${au} de ${chRanuras(st.hojas[ui.me])}. Se cambian en el Inventario y en Crafteo.</p>
@@ -2025,7 +2048,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=46")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=47")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){
@@ -2151,7 +2174,7 @@ async function crCrear(){const d=ui.cr;if(ui.busy)return;
 async function subirOk(){const S=ui.subir,n=Store.state.hojas[ui.me].nivel+1;if(ui.busy)return;
   const s={exp:S.exp.trim(),carta:S.carta,a:S.a.map(a=>({k:a.k,...(a.k==="rasgos"?{r:a.r}:{}),...(a.k==="exp"?{i:a.i}:{}),...(a.id?{id:a.id}:{}),...(a.k==="multi"?{clase:a.clase,dom:a.dom,sub:a.sub}:{})}))};
   ui.busy=true;render();
-  try{await Store.mutate(st=>A.subir(st,ui.me,s));
+  try{await Store.mutate(st=>{A.subir(st,ui.me,s);if(S.ctr?.length)aplicarCtr(st.hojas[ui.me],S.ctr);return st});
     if(n<(Store.state?.mundo?.nivel||1)){ui.subir=subNuevo();toast(`¡Nivel ${n}! Sigue con el nivel ${n+1}.`)}else{ui.subir=null;toast(`¡Nivel ${n}!`)}}
   catch(e){console.error(e);toast(e instanceof Nope?e.message:"No se pudo guardar. Prueba otra vez.",true)}
   finally{ui.busy=false;render();scrollTo({top:0})}
@@ -2247,6 +2270,8 @@ document.addEventListener("click",e=>{
     else if(d.sexp!==undefined){const a=S.a[+d.sexp],v=+d.v;a.i=a.i.includes(v)?a.i.filter(x=>x!==v):[...a.i,v].slice(0,2)}
     else if(d.scarta!==undefined){const a=S.a[+d.scarta];a.id=a.id===d.v?"":d.v}
     else if(d.snueva!==undefined)S.carta=S.carta===d.snueva?"":d.snueva;
+    else if(d.sctr){S.ctr=S.ctr||[];S.ctr.push(d.sctr==="intel"?{id:"intel",i:+($("#sctr-intel")?.value||0)}:{id:d.sctr})}
+    else if(d.sctrq!==undefined)S.ctr.splice(+d.sctrq,1);
     else if(d.smclase!==undefined){const a=S.a[+d.smclase];if(a.clase!==d.v)Object.assign(a,{clase:d.v,dom:"",sub:""})}
     else if(d.smdom!==undefined)S.a[+d.smdom].dom=d.v;
     else if(d.smsub!==undefined)S.a[+d.smsub].sub=d.v;
@@ -2261,11 +2286,8 @@ document.addEventListener("click",e=>{
   if(d.verpj){ui.me=d.verpj;ui.sel=null;Peek.clear();return go({view:"personaje"})}
   if(b.hasAttribute("data-bajar")){if(!ui.confirmBajar){ui.confirmBajar=true;b.textContent="Pulsa otra vez para deshacerla";return}ui.confirmBajar=false;return act(st=>A.bajar(st,ui.me),"Subida deshecha.")}
   if(b.hasAttribute("data-compimgdel")){pjGuardar({compImg:null});return}
-  if(d.ctr||d.ctrq){const id=d.ctr||d.ctrq,q=!!d.ctrq,sel=+($("#ctr-intel")?.value||0);return act(st=>A.hoja(st,ui.me,h=>{const k=compCalc(h);h.comp=h.comp||{};const t=h.comp.tr=h.comp.tr||{};
-    if(!q&&k.usados>=k.total)no("No te quedan opciones de entrenamiento: llegan al subir de nivel.");
-    if(id==="intel"){t.intel=t.intel||{};if(q){const i=Object.keys(t.intel).reverse().find(x=>+t.intel[x]>0);if(i!=null)t.intel[i]--}else t.intel[sel]=(+t.intel[sel]||0)+1}
-    else if(id==="vic"&&q){if(+t.va>0)t.va--;else if(+t.vd>0)t.vd--}
-    else t[id]=Math.max(0,(+t[id]||0)+(q?-1:1))}),q?"Quitado.":"Entrenado.")}
+  if(d.ctr){const pk=d.ctr==="intel"?{id:"intel",i:+($("#ctr-intel")?.value||0)}:{id:d.ctr};return act(st=>A.hoja(st,ui.me,h=>{const k=compCalc(h);
+    if(k.usados>=k.total)no("No te quedan opciones de entrenamiento: llegan al subir de nivel.");aplicarCtr(h,[pk])}),"Entrenado.")}
   if(b.hasAttribute("data-pjimgdel")){pjGuardar({img:null,face:null});return}
   if(d.grupo){const g=grupos(Store.state).find(x=>x.k===d.grupo);if(!g)return;const last=ls.get("v-g-"+g.k),v=g.sub.some(([k])=>k===last)?last:g.sub[0][0];
     if(v===ui.view&&g.sub.length>1){scrollTo({top:0});return}d.view=v}
