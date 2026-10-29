@@ -65,7 +65,9 @@ function scene(w,h,tint,glyph,img,opts={}){
     sparks+=`<circle cx="${(cx+Math.cos(a)*r).toFixed(1)}" cy="${(cy+Math.sin(a)*r*.8).toFixed(1)}" r="${(1.5+(i%3)).toFixed(1)}" fill="#FFF3D6" opacity="${(.35+(i%4)*.15).toFixed(2)}"/>`}
   const ticks=Array.from({length:24},(_,i)=>{const a=i*15*Math.PI/180;return `M${(cx+Math.cos(a)*R*1.02).toFixed(1)} ${(cy+Math.sin(a)*R*1.02).toFixed(1)} L${(cx+Math.cos(a)*R*(i%2?1.07:1.12)).toFixed(1)} ${(cy+Math.sin(a)*R*(i%2?1.07:1.12)).toFixed(1)}`}).join(" ");
   const rot=UPRIGHT.has(glyph)||opts.emblem?0:38,sc=(opts.size??R*2.3)/100;
-  const art=img?`<image href="${escC(img)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`
+  // Con opts.fit la imagen se ve entera (sobre una copia desenfocada que rellena el hueco); si no, recorta para llenar
+  const art=img?(opts.fit?`<filter id="${k}f"><feGaussianBlur stdDeviation="${Math.round(Math.min(w,h)/20)}"/></filter><image href="${escC(img)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" filter="url(#${k}f)" opacity=".55"/><image href="${escC(img)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet"/>`
+     :`<image href="${escC(img)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`)
    :`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#FAC472" stroke-opacity=".35" stroke-width="2"/>
     <circle cx="${cx}" cy="${cy}" r="${R*.82}" fill="none" stroke="#FAC472" stroke-opacity=".18" stroke-width="1.5" stroke-dasharray="3 7"/>
     <path d="${ticks}" stroke="#FAC472" stroke-opacity=".35" stroke-width="2"/>${sparks}
