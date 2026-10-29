@@ -7,7 +7,7 @@
    Sin Firebase (modo prueba) todo queda en memoria y cualquier contraseña vale. */
 // Posiciones de partida (a ojo, a partir del mapa de la Zona Norte); el DM las ajusta arrastrando el marcador
 const DEF_POS={aelrennor:[166,231],"gaen-gwynyr":[161,262],"el-cruce":[253,240],lunaris:[397,260],velofrio:[275,40],cenicero:[188,392]};
-const CATS=[["lugares","Lugares"],["personas","Personas"],["organizaciones","Organizaciones"],["mundo","Mundo"],["cronica","Crónica"]];
+const CATS=[["lugares","Lugares"],["personas","Personas"],["organizaciones","Organizaciones"],["mundo","Mundo"],["artefactos","Artefactos"],["cronica","Crónica"]];
 const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
 const Saber={
   dm:{},pub:{},pos:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,posRef:null,key:null,

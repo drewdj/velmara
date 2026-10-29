@@ -74,7 +74,7 @@ const Mundo=(()=>{
   }
   const ICON={lugares:'<path d="M0 -26 C-9 -26 -14 -19 -14 -13 C-14 -4 0 8 0 8 C0 8 14 -4 14 -13 C14 -19 9 -26 0 -26Z"/>',
     personas:'<circle cx="0" cy="-16" r="8"/><path d="M-12 4 C-12 -6 12 -6 12 4Z"/>',
-    organizaciones:'<path d="M-12 -24 H12 V-4 L0 6 L-12 -4Z"/>',mundo:'<circle cx="0" cy="-10" r="12"/>',cronica:'<rect x="-11" y="-24" width="22" height="26" rx="2"/>'};
+    organizaciones:'<path d="M-12 -24 H12 V-4 L0 6 L-12 -4Z"/>',mundo:'<circle cx="0" cy="-10" r="12"/>',artefactos:'<path d="M0 -26 L11 -10 L0 6 L-11 -10Z"/>',cronica:'<rect x="-11" y="-24" width="22" height="26" rx="2"/>'};
   function marks(){
     if(!visibleNow())return;
     const E=ctx.entries(),k=K(),s=Math.max(.35,Math.min(1.6,k*1.1));let h="";
