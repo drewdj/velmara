@@ -39,13 +39,13 @@ const Saber={
     this.key=k;try{localStorage.setItem("v-dmkey",k)}catch(e){}
     if(this.dmRef)this.dmRef.off();if(this.posRef)this.posRef.off();
     this.dmRef=this.db.ref(`dm/${k}/lore`);
-    this.dmRef.on("value",s=>{this.dm=s.val()||{};this.emit()},e=>console.error(e));
+    this.dmRef.on("value",s=>{this.dm=s.val()||{};this.dmListo=true;this.emit()},e=>console.error(e));
     this.posRef=this.db.ref(`dm/${k}/pos`);
     this.posRef.on("value",s=>{this.pos=s.val()||{};this.emit()},e=>console.error(e));
     this.isDM=true;this.emit();
   },
   forget(){try{localStorage.removeItem("v-dmkey")}catch(e){}},
-  async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.forget();this.emit()},
+  async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.dmListo=false;this.forget();this.emit()},
   // Lo que ve un PJ: entradas compartidas con todos o con él
   visibleFor(pj){
     // El PJ de prueba (solo DM) ve todas las notas con el texto que les llegaría a los jugadores
@@ -83,9 +83,29 @@ const Saber={
     if(this.mode==="local"){this.pub={};this.emit();return}
     await this.db.ref("saber").set(null);
   },
+  /* Cartas de los PJs: cada personaje nuevo tiene su carta en Personas, con lo que escribió su jugador,
+     y la conocen todos. El jugador la publica al crearse (saber/ se puede escribir sin ser DM); el DM,
+     al entrar, la pasa a sus notas para poder editarla o quitársela a quien quiera. */
+  cartaPJ(p){const txt=[p.desc||"",p.j?`**Jugador:** ${p.j}`:""].filter(Boolean).join("\n\n");
+    return {n:p.n,cat:"personas",sub:p.c||"",tipo:"pj",estado:"",txt,pub:txt,...(p.img?{img:p.img}:{})}},
+  async publicarPJ(p){const e=this.cartaPJ(p);await this.share(p.id,{todos:true},e.pub,e)},
+  syncing:new Set(),
+  async syncPJs(pjs){
+    if(!this.isDM||(this.mode==="live"&&!this.dmListo))return;
+    const ids=new Set(pjs.map(p=>p.id));
+    // Las fichas de PJs del vault (las de antes de la web) ya no se usan
+    for(const [id,e] of Object.entries(this.dm))if(e?.tipo==="pj"&&!e.web&&!ids.has(id)&&!this.syncing.has(id)){this.syncing.add(id);
+      try{await this.borrarNota(id)}catch(err){console.error(err)}finally{this.syncing.delete(id)}}
+    for(const p of pjs){if(this.dm[p.id]||this.syncing.has(p.id))continue;this.syncing.add(p.id);
+      try{const e=this.cartaPJ(p),pub=this.pub[p.id];
+        if(!pub)await this.share(p.id,{todos:true},e.pub,e); // la primera vez la conocen todos
+        await this.guardar(p.id,e,pub?.txt??e.pub)}
+      catch(err){console.error(err)}finally{this.syncing.delete(p.id)}}
+  },
   async importar(json){
     const E=json?.entradas;if(!E||typeof E!=="object")throw new Error("Ese archivo no tiene notas del vault.");
-    // Lo creado o editado desde el Compendio (web) manda sobre el vault al reimportar
+    // Lo creado o editado desde el Compendio (web) manda sobre el vault al reimportar; los PJs salen de la web
+    for(const [id,e] of Object.entries(E))if(e.tipo==="pj")delete E[id];
     for(const [id,e] of Object.entries(this.dm))if(e.web)E[id]=e;
     if(this.mode==="local")this.dm=E;else await this.db.ref(`dm/${this.key}/lore`).set(E);
     // Ya no se comparte nada al importar: el DM decide qué ve cada PJ (e.para queda como sugerencia del vault)
