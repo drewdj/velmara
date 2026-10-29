@@ -791,7 +791,7 @@ nav.main .gi{display:none}
 .compa .compgrid{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:18px;margin:8px 0 14px}
 @media (max-width:700px){.compa .compgrid{grid-template-columns:minmax(0,1fr)}}
 .compimg{display:grid;gap:8px;align-content:start}.compimg .init{display:grid;place-items:center;aspect-ratio:1;font-size:3rem;border:1px dashed var(--line)}
-.compmain{display:grid;gap:10px;align-content:start}
+.compmain{display:grid;gap:10px;align-content:start}.compn{margin:0;font-size:1.4rem}
 .ctrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px;margin-top:8px}
 .ctr{display:grid;gap:4px;padding:10px 12px;border:1px solid var(--line);background:var(--night)}.ctr.on{border-color:var(--gold-lo)}
 .ctrh{display:flex;gap:8px;align-items:center}.cbx{display:flex;gap:3px}.cbx i{width:13px;height:13px;border:2px solid var(--gold);display:block}.cbx i.on{background:var(--gold)}
@@ -891,21 +891,21 @@ nav.main .gi{display:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=47"></script>
-<script src="js/datos.js?v=47"></script>
-<script src="js/dominios.js?v=47"></script>
-<script src="js/reglas.js?v=47"></script>
-<script src="js/store.js?v=47"></script>
-<script src="js/creacion.js?v=47"></script>
-<script src="js/chatarra.js?v=47"></script>
-<script src="js/dom-iconos.js?v=47"></script>
-<script src="js/cartas.js?v=47"></script>
-<script src="js/mapa.js?v=47"></script>
-<script src="js/contenido.js?v=47"></script>
-<script src="js/saber.js?v=47"></script>
-<script src="js/mundo.js?v=47"></script>
-<script src="js/libro.js?v=47"></script>
-<script src="js/recorte.js?v=47"></script>
+<script src="js/firebase-config.js?v=48"></script>
+<script src="js/datos.js?v=48"></script>
+<script src="js/dominios.js?v=48"></script>
+<script src="js/reglas.js?v=48"></script>
+<script src="js/store.js?v=48"></script>
+<script src="js/creacion.js?v=48"></script>
+<script src="js/chatarra.js?v=48"></script>
+<script src="js/dom-iconos.js?v=48"></script>
+<script src="js/cartas.js?v=48"></script>
+<script src="js/mapa.js?v=48"></script>
+<script src="js/contenido.js?v=48"></script>
+<script src="js/saber.js?v=48"></script>
+<script src="js/mundo.js?v=48"></script>
+<script src="js/libro.js?v=48"></script>
+<script src="js/recorte.js?v=48"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1009,7 +1009,7 @@ function viewPick(st){
 
 /* ---------- Crear personaje: los pasos del Core Rulebook ---------- */
 const CR_PASOS=[["clase","Clase"],["herencia","Herencia"],["rasgos","Rasgos"],["equipo","Equipo"],["historia","Historia"],["exp","Experiencias"],["cartas","Cartas"],["fin","Nombre"]];
-const crNuevo=()=>({paso:0,max:0,clase:"",sub:"",asc1:"",asc2:"",mixta:false,ascN:"",com:"",rasgos:{},pri:"",sec:"",arm:"",pot:"p-men-salud",item:"",preg:{},desc:"",exp:["",""],clankExp:0,cartas:[],conex:{},n:"",j:"",img:""});
+const crNuevo=()=>({paso:0,max:0,clase:"",sub:"",asc1:"",asc2:"",mixta:false,ascN:"",com:"",rasgos:{},pri:"",sec:"",arm:"",pot:"p-men-salud",item:"",preg:{},desc:"",exp:["",""],clankExp:0,cartas:[],conex:{},n:"",j:"",img:"",compN:"",compTipo:"",compAtk:"",compExp:["",""],compImg:""});
 function crLoad(){try{return JSON.parse(ls.get("v-crear")||"null")}catch(e){return null}}
 function crSave(){ls.set("v-crear",JSON.stringify(ui.cr))}
 const crCartasN=d=>d.sub==="conocimiento"?3:2; // la Escuela del Conocimiento empieza con una más (Preparado)
@@ -1020,7 +1020,7 @@ function crFalta(d,k){
   if(k==="rasgos"){const v=RASGOS.map(([r])=>d.rasgos[r]);if(v.some(x=>x==null))return "Da un valor a los seis rasgos.";
     return JSON.stringify(v.slice().sort())===JSON.stringify(REPARTO.slice().sort())?"":"Reparte exactamente +2, +1, +1, +0, +0 y −1."}
   if(k==="equipo"){const p=T1[d.pri];return !p?"Elige un arma principal.":!T1[d.arm]?"Elige una armadura.":!d.item?"Elige tu objeto de clase.":""}
-  if(k==="exp")return d.exp.every(x=>x.trim())?"":"Escribe tus dos Experiencias.";
+  if(k==="exp")return !d.exp.every(x=>x.trim())?"Escribe tus dos Experiencias.":d.sub==="bestia"&&!(d.compN||"").trim()?"Ponle nombre a tu compañero animal.":d.sub==="bestia"&&!(d.compExp||[]).every(x=>x.trim())?"Escribe las dos Experiencias de tu compañero.":"";
   if(k==="cartas")return d.cartas.length===crCartasN(d)?"":`Elige ${crCartasN(d)} cartas de nivel 1.`;
   if(k==="fin")return !d.n.trim()?"Ponle nombre a tu personaje.":!d.j.trim()?"Escribe tu nombre de jugador.":"";
   return "";
@@ -1032,6 +1032,7 @@ function crHoja(d,id){
     rasgos:Object.fromEntries(RASGOS.map(([k])=>[k,+d.rasgos[k]||0])),
     exp:d.exp.map((n,i)=>({n:n.trim(),b:2+(d.asc1==="clank"&&d.clankExp===i?1:0)})),clankExp:d.asc1==="clank"?d.clankExp:-1,
     cartas:d.cartas.slice(0,5),baul:d.cartas.slice(5),
+    ...(d.sub==="bestia"?{comp:{...h.comp,n:(d.compN||"").trim(),tipo:(d.compTipo||"").trim(),atk:(d.compAtk||"").trim(),exp:(d.compExp||["",""]).map(n=>({n:n.trim()}))}}:{}),
 });
   return h;
 }
@@ -1106,11 +1107,20 @@ function crHistoria(d){const c=COM[d.com];
     ${c?`<p class="note">Ideas de tu comunidad (${c.n}): ${esc(c.adj)}.</p>`:""}</section>`;
 }
 function crExp(d){
-  return `<p class="note">Dos Experiencias a +2: algo de tu pasado que te ayuda en las tiradas (un oficio, un talento, una forma de ser). Por ejemplo: <i>Marinero curtido</i>, <i>Me crié en la calle</i>, <i>Nadie me engaña</i>.</p>
+  return crCompanero(d)+`<p class="note">Dos Experiencias a +2: algo de tu pasado que te ayuda en las tiradas (un oficio, un talento, una forma de ser). Por ejemplo: <i>Marinero curtido</i>, <i>Me crié en la calle</i>, <i>Nadie me engaña</i>.</p>
    <div class="fields">${d.exp.map((x,i)=>`<div class="field"><label for="cr-e${i}">Experiencia ${i+1}</label><input id="cr-e${i}" data-crfe="${i}" value="${esc(x)}" maxlength="60"></div>`).join("")}</div>
    ${d.asc1==="clank"?`<section class="block"><span class="tab-label">Diseño con propósito</span><p class="note">Como clank, una de las dos gana +1 permanente (queda a +3).</p>
     <div class="btns">${d.exp.map((x,i)=>`<button class="chip" data-crclank="${i}" aria-pressed="${d.clankExp===i}">${esc(x.trim()||"Experiencia "+(i+1))}</button>`).join("")}</div></section>`:""}`;
 }
+// Ranger Vinculado a la bestia: su compañero se crea con las Experiencias
+function crCompanero(d){if(d.sub!=="bestia")return "";const E=d.compExp||["",""];
+  return `<section class="block deco"><span class="tab-label">Tu compañero animal</span><p class="note">Decide con el DM qué animal es. Empieza con Evasión 10, 3 de Estrés, ataque d6 en Cuerpo a cuerpo y dos Experiencias a +2 (por ejemplo: <i>Leal hasta el final</i>, <i>Rastreador</i>, <i>Escolta</i>).</p>
+   <div class="compgrid"><div class="compimg">${d.compImg?`<img src="${d.compImg}" alt="" class="wimg">`:`<span class="init" aria-hidden="true">🐾</span>`}
+     <div class="btns"><label class="btn ghost" for="cr-compimg">${d.compImg?"Cambiar":"Subir imagen"}</label><input type="file" id="cr-compimg" accept="image/*" hidden></div></div>
+    <div class="compmain"><div class="fields"><div class="field"><label for="cr-compN">Nombre</label><input id="cr-compN" data-crf="compN" value="${esc(d.compN||"")}" maxlength="40"></div>
+     <div class="field"><label for="cr-compTipo">Animal</label><input id="cr-compTipo" data-crf="compTipo" value="${esc(d.compTipo||"")}" maxlength="40" placeholder="Lobo, halcón, oso…"></div></div>
+     <div class="field"><label for="cr-compAtk">Cómo ataca</label><input id="cr-compAtk" data-crf="compAtk" value="${esc(d.compAtk||"")}" maxlength="80" placeholder="Muerde, embiste, araña…"></div>
+     <div class="fields">${E.map((x,i)=>`<div class="field"><label for="cr-ce${i}">Experiencia ${i+1} del compañero</label><input id="cr-ce${i}" data-crce="${i}" value="${esc(x)}" maxlength="60"></div>`).join("")}</div></div></div></section>`}
 function crCartas(d){const c=CLASES[d.clase],N=crCartasN(d);
   return `<p class="note">Elige ${N} cartas de dominio de nivel 1 de ${c.dom.map(x=>DOMINIOS[x].n).join(" y ")}${N>2?" (una de ellas por «Preparado»)":""}. Puedes coger las dos del mismo dominio. Toca una para elegirla.</p>
    ${c.dom.map(dm=>`<section class="block"><span class="tab-label">${DOMINIOS[dm].n}</span><div class="crcards">${CARTAS_DOMINIO.filter(x=>x.d===dm&&x.lv===1).map(x=>{const on=d.cartas.includes(x.id);
@@ -1368,6 +1378,7 @@ function hojaEditar(st,h,k){
     <div class="fields"><div class="field"><label for="pj-n">Nombre</label><input id="pj-n" data-pjf="n" value="${esc(p.n)}" maxlength="40"></div>
      <div class="field"><label for="pj-j">Jugador</label><input id="pj-j" data-pjf="j" value="${esc(p.j||"")}" maxlength="40"></div></div>
     <div class="field"><label for="pj-desc">Descripción</label><textarea id="pj-desc" data-pjf="desc" maxlength="1500">${esc(p.desc||h.desc||"")}</textarea></div></section>
+   ${h.sub==="bestia"?compEditar(h,p):""}
    <section class="block deco"><span class="tab-label">Experiencias</span><div class="exps">${h.exp.map((e,i)=>`<div class="exp"><input type="text" id="hx-${i}" data-hexp="${i}" value="${esc(e.n)}" placeholder="Por ejemplo: Marinero curtido" maxlength="60" aria-label="Experiencia ${i+1}">
       ${step(`exp.${i}.b`,"+"+e.b,"Bono")}<button class="btn warn" data-hexpdel="${i}" ${dis()} aria-label="Quitar experiencia">×</button></div>`).join("")}</div>
      <div class="btns"><button class="btn ghost" data-hexpadd ${dis(h.exp.length>=8)}>Añadir experiencia</button></div></section>
@@ -1401,6 +1412,7 @@ function subFalta(h,S,n){
   if(avCoste(S)!==2)return "Elige dos avances.";
   for(const a of S.a){const f=avFalta(h,a,n);if(f)return f}
   if(!S.carta)return "Elige tu carta de dominio nueva.";
+  if(h.sub==="bestia"&&[2,5,8].includes(n)&&!(S.cexp||"").trim())return "Escribe la nueva Experiencia de tu compañero.";
   if(h.sub==="bestia"&&(S.ctr||[]).length!==ctrNecesarias(h,S))return "Elige el entrenamiento de tu compañero.";
   return "";
 }
@@ -1451,7 +1463,8 @@ function viewSubir(st){
   return `<div class="sheet subir"><div class="crhead"><div><span class="tab-label">Subir de nivel</span><h1>Nivel ${h.nivel} → ${n}</h1><p class="note">Tier ${T}. Todo lo que elijas se suma solo a tu hoja.</p></div><button class="linkbtn" data-subirno>Cancelar</button></div>
    <section class="block deco"><span class="tab-label">1 · Logro de tier</span>
     ${[2,5,8].includes(n)?`<p>Ganas una Experiencia nueva a +2 y +1 a tu Competencia (queda en ${k.comp+1}).${n>2?" Además se limpian las marcas de tus rasgos.":""}</p>
-     <div class="field"><label for="sub-exp">Nueva Experiencia</label><input id="sub-exp" value="${esc(S.exp)}" maxlength="60" placeholder="Algo que hayas aprendido en la aventura"></div>`:`<p class="note">A nivel ${n} no hay logro de tier (son los niveles 2, 5 y 8).</p>`}</section>
+     <div class="field"><label for="sub-exp">Nueva Experiencia</label><input id="sub-exp" value="${esc(S.exp)}" maxlength="60" placeholder="Algo que hayas aprendido en la aventura"></div>
+     ${h.sub==="bestia"?`<div class="field"><label for="sub-cexp">Nueva Experiencia de ${esc(h.comp?.n||"tu compañero")} (+2)</label><input id="sub-cexp" value="${esc(S.cexp||"")}" maxlength="60" placeholder="Él también aprende algo"></div>`:""}`:`<p class="note">A nivel ${n} no hay logro de tier (son los niveles 2, 5 y 8).</p>`}</section>
    <section class="block deco"><span class="tab-label">2 · Dos avances</span><p class="note">Llevas ${cost} de 2. Puedes coger dos veces el mismo si le quedan casillas.</p>
     <div class="avs">${AVANCES.map(a=>{const lib=casillasLibres(h,a.k,n)-S.a.filter(x=>x.k===a.k).length,ok=lib>0&&cost+(a.coste||1)<=2&&!(a.k==="sub"&&nivelSub(h)>=3)&&!(a.k==="multi"&&S.a.some(x=>x.k==="sub"))&&!(a.k==="sub"&&S.a.some(x=>x.k==="multi"));
       if((a.min||2)>T)return "";
@@ -1638,22 +1651,28 @@ const viewContactos=st=>viewCartas(st,"contactos"),viewLugares=st=>viewCartas(st
 
 /* ---------- Chatarra: piezas comunes del grupo, recetas y lo fabricado (js/chatarra.js) ---------- */
 // Hoja del compañero animal (ranger Vinculado a la bestia). La foto va en la ficha del PJ (compImg), no en el estado.
-function compHoja(st,h,p){const c=h.comp||{},k=compCalc(h),t=c.tr||{},comp=calcHoja(st,ui.me).comp,es=Math.min(+c.es||0,k.es),lib=k.total-k.usados;
+function compHoja(st,h,p){const c=h.comp||{},k=compCalc(h),comp=calcHoja(st,ui.me).comp,es=Math.min(+c.es||0,k.es),lib=k.total-k.usados;
   // En la hoja solo se ve lo que ya tiene; se elige al subir de nivel (si quedan opciones sin elegir, aquí se pueden recuperar)
-  const tr=lib>0?ctrPicker(h,[],"ctr"):compTrResumen(h);
+  const tr=lib>0?ctrPicker(h,[],"ctr"):compTrResumen(h),exps=k.exp.filter(e=>e.n.trim());
+  return `<section class="block deco compa"><span class="tab-label">Compañero animal</span>
+    <div class="compgrid"><div class="compimg">${p.compImg?`<img src="${p.compImg}" alt="" class="wimg">`:`<span class="init" aria-hidden="true">🐾</span>`}</div>
+     <div class="compmain"><h3 class="compn">${esc(c.n||"Sin nombre")}${c.tipo?` <small class="note">${esc(c.tipo)}</small>`:""}</h3>
+      <div class="defs"><div class="def"><span class="lab">Evasión</span><b class="num">${k.ev}</b></div><div class="def"><span class="lab">Ataque</span><b class="num">${comp}${k.dado}</b><small>${k.alc}${c.atk?` · ${esc(c.atk)}`:""}</small></div></div>
+      <div class="rrow stress"><div class="rl"><b>Estrés</b><span class="num">${es} / ${k.es}</span></div>${track("comp.es",es,k.es,"stress","Estrés del compañero")}</div>
+      <p class="note">Si recibe daño, marca 1 Estrés. Con el último se retira de la escena hasta tu próximo descanso largo (vuelve con 1 Estrés borrado). Si borras Estrés en un descanso, él borra lo mismo.</p>
+      ${exps.length?`<div class="xps">${exps.map(e=>`<span class="xp">${esc(e.n)} <b class="num">+${e.b}</b></span>`).join("")}</div>`:`<p class="empty">Sin Experiencias. Añádelas en Editar.</p>`}
+      <p class="note">Para que actúe, haz una tirada de Lanzamiento; gasta 1 Esperanza para sumar una de sus Experiencias.</p></div></div>
+    <span class="lab">Entrenamiento</span>${lib>0?`<p class="note">Te queda${lib===1?"":"n"} <b>${lib}</b> por elegir de niveles anteriores.</p>`:""}
+    ${tr}</section>`}
+// En modo Editar: nombre, animal, imagen, ataque y nombres de sus Experiencias
+function compEditar(h,p){const c=h.comp||{},k=compCalc(h);
   return `<section class="block deco compa"><span class="tab-label">Compañero animal</span>
     <div class="compgrid"><div class="compimg">${p.compImg?`<img src="${p.compImg}" alt="" class="wimg">`:`<span class="init" aria-hidden="true">🐾</span>`}
       <div class="btns"><label class="btn ghost" for="comp-img">${p.compImg?"Cambiar":"Subir imagen"}</label><input type="file" id="comp-img" accept="image/*" hidden>${p.compImg?`<button class="btn warn" data-compimgdel>Quitar</button>`:""}</div></div>
      <div class="compmain"><div class="fields"><div class="field"><label for="comp-n">Nombre</label><input id="comp-n" data-hfield="comp.n" value="${esc(c.n||"")}" maxlength="40"></div>
-       <div class="field"><label for="comp-t">Animal</label><input id="comp-t" data-hfield="comp.tipo" value="${esc(c.tipo||"")}" maxlength="40" placeholder="Lobo, halcón, oso…"></div></div>
-      <div class="defs"><div class="def"><span class="lab">Evasión</span><b class="num">${k.ev}</b></div><div class="def"><span class="lab">Ataque</span><b class="num">${comp}${k.dado}</b><small>${k.alc} · tu Competencia</small></div></div>
-      <div class="rrow stress"><div class="rl"><b>Estrés</b><span class="num">${es} / ${k.es}</span></div>${track("comp.es",es,k.es,"stress","Estrés del compañero")}</div>
-      <p class="note">Si recibe daño, marca 1 Estrés. Con el último se retira de la escena hasta tu próximo descanso largo (vuelve con 1 Estrés borrado). Si borras Estrés en un descanso, él borra lo mismo.</p>
-      <div class="field"><label for="comp-atk">Cómo ataca</label><input id="comp-atk" data-hfield="comp.atk" value="${esc(c.atk||"")}" maxlength="80" placeholder="Muerde, embiste, araña…"></div></div></div>
-    <span class="lab">Experiencias del compañero</span><p class="note">Tiene tantas como tú; cada una empieza a +2. Para que te ayude, haz una tirada de Lanzamiento y gasta 1 Esperanza para sumar una de sus Experiencias.</p>
-    <div class="fields">${k.exp.map((e,i)=>`<div class="field"><label for="comp-e${i}">Experiencia ${i+1} <b class="num">+${e.b}</b></label><input id="comp-e${i}" data-cexp="${i}" value="${esc(e.n)}" maxlength="60"></div>`).join("")}</div>
-    <span class="lab">Entrenamiento</span>${lib>0?`<p class="note">Te queda${lib===1?"":"n"} <b>${lib}</b> por elegir de niveles anteriores.</p>`:`<p class="note">Se elige al subir de nivel (una por nivel; la especialización da una más y la maestría dos más).</p>`}
-    ${tr}</section>`}
+       <div class="field"><label for="comp-t">Animal</label><input id="comp-t" data-hfield="comp.tipo" value="${esc(c.tipo||"")}" maxlength="40"></div></div>
+      <div class="field"><label for="comp-atk">Cómo ataca</label><input id="comp-atk" data-hfield="comp.atk" value="${esc(c.atk||"")}" maxlength="80"></div>
+      <div class="fields">${k.exp.map((e,i)=>`<div class="field"><label for="comp-e${i}">Experiencia ${i+1} <b class="num">+${e.b}</b></label><input id="comp-e${i}" data-cexp="${i}" value="${esc(e.n)}" maxlength="60"></div>`).join("")}</div></div></div></section>`}
 // Opciones de entrenamiento que ya tiene el compañero
 function compTrResumen(h){const t=h.comp?.tr||{},k=compCalc(h),L=[];
   for(const [id,n,d] of COMP_TR){
@@ -2048,7 +2067,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=47")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=48")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){
@@ -2164,7 +2183,7 @@ async function crCrear(){const d=ui.cr;if(ui.busy)return;
   ui.busy=true;render();
   try{
     await Store.mutate(st=>A.crear(st,id,{...crEquipo(d),hoja:h}));
-    const ficha={n:d.n.trim(),j:d.j.trim(),c:`${CLASES[d.clase].n} · ${nombreAsc(h)}`,desc:d.desc.trim(),...(d.img?{img:d.img}:{}),...(d.face?{face:d.face}:{}),creado:Date.now()};
+    const ficha={n:d.n.trim(),j:d.j.trim(),c:`${CLASES[d.clase].n} · ${nombreAsc(h)}`,desc:d.desc.trim(),...(d.img?{img:d.img}:{}),...(d.face?{face:d.face}:{}),...(d.sub==="bestia"&&d.compImg?{compImg:d.compImg}:{}),creado:Date.now()};
     await Contenido.guardar("pjs",id,ficha);
     await Saber.publicarPJ({id,...ficha}).catch(e=>console.error(e)); // su carta en Personas, para todos
     ui.cr=null;ls.set("v-crear",null);ui.crear=false;ui.me=id;ls.set("v-pj",id);ls.set("v-pj-own",id);ui.busy=false;
@@ -2174,7 +2193,9 @@ async function crCrear(){const d=ui.cr;if(ui.busy)return;
 async function subirOk(){const S=ui.subir,n=Store.state.hojas[ui.me].nivel+1;if(ui.busy)return;
   const s={exp:S.exp.trim(),carta:S.carta,a:S.a.map(a=>({k:a.k,...(a.k==="rasgos"?{r:a.r}:{}),...(a.k==="exp"?{i:a.i}:{}),...(a.id?{id:a.id}:{}),...(a.k==="multi"?{clase:a.clase,dom:a.dom,sub:a.sub}:{})}))};
   ui.busy=true;render();
-  try{await Store.mutate(st=>{A.subir(st,ui.me,s);if(S.ctr?.length)aplicarCtr(st.hojas[ui.me],S.ctr);return st});
+  try{await Store.mutate(st=>{A.subir(st,ui.me,s);const hh=st.hojas[ui.me];if(S.ctr?.length)aplicarCtr(hh,S.ctr);
+    if(hh.sub==="bestia"&&(S.cexp||"").trim()){hh.comp=hh.comp||{};const E=Array.isArray(hh.comp.exp)?hh.comp.exp:Object.values(hh.comp.exp||{});const i=Math.max(0,(hh.exp||[]).length-1);while(E.length<i)E.push({n:""});E[i]={n:S.cexp.trim().slice(0,60)};hh.comp.exp=E}
+    return st});
     if(n<(Store.state?.mundo?.nivel||1)){ui.subir=subNuevo();toast(`¡Nivel ${n}! Sigue con el nivel ${n+1}.`)}else{ui.subir=null;toast(`¡Nivel ${n}!`)}}
   catch(e){console.error(e);toast(e instanceof Nope?e.message:"No se pudo guardar. Prueba otra vez.",true)}
   finally{ui.busy=false;render();scrollTo({top:0})}
@@ -2412,8 +2433,10 @@ document.addEventListener("input",e=>{const t=e.target;
   if(ui.ledit&&ui.ldraft&&t.id?.startsWith("le-")&&t.type!=="file"){ui.ldraft[t.id.slice(3)]=t.value;const pv=$("#lprev");if(pv)pv.innerHTML=sesPrev();return}
   if(ui.crear&&ui.cr){const c=ui.cr,D=t.dataset;
     if(D.crf){c[D.crf]=t.value;crSave();render();return}
-    if(D.crfe!==undefined){c.exp[+D.crfe]=t.value;crSave();render();return}}
+    if(D.crfe!==undefined){c.exp[+D.crfe]=t.value;crSave();render();return}
+    if(D.crce!==undefined){c.compExp=c.compExp||["",""];c.compExp[+D.crce]=t.value;crSave();render();return}}
   if(t.id==="sub-exp"&&ui.subir){ui.subir.exp=t.value;render();return}
+  if(t.id==="sub-cexp"&&ui.subir){ui.subir.cexp=t.value;render();return}
   if(t.id==="cq"){ui.cq=t.value;render();return}
   if(t.id==="ci-q"){ui.ciq=t.value;render();return}
   if(t.id?.startsWith("cf-")&&t.tagName!=="SELECT"&&t.type!=="file"){ui.cdraft={...(ui.cdraft||{}),[t.id.slice(3)]:t.value};const pv=$("#cprev");if(pv)pv.innerHTML=compPreview(ui.ccol)}
@@ -2444,6 +2467,7 @@ document.addEventListener("change",e=>{
   if(t.dataset?.pf){const [id,k]=t.dataset.pf.split("."),v=k==="h"?+t.value:t.value.slice(0,k==="d"?400:60);act(st=>A.propio(st,ui.me,id,{[k]:v}),"Guardado.");return}
   if(t.dataset?.hfield){const k=t.dataset.hfield,v=t.value.slice(0,k==="notas"?2000:80);act(st=>A.hoja(st,ui.me,h=>{const ks=k.split("."),last=ks.pop();let o=h;ks.forEach(x=>o=o[x]=o[x]||{});o[last]=v}),"Guardado.");return}
   if(t.dataset?.cexp!==undefined){const i=+t.dataset.cexp,v=t.value.slice(0,60);act(st=>A.hoja(st,ui.me,h=>{h.comp=h.comp||{};const E=Array.isArray(h.comp.exp)?h.comp.exp:Object.values(h.comp.exp||{});while(E.length<=i)E.push({n:""});E[i]={n:v};h.comp.exp=E}),"Guardado.");return}
+  if(t.id==="cr-compimg"&&ui.cr){const f=t.files[0];t.value="";if(!f)return;reducirImagen(f,1000).then(d=>{ui.cr.compImg=d;crSave();render()}).catch(err=>toast(err.message,true));return}
   if(t.id==="comp-img"){const f=t.files[0];t.value="";if(!f)return;reducirImagen(f,1000).then(d=>pjGuardar({compImg:d})).catch(err=>toast(err.message,true));return}
   if(t.dataset?.hexp!==undefined){const i=+t.dataset.hexp,v=t.value.slice(0,60);act(st=>A.hoja(st,ui.me,h=>{if(h.exp[i])h.exp[i].n=v}),"Guardado.");return}
   if(t.dataset?.lvis)act(st=>A.lugar(st,t.dataset.lvis,{visible:t.checked}),t.checked?"Lugar visible.":"Lugar oculto.");
