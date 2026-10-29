@@ -30,7 +30,9 @@ function addPts(st,tid,pj,d){const t=TIENDA[tid],k=pj==="_grupo"?pj:potKey(t,pj)
 function shopOpen(st,tid){const t=TIENDA[tid];if(!t||t.borrado)no("Esa tienda ya no existe.");if(!st.mundo?.tiendas?.[tid]?.abierta)no(`${t.n} está cerrada ahora mismo.`);return t}
 // Devolver una pieza única: si se pagó, se recuperan los puntos en la tienda donde se cogió
 function refund(st,id){const pg=st.pagos?.[id];if(pg&&TIENDA[pg.t]&&pg.p)addPts(st,pg.t,pg.pj,pg.p);if(st.pagos)delete st.pagos[id]}
-function log(st,x){st.log=[{t:Date.now(),x},...(st.log||[])].slice(0,60)}
+// Avisos para el DM: lo que los jugadores se añaden a la mochila por su cuenta
+function aviso(st,pj,x){st.avisos=[{t:Date.now(),pj,x},...(Array.isArray(st.avisos)?st.avisos:Object.values(st.avisos||{}))].slice(0,40)}
+function log(st,x){st.log=[{t:Date.now(),x},...(st.log||[])].slice(0,150)}
 function need(st){if(!st||!st.pjs)no("La partida todavía no ha empezado. Avisa al DM.");return st}
 // Quién tiene una pieza de la armería: equipada en cualquier hueco o guardada en su bolsa
 const holderOf=(st,slot,id)=>PJS.find(p=>{const s=st.pjs[p.id];return s.arma===id||s.sec===id||s.armadura===id||(s.bolsa||[]).includes(id)})?.id;
@@ -42,7 +44,8 @@ function gearInfo(st,pj,ref){
   if(!ref)return null;
   if(ref.startsWith("p:")){const o=st.pjs[pj].propios[ref.slice(2)];if(!o)return null;
     // Un propio con base es equipo de tier 1 del creador: lleva sus datos de arma o armadura
-    const b=o.base&&typeof T1!=="undefined"?T1[o.base]:null;
+    // base "w:<id>" / "a:<id>" = copia de un arma o armadura del Compendio; si no, equipo de tier 1 del creador
+    const b=!o.base?null:o.base.startsWith("w:")?WEAPON[o.base.slice(2)]:o.base.startsWith("a:")?ARMOR[o.base.slice(2)]:typeof T1!=="undefined"?T1[o.base]:null;
     return {ref,n:o.n,slot:{pri:"arma",sec:"sec",arm:"armadura"}[o.tipo]||null,h:o.h===2?2:1,propio:true,o,...(b?(b.g?{w:b}:{a:b}):{})}}
   if(WEAPON[ref])return {ref,n:WEAPON[ref].n,slot:WEAPON[ref].g==="sec"?"sec":"arma",h:WEAPON[ref].h,w:WEAPON[ref]};
   if(ARMOR[ref])return {ref,n:ARMOR[ref].n,slot:"armadura",h:0,a:ARMOR[ref]};
@@ -165,12 +168,19 @@ const A={
     if(from===slot)return st;
     const main=slot==="sec"&&me.arma&&gearInfo(st,pj,me.arma);
     if(main&&main.h===2)no("Tu arma principal es a dos manos: no te deja llevar secundaria.");
-    take();const old=me[slot];me[slot]=ref;stash(old);
+    take();const old=me[slot];me[slot]=ref;stash(old);log(st,`${PJ[pj]?.n||pj} se equipa ${g.n}.`);
     if(slot==="arma"&&g.h===2&&me.sec){const s2=me.sec;me.sec=null;stash(s2)}
     return st;
   },
+  // Añadir a la mochila algo del Compendio (ref "o:", "w:" o "a:"); se avisa al DM
+  anadir(st,pj,ref,pid){need(st);const me=st.pjs[pj],x=refX(ref);if(!x)no("Eso ya no está en el Compendio.");
+    if(ref[0]==="o"){checkCanReceive(st,pj,x);me.inv[x.id]=(me.inv[x.id]||0)+1}
+    else{if(Object.keys(me.propios).length>=40)no("Demasiados objetos propios.");
+      me.propios[pid]={n:x.n,tipo:ref[0]==="a"?"arm":x.g==="sec"?"sec":"pri",...(ref[0]==="w"&&x.h===2?{h:2}:{}),q:1,base:ref,d:""}}
+    aviso(st,pj,`${PJ[pj]?.n||pj} se ha añadido «${x.n}» del Compendio.`);log(st,`${PJ[pj]?.n||pj} se añade ${x.n}.`);return st},
+  propioNuevo(st,pj,id,obj){need(st);A.propio(st,pj,id,obj);aviso(st,pj,`${PJ[pj]?.n||pj} ha creado un objeto propio: «${obj.n}» (${({obj:"objeto",cons:"consumible",pri:"arma principal",sec:"arma secundaria",arm:"armadura"})[obj.tipo]||"objeto"}).`);return st},
   propio(st,pj,id,obj){need(st);const me=st.pjs[pj];
-    if(obj===null){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});delete me.propios[id];return st}
+    if(obj===null){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});if(me.propios[id])log(st,`${PJ[pj]?.n||pj} tira «${me.propios[id].n}».`);delete me.propios[id];return st}
     if(!me.propios[id]&&Object.keys(me.propios).length>=40)no("Demasiados objetos propios.");
     me.propios[id]={...(me.propios[id]||{}),...obj};
     if(me.propios[id].q<=0){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});delete me.propios[id]}

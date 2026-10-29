@@ -8,7 +8,7 @@ const Store={
   // Firebase borra objetos vacíos y valores null: los recuperamos al leer
   fix(st){
     if(!st)return null;
-    st.botes=st.botes||{};st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.pjs=st.pjs||{};
+    st.botes=st.botes||{};st.avisos=Array.isArray(st.avisos)?st.avisos:Object.values(st.avisos||{});st.log=Array.isArray(st.log)?st.log:Object.values(st.log||{});st.pjs=st.pjs||{};
     // PJs y objetos creados después en el Compendio entran con valores iniciales
     // Los PJs de antes se quitan con todo lo suyo (hoja, inventario, puntos, botes y pagos)
     for(const v of PJS_VIEJOS){delete st.pjs[v];if(st.hojas)delete st.hojas[v];for(const t in st.puntos||{})delete st.puntos[t][v];

@@ -55,7 +55,10 @@ const chCosteTxt=c=>Object.entries(c||{}).filter(([,n])=>n>0).map(([k,n])=>`${n}
 Object.assign(A,{
   // Añadir o gastar piezas a mano (d puede ser negativo)
   chPieza(st,pj,k,d){need(st);const c=chFix(st);if(!PIEZA[k])no("Esa pieza no existe.");
-    const v=(c.p[k]||0)+d;if(v<0)no(`No queda ningún ${PIEZA[k].n.toLowerCase()}.`);c.p[k]=v;return st},
+    const v=(c.p[k]||0)+d;if(v<0)no(`No queda ningún ${PIEZA[k].n.toLowerCase()}.`);c.p[k]=v;
+    log(st,`${PJ[pj]?.n||"El DM"} ${d>0?"añade":"gasta"} ${Math.abs(d)} ${PIEZA[k].n.toLowerCase()} de la chatarra (quedan ${v}).`);return st},
+  // DM: vaciar el almacén de piezas (y, si se pide, lo fabricado)
+  chVaciar(st,todo){need(st);const c=chFix(st);c.p={};if(todo)c.hechos={};log(st,todo?"El DM vacía la chatarra y retira todo lo fabricado.":"El DM vacía el almacén de chatarra.");return st},
   // Botín tras un combate: n = {frag,metal,comp} dados que tirar; devuelve lo que salió en st._botin
   chTirar(st,pj,n,tiradas){need(st);const c=chFix(st),got={};
     for(const g of CHATARRA)for(const r of tiradas[g.k]||[]){const k=piezaDe(g,r);got[k]=(got[k]||0)+1;c.p[k]=(c.p[k]||0)+1}
@@ -67,6 +70,7 @@ Object.assign(A,{
     if(!Object.keys(coste).length)no("Indica cuántas piezas cuesta.");
     const ef={};for(const [k] of CH_EF){const v=Math.round(+x.ef?.[k]||0);if(v)ef[k]=Math.max(-5,Math.min(5,v))}
     const pre=Math.round(+x.pre||0);
+    if(!c.rec[id]&&!CH_RECETAS[id])log(st,`Nueva receta en la chatarra: «${String(x.n).trim().slice(0,60)}».`);
     c.rec[id]={n:String(x.n).trim().slice(0,60),tipo:x.tipo==="artilugio"?"artilugio":"aumento",t:String(x.t||"").slice(0,600),coste,ef,pre:pre>=2&&pre<=4?pre:0};return st},
   chFabricar(st,pj,rid,hid){need(st);const c=chFix(st),r=chRecetas(st)[rid];if(!r)no("Esa receta ya no existe.");
     const f=chFalta(st,r.coste);if(f.length)no(`Faltan piezas: ${chCosteTxt(Object.fromEntries(f))}.`);
@@ -79,7 +83,7 @@ Object.assign(A,{
       const pre=chRecetas(st)[x.rec]?.pre;if(pre&&tierDe(st.hojas?.[to]?.nivel||1)<pre)no(`«${x.n}» pide tier ${pre} (Precompile).`);
       if(x.tipo==="aumento"){const usadas=Object.values(c.hechos).filter(y=>y.pj===to&&y.tipo==="aumento").length,max=chRanuras(st.hojas?.[to]);
         if(usadas>=max)no(`${PJ[to]?.n||"Ese PJ"} ya tiene ocupadas sus ${max} ranuras de aumento.`)}}
-    x.pj=to||null;return st},
+    log(st,to?`${PJ[to]?.n||to} se equipa «${x.n}».`:`«${x.n}» vuelve al almacén de chatarra.`);x.pj=to||null;return st},
   // Gastar un artilugio (o desmontar algo): desaparece para todos
   chGastar(st,pj,hid){need(st);const c=chFix(st),x=c.hechos[hid];if(!x)no("Eso ya no está.");
     delete c.hechos[hid];log(st,`${PJ[pj]?.n||"El DM"} ${x.tipo==="artilugio"?"usa":"desmonta"} «${x.n}».`);return st}
