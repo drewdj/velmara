@@ -283,6 +283,8 @@ function calcHoja(st,id){
   const G=k=>s[k]?gearInfo(st,id,s[k]):null,ga=G("armadura"),gw=[G("arma"),G("sec")].filter(Boolean);
   const pieza=[ga?.a,...gw.map(g=>g.w)].filter(Boolean);
   for(const x of pieza){const m=modsEquipo(x.f);ev+=m.ev;arm+=m.arm;um+=m.um;for(const k in m.r)r[k]+=m.r[k]}
+  // Aumentos de la Chatarra equipados (js/chatarra.js)
+  const au=typeof chEfectos==="function"?chEfectos(st,id):{dmg:0,atk:0,arm:0,ev:0,alc:0,L:[]};ev+=au.ev;arm+=au.arm;L.push(...au.L);
   ev+=+aj.ev||0;pg+=+aj.pg||0;es+=+aj.es||0;comp+=+aj.comp||0;um+=+aj.um||0;arm+=+aj.arm||0;
   let mayor,grave,sc=0;
   if(ga?.a){const [m,g]=ga.a.u.split("/").map(x=>+x.trim());mayor=m+n+um;grave=g+n+um+ug;sc=ga.a.sc}
@@ -291,9 +293,10 @@ function calcHoja(st,id){
   // Ataques: tantos dados como Competencia; el guerrero suma su nivel al daño físico
   const TR={"Agilidad":"agi","Fuerza":"fue","Fineza":"fin","Instinto":"ins","Presencia":"pre","Conocimiento":"con"};
   const ataques=gw.filter(g=>g.w).map(g=>{const w=g.w,[dado,tipo]=w.d.split(" "),mm=dado.match(/^d(\d+)([+-]\d+)?$/);
-    let extra=mm?+(mm[2]||0):0;if(h.clase==="warrior"&&tipo==="fís")extra+=n;
+    let extra=mm?+(mm[2]||0):0;if(h.clase==="warrior"&&tipo==="fís")extra+=n;const pri=g.slot!=="sec";if(pri)extra+=au.dmg; // los aumentos mejoran el arma principal (en el libro, el Ikonis)
     const dmg=mm?`${comp}d${mm[1]}${extra?(extra>0?"+":"")+extra:""}`:dado;
-    return {n:w.n,rasgo:w.tr,mod:r[TR[w.tr]]??0,alc:w.a,dmg,tipo:tipo==="mág"?"mágico":"físico",sec:g.slot==="sec"}});
+    const AL=["Cuerpo a cuerpo","Muy Cercana","Cercana","Lejana","Muy Lejana"],ai=AL.indexOf(w.a),alc=ai<0?w.a:AL[Math.max(0,Math.min(4,ai+(pri?au.alc:0)))];
+    return {n:w.n,rasgo:w.tr,mod:(r[TR[w.tr]]??0)+(pri?au.atk:0),alc,dmg,tipo:tipo==="mág"?"mágico":"físico",sec:g.slot==="sec"}});
   return {r,ev,pg:Math.max(1,pg),es:Math.max(1,es),esp:6,comp:Math.max(1,comp),mayor,grave,arm:sc,armN:ga?.n||"",ataques,
     sc:sub?.sc||null,nsub:ns,tier:tierDe(n),L};
 }
