@@ -114,16 +114,25 @@ const Mundo=(()=>{
     const r=el.querySelector("#wstage").getBoundingClientRect(),n=wins.length,mob=r.width<640;
     const ww=mob?r.width-16:Math.min(440,r.width*.42),hh=mob?Math.min(r.height*.6,480):Math.min(560,r.height-40);
     w={id,x:mob?8:Math.min(r.width-ww-12,r.width*.5+n*28),y:mob?r.height-hh-8-n*14:20+n*28,w:ww,h:hh,z:++z};
+    if(libre()){w.x+=r.left;w.y+=r.top;w.v=1}
     wins.push(w);save();windows();marks();
   }
   function close(id){wins=wins.filter(w=>w.id!==id);save();windows();marks()}
+  // En pantallas anchas las ventanas van en coordenadas de la pantalla (capa fija) y pueden ponerse a los lados del mapa
+  const libre=()=>innerWidth>=1000;
   function clampWins(){const r=el.querySelector("#wstage")?.getBoundingClientRect();if(!r)return;
+    if(libre()){modo(r);wins.forEach(w=>{w.w=Math.min(w.w,innerWidth-8);w.h=Math.min(w.h,innerHeight-8);
+      w.x=Math.max(-w.w+80,Math.min(w.x,innerWidth-60));w.y=Math.max(0,Math.min(w.y,innerHeight-40))});windows();return}
+    modo(r);
     // En pantallas estrechas la ventana entera queda dentro; en grandes se puede sacar medio fuera
     const small=r.width<640;
     wins.forEach(w=>{w.w=Math.min(w.w,r.width-8);w.h=Math.min(w.h,r.height-8);
       w.x=small?Math.max(0,Math.min(w.x,r.width-w.w)):Math.max(-w.w+80,Math.min(w.x,r.width-60));w.y=Math.max(0,Math.min(w.y,r.height-40))});windows()}
+  // Pasa las ventanas guardadas al sistema de coordenadas actual (mapa o pantalla)
+  function modo(r){const f=libre();wins.forEach(w=>{if(!!w.v===f)return;if(f){w.x+=r.left;w.y+=r.top}else{w.x-=r.left;w.y-=r.top}w.v=f?1:0})}
   function windows(){
     const layer=el?.querySelector("#wlayer");if(!layer)return;
+    const r0=el.querySelector("#wstage")?.getBoundingClientRect();if(r0)modo(r0);layer.classList.toggle("free",libre());
     const E=ctx.entries();
     // Las ventanas que siguen abiertas se actualizan sin perder lo que se está escribiendo dentro
     const have=new Map([...layer.children].map(d=>[d.dataset.win,d]));
