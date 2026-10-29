@@ -148,7 +148,7 @@ const A={
   setStock(st,tid,ref,v){need(st);const ex=st.exist[tid]=st.exist[tid]||{};if(v==null)delete ex[ref];else ex[ref]=Math.max(0,v);return st},
   stock(st,tid,ref,d){need(st);const e=TIENDA[tid]?.items?.[ref];if(!e||e.s==null||e.s==="")no("Eso no se agota.");const ex=st.exist[tid]=st.exist[tid]||{};ex[ref]=Math.max(0,(ex[ref]??0)+d);return st},
   // Empezar de cero: existencias, puntos, inventarios y equipo; lugares, tiendas, hojas y objetos propios se quedan
-  reset(st){const n=freshState();if(st?.mundo)n.mundo=st.mundo;if(st?.hojas)n.hojas=st.hojas;
+  reset(st){const n=freshState();if(st?.mundo)n.mundo=st.mundo;if(st?.hojas)n.hojas=st.hojas;if(st?.chatarra)n.chatarra=st.chatarra;
     if(st?.pjs)PJS.forEach(p=>{n.pjs[p.id].propios=st.pjs[p.id]?.propios||{}});return n},
   // Inventario: mover una pieza a un hueco (arma, sec, armadura) o quitarla (slot null)
   slot(st,pj,ref,slot){

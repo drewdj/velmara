@@ -739,6 +739,20 @@ details.feats[open] summary::after{content:"▴"}
 .sl.us{background:var(--line);border-color:var(--line)}
 .sl.now{background:var(--gold)}
 .sl.x{border-color:var(--line);opacity:.5;background:linear-gradient(45deg,transparent 45%,var(--line) 45% 55%,transparent 55%)}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.chps{display:grid;gap:6px;margin-top:8px}
+.chp{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:4px 0;border-bottom:1px solid var(--line)}
+.chp.cero .chn,.chp.cero .num{opacity:.5}.chp .num{font-size:1.3rem;min-width:2ch;text-align:right}
+.chbs{display:flex;gap:6px}.chb{width:34px;height:34px;border:1px solid var(--gold);background:transparent;color:var(--gold);font-size:1.2rem;line-height:1;cursor:pointer}
+.chb:disabled{opacity:.35;cursor:not-allowed}
+.chtir{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.chtir .field{width:150px;margin:0}
+.chlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.chrec{display:grid;gap:8px;align-content:start}.chrec header{display:flex;justify-content:space-between;gap:10px;align-items:center}.chrec p{margin:0}
+.chrec.mio{outline:2px solid var(--gold)}
+.chcost{display:flex;flex-wrap:wrap;gap:6px}.chc{font-size:.85rem;padding:2px 8px;border:1px solid var(--gold-lo);border-radius:12px}.chc.falta{border-color:#e06c6c;color:#ff9a9a}
+.chform{grid-column:1/-1;margin-bottom:14px}
+.chcostf{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}.chcostf label{display:grid;gap:2px;font-size:.85rem}.chcostf input{width:100%}
+.chit p{margin:4px 0 0}
 .dcrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;min-height:60px;padding:4px;margin:8px 0 14px}
 .dcmini{display:grid;padding:0;border:2px solid var(--dom);background:var(--paper);color:var(--ink);text-align:center;overflow:hidden;border-radius:6px;min-width:0;cursor:pointer}
 .dcmini.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 14px rgb(249 167 43 / .5)}
@@ -840,6 +854,7 @@ details.feats[open] summary::after{content:"▴"}
 <script src="js/reglas.js?v=37"></script>
 <script src="js/store.js?v=37"></script>
 <script src="js/creacion.js?v=37"></script>
+<script src="js/chatarra.js?v=37"></script>
 <script src="js/dom-iconos.js?v=37"></script>
 <script src="js/cartas.js?v=37"></script>
 <script src="js/mapa.js?v=37"></script>
@@ -914,7 +929,7 @@ function shopRows(st,id){const T=shopsAt(id);if(!T.length)return "";
     return `<div class="wshop"><div><b>${esc(t.n)}</b><span class="note">${esc(t.sub||"")}</span></div><span class="state ${s.abierta?"open":"shut"}">${s.abierta?"Abierta":"Cerrada"}</span>${s.abierta||ui.canDM?`<button class="btn" data-tienda="${t.id}">Entrar</button>`:""}</div>`}).join("")}</div>`}
 function nav(st){
   const nOpen=openShops(st).length,shops=nOpen||ui.view==="tiendas"; // sin tiendas abiertas no hay pestaña
-  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"]]:[]),["mundo","Mundo"],["sesiones","Sesiones"],["mapa","Mapa"],...(shops?[["tiendas","Tiendas"]]:[]),...(ui.canDM?[["dm","Mesa del DM"]]:[])];
+  const T=[...(ui.me?[["personaje","Personaje"],["inventario","Inventario"],["contactos","Contactos"],["lugares","Lugares"],["chatarra","Chatarra"]]:[]),["mundo","Mundo"],["sesiones","Sesiones"],["mapa","Mapa"],...(ui.me?[]:[["chatarra","Chatarra"]]),...(shops?[["tiendas","Tiendas"]]:[]),...(ui.canDM?[["dm","Mesa del DM"]]:[])];
   const dot=nOpen?`<i class="dot" title="Hay tiendas abiertas"></i>`:"",lv=puedeSubir(st,ui.me)?`<i class="dot lv" title="Nivel nuevo disponible">⬆</i>`:"";
   return `<nav class="main">${T.map(([k,l])=>`<button data-view="${k}" aria-current="${ui.view===k}">${l}${k==="tiendas"?dot:k==="personaje"?lv:""}</button>`).join("")}</nav>`;
 }
@@ -1254,6 +1269,7 @@ function viewPersonaje(st){
     ${res("Esperanza","esperanza",h.esperanza,6,"hope")}${k.arm?res("Armadura","armMarc",am,k.arm,"armor"):""}</section>
    <section class="block"><span class="tab-label">Experiencias</span>${exps.length?`<div class="xps">${exps.map(e=>`<span class="xp">${esc(e.n)} <b class="num">+${e.b}</b></span>`).join("")}</div>`:`<p class="empty">Ninguna todavía. Añádelas en Editar.</p>`}</section>
    <details class="block deco feats" ${ui.featsOpen?"open":""}><summary><span class="tab-label">Rasgos</span><span class="note">Clase, subclase, ascendencia y comunidad</span></summary>${rasgosT}</details>
+   ${chEnHoja(st)}
    ${MOVIL.matches?manoMovil(h):manoEscritorio(h)}
    ${(p.desc||h.desc)?`<section class="block deco"><span class="tab-label">Descripción</span><p class="pre">${esc(p.desc||h.desc)}</p></section>`:""}
    ${h.notas.trim()?`<section class="block deco"><span class="tab-label">Notas</span><p class="pre">${esc(h.notas)}</p></section>`:""}
@@ -1536,6 +1552,45 @@ function viewCartas(st,kind){
   return `<div class="cthead"><span class="tab-label">${who}</span><h1>${V.t}</h1></div>${note}<div class="ctgrid">${list}${det}</div>${add}`;
 }
 const viewContactos=st=>viewCartas(st,"contactos"),viewLugares=st=>viewCartas(st,"lugares");
+
+/* ---------- Chatarra: piezas comunes del grupo, recetas y lo fabricado (js/chatarra.js) ---------- */
+function chEnHoja(st){const H=Object.values(st.chatarra?.hechos||{}).filter(x=>x.pj===ui.me);if(!H.length)return "";
+  const au=H.filter(x=>x.tipo==="aumento").length;
+  return `<section class="block deco"><span class="tab-label">Aumentos y artilugios</span><p class="note">Ranuras de aumento: ${au} de ${chRanuras(st.hojas[ui.me])}. Se cambian en la pestaña Chatarra.</p>
+    <div class="chlist">${H.map(x=>`<div class="chit"><b>${esc(x.n)}</b> <span class="note">${x.tipo==="aumento"?"Aumento":"Artilugio"}</span>${x.t?`<p>${esc(x.t)}</p>`:""}</div>`).join("")}</div></section>`}
+function viewChatarra(st){
+  const c=st.chatarra||{},P=c.p||{},R=chRecetas(st),H=Object.entries(c.hechos||{}).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  const me=ui.me&&!PJ[ui.me]?.prueba?ui.me:null,h=me?st.hojas[me]:null,usadas=me?H.filter(([,x])=>x.pj===me&&x.tipo==="aumento").length:0;
+  const quien=x=>x.pj?(x.pj===ui.me?"Lo llevas tú":`Lo lleva ${esc(PJ[x.pj]?.n||"otro PJ")}`):"En el almacén";
+  const piezas=CHATARRA.map(g=>`<section class="block deco"><span class="tab-label">${g.n} · d${g.dado}</span><div class="chps">${g.p.map(([k,n])=>`<div class="chp${P[k]?"":" cero"}"><span class="chn">${n}</span><b class="num">${P[k]||0}</b>
+     <span class="chbs"><button class="chb" data-chp="${k}" data-d="-1" ${dis(!P[k])} aria-label="Gastar un ${n}">−</button><button class="chb" data-chp="${k}" data-d="1" ${dis()} aria-label="Añadir un ${n}">+</button></span></div>`).join("")}</div></section>`).join("");
+  const tirar=`<section class="block deco"><span class="tab-label">Botín de un combate</span><p class="note">El DM dice cuántos dados de cada tipo hay que tirar. Cada dado es una pieza y va al almacén común.</p>
+    <div class="chtir">${CHATARRA.map(g=>`<label class="field"><span class="lab">${g.n} (d${g.dado})</span><input type="number" id="cht-${g.k}" min="0" max="30" value="0" inputmode="numeric"></label>`).join("")}<button class="btn" data-chtirar ${dis()}>Tirar y guardar</button></div></section>`;
+  const coste=r=>`<span class="chcost">${Object.entries(r.coste||{}).map(([k,n])=>{const f=(P[k]||0)<n;return `<span class="chc${f?" falta":""}" title="Hay ${P[k]||0}">${n} ${esc(PIEZA[k]?.n||k)}</span>`}).join("")}</span>`;
+  const recetas=Object.entries(R).sort((a,b)=>a[1].n.localeCompare(b[1].n,"es")).map(([id,r])=>{const f=chFalta(st,r.coste).length;
+    return `<div class="chrec deco"><header><b>${esc(r.n)}</b><span class="state ${r.tipo==="aumento"?"open":"shut"}">${r.tipo==="aumento"?"Aumento":"Artilugio"}</span></header>${r.t?`<p>${esc(r.t)}</p>`:""}${coste(r)}
+      <div class="btns"><button class="btn" data-chfab="${id}" ${dis(!!f)}>Fabricar</button><button class="btn ghost" data-chredit="${id}">Editar</button>${ui.canDM?`<button class="btn warn" data-chrdel="${id}" ${dis()}>${ui.chconf==="r:"+id?"¿Seguro?":"Borrar"}</button>`:""}</div></div>`}).join("")||`<p class="empty">Ninguna receta todavía.</p>`;
+  const e0=ui.chnew===true?{n:"",tipo:"aumento",t:"",coste:{}}:R[ui.chnew]||{n:"",tipo:"aumento",t:"",coste:{}},Dr=ui.chdraft||{};
+  const ed=ui.chnew?{...e0,...Dr,coste:{...e0.coste,...(Dr.coste||{})}}:null; // lo escrito sobrevive a los redibujados
+  const form=ed?`<div class="chrec deco chform"><header><b>${ui.chnew===true?"Receta nueva":"Editar receta"}</b></header>
+    <div class="fields"><div class="field"><label for="chr-n">Nombre</label><input id="chr-n" value="${esc(ed.n)}" maxlength="60"></div>
+     <div class="field"><label for="chr-tipo">Tipo</label><select id="chr-tipo"><option value="aumento" ${ed.tipo==="aumento"?"selected":""}>Aumento (se equipa en una ranura)</option><option value="artilugio" ${ed.tipo==="artilugio"?"selected":""}>Artilugio (se gasta al usarlo)</option></select></div></div>
+    <div class="field"><label for="chr-t">Qué hace</label><textarea id="chr-t" maxlength="600">${esc(ed.t||"")}</textarea></div>
+    <span class="lab">Coste en piezas</span><div class="chcostf">${CHATARRA.flatMap(g=>g.p).map(([k,n])=>`<label><span>${n}</span><input type="number" data-chrc="${k}" min="0" max="99" value="${ed.coste?.[k]||""}" inputmode="numeric"></label>`).join("")}</div>
+    <div class="btns"><button class="btn" data-chrsave ${dis()}>Guardar</button><button class="btn ghost" data-chnew="0">Cancelar</button></div></div>`:"";
+  const hechos=H.map(([id,x])=>{const mio=x.pj===ui.me&&!!me,libre=!x.pj;
+    const b=[libre&&me?`<button class="btn" data-cheq="${id}" data-to="${me}" ${dis(x.tipo==="aumento"&&usadas>=chRanuras(h))}>${x.tipo==="aumento"?"Equipar":"Llevar"}</button>`:"",
+      mio||(ui.canDM&&x.pj)?`<button class="btn ghost" data-cheq="${id}" data-to="" ${dis()}>Devolver al almacén</button>`:"",
+      x.tipo==="artilugio"&&(mio||libre)?`<button class="btn warn" data-chgas="${id}" ${dis()}>${ui.chconf===id?"¿Usarlo? Se gasta":"Usar"}</button>`:"",
+      ui.canDM||mio||libre?(x.tipo==="aumento"?`<button class="btn warn" data-chgas="${id}" ${dis()}>${ui.chconf===id?"¿Seguro? Se pierde":"Desmontar"}</button>`:""):""].join("");
+    return `<div class="chrec deco${mio?" mio":""}"><header><b>${esc(x.n)}</b><span class="state ${x.tipo==="aumento"?"open":"shut"}">${x.tipo==="aumento"?"Aumento":"Artilugio"}</span></header>
+      <p class="note">${quien(x)}${x.por&&PJ[x.por]?` · lo fabricó ${esc(PJ[x.por].n)}`:""}</p>${x.t?`<p>${esc(x.t)}</p>`:""}${b?`<div class="btns">${b}</div>`:""}</div>`}).join("")||`<p class="empty">Aún no habéis fabricado nada.</p>`;
+  return `<div class="hero"><span class="tab-label">Compartida por todo el grupo</span><h1>Chatarra</h1>
+    <p class="note">Lo que recogéis de los remanentes va a un almacén común. Si alguien gasta piezas o un artilugio, desaparece para todos.${me?` Tus ranuras de aumento: <b>${usadas} de ${chRanuras(h)}</b> (2 en tier 1 y una más por tier).`:""}</p></div>
+   <div class="chgrid">${piezas}</div>${tirar}
+   <section class="block"><header><span class="tab-label">Fabricado</span></header><div class="chlist">${hechos}</div></section>
+   <section class="block"><header><span class="tab-label">Recetas</span>${ui.chnew?"":`<button class="btn ghost" data-chnew="1">+ Receta nueva</button>`}</header>${form}<div class="chlist">${recetas}</div></section>`;
+}
 
 /* ---------- Mesa del DM: Compendio (crear y editar todo) y Partida ---------- */
 function viewDM(st){
@@ -1891,7 +1946,7 @@ function render(){
     if(ui.me&&(!PJ[ui.me]||!st.hojas[ui.me]))ui.me=null; // el DM lo ha borrado
     if(!ui.me&&["personaje","inventario","contactos","lugares"].includes(ui.view))ui.view="mundo";
     if(ui.view==="dm"&&!ui.canDM)ui.view="personaje";
-    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,tiendas:viewTiendas,dm:viewDM,sesiones:viewSesiones,mapa:()=>""}[ui.view]||viewMundo;
+    const V={mundo:viewMundo,personaje:viewPersonaje,inventario:viewInventario,contactos:viewContactos,lugares:viewLugares,chatarra:viewChatarra,tiendas:viewTiendas,dm:viewDM,sesiones:viewSesiones,mapa:()=>""}[ui.view]||viewMundo;
     body=nav(st)+V(st);
   }
   showMap(!!(st&&(ui.me||ui.canDM)&&ui.view==="mapa"));
@@ -1990,6 +2045,22 @@ document.addEventListener("click",e=>{
   if(ui.bell&&!e.target.closest(".bellw")){ui.bell=false;render()}
   const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(d.cread){leerCarta(d.cread,d.csel);return}
+  if(d.chp){act(st=>A.chPieza(st,ui.me,d.chp,+d.d));return}
+  if(b.hasAttribute("data-chtirar")){const T={};let n=0;
+    for(const g of CHATARRA){const k=Math.max(0,Math.min(30,+($("#cht-"+g.k)?.value||0)));T[g.k]=Array.from({length:k},()=>1+Math.floor(Math.random()*g.dado));n+=k}
+    if(!n){toast("Pon cuántos dados hay que tirar.",true);return}
+    const got={};for(const g of CHATARRA)for(const r of T[g.k]){const k=piezaDe(g,r);got[k]=(got[k]||0)+1}
+    act(st=>A.chTirar(st,ui.me,null,T),`Salió: ${chCosteTxt(got)}.`);return}
+  if(d.chfab){act(st=>A.chFabricar(st,ui.me,d.chfab,"h"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),"Fabricado. Está en el almacén común.");return}
+  if(d.cheq!==undefined){act(st=>A.chEquipar(st,ui.me,d.cheq,d.to||null),d.to?"Equipado.":"Devuelto al almacén.");return}
+  if(d.chgas){if(ui.chconf!==d.chgas){ui.chconf=d.chgas;render();return}ui.chconf=null;act(st=>A.chGastar(st,ui.me,d.chgas),"Hecho.");return}
+  if(d.chnew!==undefined){ui.chnew=d.chnew==="1";ui.chdraft=null;render();return}
+  if(d.chredit){ui.chnew=d.chredit;ui.chdraft=null;render();scrollTo({top:$(".chform")?.getBoundingClientRect().top+scrollY-20||0,behavior:"smooth"});return}
+  if(d.chrdel){if(ui.chconf!=="r:"+d.chrdel){ui.chconf="r:"+d.chrdel;render();return}ui.chconf=null;act(st=>A.chReceta(st,d.chrdel,null),"Receta borrada.");return}
+  if(b.hasAttribute("data-chrsave")){const coste={};document.querySelectorAll("[data-chrc]").forEach(i=>{if(+i.value>0)coste[i.dataset.chrc]=+i.value});
+    const x={n:$("#chr-n").value,tipo:$("#chr-tipo").value,t:$("#chr-t").value,coste};
+    const id=ui.chnew===true?(x.n.trim().toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30)||"receta")+"-"+Date.now().toString(36).slice(-4):ui.chnew;
+    act(st=>A.chReceta(st,id,x),"Receta guardada.").then(()=>{if(Store.state?.chatarra?.rec?.[id]){ui.chnew=null;ui.chdraft=null;render()}});return}
   if(d.dsel){ui.dsel=d.dsel;render();return}
   if(d.dmove){const id=d.dmove,to=d.to;act(st=>A.hoja(st,ui.me,h=>{
     if(to==="uso"){if(h.cartas.length>=5)no("Ya tienes 5 cartas en la mano: guarda antes una en el baúl.");h.baul=h.baul.filter(x=>x!==id);h.cartas.push(id)}
@@ -2174,6 +2245,7 @@ document.addEventListener("keydown",e=>{
 });
 // Borrador del Compendio: lo escrito sobrevive a los cambios que lleguen de otros mientras editas
 document.addEventListener("input",e=>{const t=e.target;
+  if(ui.chnew&&(t.id?.startsWith("chr-")||t.dataset.chrc)){const D=ui.chdraft=ui.chdraft||{coste:{}};if(t.dataset.chrc)D.coste[t.dataset.chrc]=+t.value||0;else D[t.id.slice(4)]=t.value;return}
   if(t.dataset.lnota&&ui.me){sesNota(t.dataset.lnota,t.value);return}
   if(ui.ledit&&ui.ldraft&&t.id?.startsWith("le-")&&t.type!=="file"){ui.ldraft[t.id.slice(3)]=t.value;const pv=$("#lprev");if(pv)pv.innerHTML=sesPrev();return}
   if(ui.crear&&ui.cr){const c=ui.cr,D=t.dataset;
