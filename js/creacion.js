@@ -297,8 +297,21 @@ function calcHoja(st,id){
     const dmg=mm?`${comp}d${mm[1]}${extra?(extra>0?"+":"")+extra:""}`:dado;
     const AL=["Cuerpo a cuerpo","Muy Cercana","Cercana","Lejana","Muy Lejana"],ai=AL.indexOf(w.a),alc=ai<0?w.a:AL[Math.max(0,Math.min(4,ai+(pri?au.alc:0)))];
     return {n:w.n,rasgo:w.tr,mod:(r[TR[w.tr]]??0)+(pri?au.atk:0),alc,dmg,tipo:tipo==="mág"?"mágico":"físico",sec:g.slot==="sec"}});
-  return {r,ev,pg:Math.max(1,pg),es:Math.max(1,es),esp:6,comp:Math.max(1,comp),mayor,grave,arm:sc,armN:ga?.n||"",ataques,
+  const esp=6+(h.sub==="bestia"&&+h.comp?.tr?.luz?1:0); // «Luz en la oscuridad» del compañero
+  return {r,ev,pg:Math.max(1,pg),es:Math.max(1,es),esp,comp:Math.max(1,comp),mayor,grave,arm:sc,armN:ga?.n||"",ataques,
     sc:sub?.sc||null,nsub:ns,tier:tierDe(n),L};
 }
+// Compañero animal: entrenamiento (una opción por nivel subido, +1 en especialización, +2 en maestría)
+const COMP_TR=[["intel","Inteligente","+1 permanente a una Experiencia del compañero.",3],["luz","Luz en la oscuridad","Una casilla de Esperanza más que tu personaje puede marcar.",1],
+  ["mimo","Mimos","Una vez por descanso, si le das cariño en un momento tranquilo, ganas 1 Esperanza o ambos borráis 1 Estrés.",1],
+  ["blind","Acorazado","Cuando tu compañero recibe daño, puedes marcar una de tus casillas de Armadura en vez de uno de sus Estrés.",1],
+  ["vic","Feroz","Su dado de daño o su alcance sube un paso (d6 a d8, Cercana a Lejana…).",3],["resil","Resistente","Una casilla de Estrés más.",3],
+  ["vinc","Vínculo","Cuando marcas tu último PG, corre a tu lado: tira tantos d6 como Estrés libres tenga y márcalos; con algún 6, te levanta: borras tu último PG y vuelves.",1],
+  ["alerta","Alerta","+2 permanente a su Evasión.",3]];
+const ALC_PASOS=["Cuerpo a cuerpo","Muy Cercana","Cercana","Lejana","Muy Lejana"];
+function compCalc(h){const c=h.comp||{},t=c.tr||{},ns=nivelSub(h),intel=t.intel||{};
+  const nExp=Math.max(2,(h.exp||[]).length),usados=Object.values(intel).reduce((a,b)=>a+(+b||0),0)+(+t.luz||0)+(+t.mimo||0)+(+t.blind||0)+(+t.vd||0)+(+t.va||0)+(+t.resil||0)+(+t.vinc||0)+(+t.alerta||0);
+  return {ev:10+2*(+t.alerta||0),es:3+(+t.resil||0),dado:"d"+[6,8,10,12][Math.min(3,+t.vd||0)],alc:ALC_PASOS[Math.min(4,+t.va||0)],nExp,
+    exp:Array.from({length:nExp},(_,i)=>({n:c.exp?.[i]?.n||"",b:2+(+intel[i]||0)})),usados,total:Math.max(0,(h.nivel||1)-1)+(ns>=2?1:0)+(ns>=3?2:0)}}
 // Rasgos de subclase que tiene ahora (base, especialización, maestría)
 function rasgosSub(h){const s=SUB[h.sub];if(!s)return [];const ns=nivelSub(h);return [...s.base.map(f=>({...f,t2:"Base"})),...(ns>=2?s.esp.map(f=>({...f,t2:"Especialización"})):[]),...(ns>=3?s.mae.map(f=>({...f,t2:"Maestría"})):[])]}

@@ -788,6 +788,14 @@ nav.main .gi{display:none}
  .hasnav .crnav{bottom:calc(64px + env(safe-area-inset-bottom,0px))}
  .hasnav .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
 }
+.compa .compgrid{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:18px;margin:8px 0 14px}
+@media (max-width:700px){.compa .compgrid{grid-template-columns:minmax(0,1fr)}}
+.compimg{display:grid;gap:8px;align-content:start}.compimg .init{display:grid;place-items:center;aspect-ratio:1;font-size:3rem;border:1px dashed var(--line)}
+.compmain{display:grid;gap:10px;align-content:start}
+.ctrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px;margin-top:8px}
+.ctr{display:grid;gap:4px;padding:10px 12px;border:1px solid var(--line);background:var(--night)}.ctr.on{border-color:var(--gold-lo)}
+.ctrh{display:flex;gap:8px;align-items:center}.cbx{display:flex;gap:3px}.cbx i{width:13px;height:13px;border:2px solid var(--gold);display:block}.cbx i.on{background:var(--gold)}
+.ctrb{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.ctrb select{font-size:.85rem;padding:3px 6px;max-width:150px}.ctrb .btn{font-size:.9rem;padding:4px 10px}
 .dcrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;min-height:60px;padding:4px;margin:8px 0 14px}
 .dcmini{display:grid;padding:0;border:2px solid var(--dom);background:var(--paper);color:var(--ink);text-align:center;overflow:hidden;border-radius:6px;min-width:0;cursor:pointer}
 .dcmini.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 14px rgb(249 167 43 / .5)}
@@ -883,21 +891,21 @@ nav.main .gi{display:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=45"></script>
-<script src="js/datos.js?v=45"></script>
-<script src="js/dominios.js?v=45"></script>
-<script src="js/reglas.js?v=45"></script>
-<script src="js/store.js?v=45"></script>
-<script src="js/creacion.js?v=45"></script>
-<script src="js/chatarra.js?v=45"></script>
-<script src="js/dom-iconos.js?v=45"></script>
-<script src="js/cartas.js?v=45"></script>
-<script src="js/mapa.js?v=45"></script>
-<script src="js/contenido.js?v=45"></script>
-<script src="js/saber.js?v=45"></script>
-<script src="js/mundo.js?v=45"></script>
-<script src="js/libro.js?v=45"></script>
-<script src="js/recorte.js?v=45"></script>
+<script src="js/firebase-config.js?v=46"></script>
+<script src="js/datos.js?v=46"></script>
+<script src="js/dominios.js?v=46"></script>
+<script src="js/reglas.js?v=46"></script>
+<script src="js/store.js?v=46"></script>
+<script src="js/creacion.js?v=46"></script>
+<script src="js/chatarra.js?v=46"></script>
+<script src="js/dom-iconos.js?v=46"></script>
+<script src="js/cartas.js?v=46"></script>
+<script src="js/mapa.js?v=46"></script>
+<script src="js/contenido.js?v=46"></script>
+<script src="js/saber.js?v=46"></script>
+<script src="js/mundo.js?v=46"></script>
+<script src="js/libro.js?v=46"></script>
+<script src="js/recorte.js?v=46"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1315,9 +1323,10 @@ function viewPersonaje(st){
      <p class="note">Tira tantos dados de daño como tu Competencia.${h.clase==="warrior"?" Ya incluye tu nivel en el daño físico (Entrenamiento de combate).":""}</p></section>`:""}
    <section class="block deco res"><span class="tab-label">Recursos</span>
     ${res("Puntos de golpe","pg.marc",pg,k.pg,"")}${res("Estrés","estres.marc",es,k.es,"stress")}
-    ${res("Esperanza","esperanza",h.esperanza,6,"hope")}${k.arm?res("Armadura","armMarc",am,k.arm,"armor"):""}</section>
+    ${res("Esperanza","esperanza",h.esperanza,k.esp,"hope")}${k.arm?res("Armadura","armMarc",am,k.arm,"armor"):""}</section>
    <section class="block"><span class="tab-label">Experiencias</span>${exps.length?`<div class="xps">${exps.map(e=>`<span class="xp">${esc(e.n)} <b class="num">+${e.b}</b></span>`).join("")}</div>`:`<p class="empty">Ninguna todavía. Añádelas en Editar.</p>`}</section>
    <details class="block deco feats" ${ui.featsOpen?"open":""}><summary><span class="tab-label">Rasgos</span><span class="note">Clase, subclase, ascendencia y comunidad</span></summary>${rasgosT}</details>
+   ${h.sub==="bestia"?compHoja(st,h,p):""}
    ${chEnHoja(st)}
    ${MOVIL.matches?manoMovil(h):manoEscritorio(h)}
    ${(p.desc||h.desc)?`<section class="block deco"><span class="tab-label">Descripción</span><p class="pre">${esc(p.desc||h.desc)}</p></section>`:""}
@@ -1623,6 +1632,27 @@ function viewCartas(st,kind){
 const viewContactos=st=>viewCartas(st,"contactos"),viewLugares=st=>viewCartas(st,"lugares"),viewArtefactos=st=>viewCartas(st,"artefactos");
 
 /* ---------- Chatarra: piezas comunes del grupo, recetas y lo fabricado (js/chatarra.js) ---------- */
+// Hoja del compañero animal (ranger Vinculado a la bestia). La foto va en la ficha del PJ (compImg), no en el estado.
+function compHoja(st,h,p){const c=h.comp||{},k=compCalc(h),t=c.tr||{},comp=calcHoja(st,ui.me).comp,es=Math.min(+c.es||0,k.es),lib=k.total-k.usados;
+  const tr=COMP_TR.map(([id,n,d,max])=>{const v=id==="vic"?(+t.vd||0)+(+t.va||0):id==="intel"?Object.values(t.intel||{}).reduce((a,b)=>a+(+b||0),0):+t[id]||0;
+    const add=id==="vic"?`<span class="btns"><button class="btn ghost" data-ctr="vd" ${dis(lib<1||v>=max||(+t.vd||0)>=3)}>+ Dado</button><button class="btn ghost" data-ctr="va" ${dis(lib<1||v>=max||(+t.va||0)>=4)}>+ Alcance</button></span>`
+      :id==="intel"?`<span class="btns"><select id="ctr-intel" aria-label="Experiencia">${k.exp.map((e,i)=>`<option value="${i}">${esc(e.n||"Experiencia "+(i+1))}</option>`).join("")}</select><button class="btn ghost" data-ctr="intel" ${dis(lib<1||v>=max)}>+1</button></span>`
+      :`<button class="btn ghost" data-ctr="${id}" ${dis(lib<1||v>=max)}>Elegir</button>`;
+    return `<div class="ctr${v?" on":""}"><div class="ctrh"><span class="cbx">${Array.from({length:max},(_,i)=>`<i class="${i<v?"on":""}"></i>`).join("")}</span><b>${n}</b></div><small class="note">${d}</small>
+      <div class="ctrb">${add}${v?`<button class="linkbtn" data-ctrq="${id}" ${dis()}>Quitar una</button>`:""}</div></div>`}).join("");
+  return `<section class="block deco compa"><span class="tab-label">Compañero animal</span>
+    <div class="compgrid"><div class="compimg">${p.compImg?`<img src="${p.compImg}" alt="" class="wimg">`:`<span class="init" aria-hidden="true">🐾</span>`}
+      <div class="btns"><label class="btn ghost" for="comp-img">${p.compImg?"Cambiar":"Subir imagen"}</label><input type="file" id="comp-img" accept="image/*" hidden>${p.compImg?`<button class="btn warn" data-compimgdel>Quitar</button>`:""}</div></div>
+     <div class="compmain"><div class="fields"><div class="field"><label for="comp-n">Nombre</label><input id="comp-n" data-hfield="comp.n" value="${esc(c.n||"")}" maxlength="40"></div>
+       <div class="field"><label for="comp-t">Animal</label><input id="comp-t" data-hfield="comp.tipo" value="${esc(c.tipo||"")}" maxlength="40" placeholder="Lobo, halcón, oso…"></div></div>
+      <div class="defs"><div class="def"><span class="lab">Evasión</span><b class="num">${k.ev}</b></div><div class="def"><span class="lab">Ataque</span><b class="num">${comp}${k.dado}</b><small>${k.alc} · tu Competencia</small></div></div>
+      <div class="rrow stress"><div class="rl"><b>Estrés</b><span class="num">${es} / ${k.es}</span></div>${track("comp.es",es,k.es,"stress","Estrés del compañero")}</div>
+      <p class="note">Si recibe daño, marca 1 Estrés. Con el último se retira de la escena hasta tu próximo descanso largo (vuelve con 1 Estrés borrado). Si borras Estrés en un descanso, él borra lo mismo.</p>
+      <div class="field"><label for="comp-atk">Cómo ataca</label><input id="comp-atk" data-hfield="comp.atk" value="${esc(c.atk||"")}" maxlength="80" placeholder="Muerde, embiste, araña…"></div></div></div>
+    <span class="lab">Experiencias del compañero</span><p class="note">Tiene tantas como tú; cada una empieza a +2. Para que te ayude, haz una tirada de Lanzamiento y gasta 1 Esperanza para sumar una de sus Experiencias.</p>
+    <div class="fields">${k.exp.map((e,i)=>`<div class="field"><label for="comp-e${i}">Experiencia ${i+1} <b class="num">+${e.b}</b></label><input id="comp-e${i}" data-cexp="${i}" value="${esc(e.n)}" maxlength="60"></div>`).join("")}</div>
+    <span class="lab">Entrenamiento · ${k.usados} de ${k.total}</span><p class="note">Cada vez que subes de nivel eliges una opción${h.sub==="bestia"?"; la especialización da una más y la maestría dos más":""}.${lib>0?` Te queda${lib===1?"":"n"} <b>${lib}</b>.`:""}</p>
+    <div class="ctrs">${tr}</div></section>`}
 function chEnHoja(st){const H=Object.values(st.chatarra?.hechos||{}).filter(x=>x.pj===ui.me);if(!H.length)return "";
   const au=H.filter(x=>x.tipo==="aumento").length;
   return `<section class="block deco"><span class="tab-label">Aumentos y artilugios</span><p class="note">Ranuras de aumento: ${au} de ${chRanuras(st.hojas[ui.me])}. Se cambian en el Inventario y en Crafteo.</p>
@@ -1995,7 +2025,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=45")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=46")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){
@@ -2230,6 +2260,12 @@ document.addEventListener("click",e=>{
     Contenido.quitar("pjs",id).then(()=>Saber.borrarNota(id)).then(()=>act(st=>A.borrarPJ(st,id),`${n} borrado.`)).catch(e=>{console.error(e);toast("No se pudo borrar del todo.",true)});return}
   if(d.verpj){ui.me=d.verpj;ui.sel=null;Peek.clear();return go({view:"personaje"})}
   if(b.hasAttribute("data-bajar")){if(!ui.confirmBajar){ui.confirmBajar=true;b.textContent="Pulsa otra vez para deshacerla";return}ui.confirmBajar=false;return act(st=>A.bajar(st,ui.me),"Subida deshecha.")}
+  if(b.hasAttribute("data-compimgdel")){pjGuardar({compImg:null});return}
+  if(d.ctr||d.ctrq){const id=d.ctr||d.ctrq,q=!!d.ctrq,sel=+($("#ctr-intel")?.value||0);return act(st=>A.hoja(st,ui.me,h=>{const k=compCalc(h);h.comp=h.comp||{};const t=h.comp.tr=h.comp.tr||{};
+    if(!q&&k.usados>=k.total)no("No te quedan opciones de entrenamiento: llegan al subir de nivel.");
+    if(id==="intel"){t.intel=t.intel||{};if(q){const i=Object.keys(t.intel).reverse().find(x=>+t.intel[x]>0);if(i!=null)t.intel[i]--}else t.intel[sel]=(+t.intel[sel]||0)+1}
+    else if(id==="vic"&&q){if(+t.va>0)t.va--;else if(+t.vd>0)t.vd--}
+    else t[id]=Math.max(0,(+t[id]||0)+(q?-1:1))}),q?"Quitado.":"Entrenado.")}
   if(b.hasAttribute("data-pjimgdel")){pjGuardar({img:null,face:null});return}
   if(d.grupo){const g=grupos(Store.state).find(x=>x.k===d.grupo);if(!g)return;const last=ls.get("v-g-"+g.k),v=g.sub.some(([k])=>k===last)?last:g.sub[0][0];
     if(v===ui.view&&g.sub.length>1){scrollTo({top:0});return}d.view=v}
@@ -2384,7 +2420,9 @@ document.addEventListener("change",e=>{
   if(t.id==="import-file"){const f=t.files[0];t.value="";if(!f)return;
     f.text().then(x=>Saber.importar(JSON.parse(x))).then(n=>toast(`${n} notas importadas.`)).catch(err=>{console.error(err);toast(err instanceof SyntaxError?"Ese archivo no es el del vault.":err.message||"No se pudo importar.",true)});return}
   if(t.dataset?.pf){const [id,k]=t.dataset.pf.split("."),v=k==="h"?+t.value:t.value.slice(0,k==="d"?400:60);act(st=>A.propio(st,ui.me,id,{[k]:v}),"Guardado.");return}
-  if(t.dataset?.hfield){const k=t.dataset.hfield,v=t.value.slice(0,k==="notas"?2000:60);act(st=>A.hoja(st,ui.me,h=>{h[k]=v}),"Guardado.");return}
+  if(t.dataset?.hfield){const k=t.dataset.hfield,v=t.value.slice(0,k==="notas"?2000:80);act(st=>A.hoja(st,ui.me,h=>{const ks=k.split("."),last=ks.pop();let o=h;ks.forEach(x=>o=o[x]=o[x]||{});o[last]=v}),"Guardado.");return}
+  if(t.dataset?.cexp!==undefined){const i=+t.dataset.cexp,v=t.value.slice(0,60);act(st=>A.hoja(st,ui.me,h=>{h.comp=h.comp||{};const E=Array.isArray(h.comp.exp)?h.comp.exp:Object.values(h.comp.exp||{});while(E.length<=i)E.push({n:""});E[i]={n:v};h.comp.exp=E}),"Guardado.");return}
+  if(t.id==="comp-img"){const f=t.files[0];t.value="";if(!f)return;reducirImagen(f,1000).then(d=>pjGuardar({compImg:d})).catch(err=>toast(err.message,true));return}
   if(t.dataset?.hexp!==undefined){const i=+t.dataset.hexp,v=t.value.slice(0,60);act(st=>A.hoja(st,ui.me,h=>{if(h.exp[i])h.exp[i].n=v}),"Guardado.");return}
   if(t.dataset?.lvis)act(st=>A.lugar(st,t.dataset.lvis,{visible:t.checked}),t.checked?"Lugar visible.":"Lugar oculto.");
 });

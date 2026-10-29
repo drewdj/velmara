@@ -238,5 +238,7 @@ function hojaInicial(id){
   return {v:2,nivel:1,clase:id==="prueba"?"warrior":"",sub:id==="prueba"?"valiente":"",asc1:id==="prueba"?"humano":"",asc2:"",ascN:"",com:id==="prueba"?"orderborne":"",
     rasgos:{agi:0,fue:0,fin:0,ins:0,pre:0,con:0},exp:[{n:"",b:2},{n:"",b:2}],clankExp:-1,
     cartas:[],baul:[],notas:"",item:"",desc:"",preg:[],conex:[],subidas:{},aj:{ev:0,pg:0,es:0,comp:0,um:0,arm:0},
-    pg:{marc:0},estres:{marc:0},esperanza:2,armMarc:0};
+    pg:{marc:0},estres:{marc:0},esperanza:2,armMarc:0,
+    // Compañero animal del ranger Vinculado a la bestia (hoja de compañero, Core Rulebook p. 353)
+    comp:{n:"",tipo:"",atk:"",es:0,exp:[],tr:{intel:{},luz:0,mimo:0,blind:0,vd:0,va:0,resil:0,vinc:0,alerta:0}}};
 }
