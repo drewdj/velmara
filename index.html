@@ -220,9 +220,11 @@ tr:last-child td{border-bottom:0}
 .tk.hp.on{background:#E0605A}.tk.st{border-color:#5B8FD0}.tk.st.on{background:#5B8FD0}
 .mins{display:flex;flex-wrap:wrap;gap:4px}.minb{width:28px;height:28px;padding:0;border:1px solid #cfc6b4;background:#efe7d6;color:var(--ink);cursor:pointer;border-radius:50%}.minb.off{color:var(--bad);opacity:.6}
 .encc .minb{background:#efe7d6;color:var(--ink);border-color:#cfc6b4}
-.abils{display:flex;flex-wrap:wrap;gap:4px}
-.abil{font-family:var(--cond);font-size:.82rem;padding:1px 7px;border-radius:10px;border:1px solid #cfc6b4;background:#fff;cursor:help}
-.abil.kA{border-color:var(--ty);color:var(--ty)}.abil.kR{border-style:dashed}
+.abils{display:grid;gap:4px}
+.abil{display:block;font-size:.8rem;line-height:1.3;padding:3px 7px;border-left:3px solid #cfc6b4;background:#fff;border-radius:0 4px 4px 0;cursor:help}
+.abil b{font-family:var(--cond);font-size:.86rem}.abil i{font-style:normal;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;color:#7a7484;margin-left:6px}.abil span{display:block;color:#3a3542}
+.abil.kA{border-left-color:var(--ty)}.abil.kA b{color:var(--ty)}.abil.kR{border-left-style:dotted;border-left-color:var(--ty)}
+.advres{font-weight:600}.advft small{color:var(--muted)}
 .tipw{position:relative;outline-offset:2px}
 .tipw:hover::after,.tipw:focus::after{content:attr(data-tip);position:absolute;z-index:30;left:0;top:calc(100% + 6px);width:min(270px,78vw);padding:8px 10px;background:var(--ink);color:var(--paper);font:400 .85rem/1.35 var(--body,inherit);text-transform:none;letter-spacing:0;border:1px solid var(--gold);box-shadow:0 8px 22px rgb(0 0 0 / .45);white-space:normal;pointer-events:none}
 .cnds{display:flex;flex-wrap:wrap;gap:4px}
@@ -946,23 +948,24 @@ nav.main .gi{display:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=59"></script>
-<script src="js/datos.js?v=59"></script>
-<script src="js/dominios.js?v=59"></script>
-<script src="js/reglas.js?v=59"></script>
-<script src="js/store.js?v=59"></script>
-<script src="js/creacion.js?v=59"></script>
-<script src="js/chatarra.js?v=59"></script>
-<script src="js/dom-iconos.js?v=59"></script>
-<script src="js/cartas.js?v=59"></script>
-<script src="js/mapa.js?v=59"></script>
-<script src="js/contenido.js?v=59"></script>
-<script src="js/saber.js?v=59"></script>
-<script src="js/mundo.js?v=59"></script>
-<script src="js/libro.js?v=59"></script>
-<script src="js/recorte.js?v=59"></script>
-<script src="js/adversarios.js?v=59"></script>
-<script src="js/encuentros.js?v=59"></script>
+<script src="js/firebase-config.js?v=60"></script>
+<script src="js/datos.js?v=60"></script>
+<script src="js/dominios.js?v=60"></script>
+<script src="js/reglas.js?v=60"></script>
+<script src="js/store.js?v=60"></script>
+<script src="js/creacion.js?v=60"></script>
+<script src="js/chatarra.js?v=60"></script>
+<script src="js/dom-iconos.js?v=60"></script>
+<script src="js/cartas.js?v=60"></script>
+<script src="js/mapa.js?v=60"></script>
+<script src="js/contenido.js?v=60"></script>
+<script src="js/saber.js?v=60"></script>
+<script src="js/mundo.js?v=60"></script>
+<script src="js/libro.js?v=60"></script>
+<script src="js/recorte.js?v=60"></script>
+<script src="js/adversarios.js?v=60"></script>
+<script src="js/adv-res.js?v=60"></script>
+<script src="js/encuentros.js?v=60"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -2172,7 +2175,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=59")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=60")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){

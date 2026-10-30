@@ -58,7 +58,18 @@ const Enc={
      <div class="advst"><span><small>Dificultad</small><b class="num">${a.dif}</b></span><span><small>Umbrales</small><b class="num">${u}</b></span><span><small>PG</small><b class="num">${a.pg}</b></span><span><small>Estrés</small><b class="num">${a.es}</b></span></div>
      <p><b>Ataque ${esc(a.atk)}</b> · ${esc(a.arma)} · ${esc(AALC[a.alc]||a.alc)} · <b class="num">${esc(a.dmg)}</b> ${a.tdmg==="mag"?"mágico":a.tdmg==="phy"?"físico":esc(a.tdmg)}</p>
      ${a.exp?`<p><b>Experiencia:</b> ${esc(a.exp)}</p>`:""}
-     ${a.f.map(([n,k,t])=>`<p class="advft"><b>${esc(n)}</b> <span class="advk ${k}">${AKIND[k]}</span> ${esc(t)}</p>`).join("")}</div>`},
+     ${a.f.map(([n,k,t],i)=>`<p class="advft"><b>${esc(n)}</b> <span class="advk ${k}">${AKIND[k]}</span> <span class="advres">${esc(this.res(a,i))}</span><br><small>${esc(t)}</small></p>`).join("")}</div>`},
+  // Resumen corto de la habilidad i (de ADV_RES; las genéricas se generan aquí)
+  res(a,i){const r=(typeof ADV_RES!=="undefined"&&ADV_RES[a.id]||[])[i];if(r)return r;
+    const [n,,t]=a.f[i],x=(n.match(/\(([^)]+)\)/)||[])[1];
+    if(/^Minion/.test(n))return `Cae con cualquier daño; cada ${x} de daño tumba otro`;
+    if(/^Horde/.test(n))return `Con la mitad de PG marcados, su ataque baja a ${x}`;
+    if(/^Momentum/.test(n))return "Al acertar a un PJ: ganas 1 Miedo";
+    if(/^Relentless/.test(n))return `Hasta ${x} focos por turno (cada uno cuesta Miedo)`;
+    if(/^Group Attack/.test(n)){const m=t.match(/deal (\d+) (physical|magic)/);return `1 Miedo · todos los de Cerca atacan juntos a uno · ${m?m[1]+(m[2]=="magic"?" mág":" fís"):"daño"} cada uno, sumado`}
+    if(/^Slow Firing/.test(n))return "Lenta: el primer foco apunta (ficha), el segundo dispara";
+    if(/^Slow/.test(n))return "Lento: el primer foco prepara (ficha), el segundo actúa";
+    return ""},
   linea(a){return `Tier ${a.tier} · ${ATIPO[a.ty]} · ${ACOSTE[a.ty]} pt${ACOSTE[a.ty]>1?"s":""}`},
   view(st){
     const t=ui.encTab==="combate"?"combate":"preparar",C=Saber.enc.combate;
@@ -123,11 +134,11 @@ const Enc={
         <div class="eatk tipw" tabindex="0" data-tip="${tip(`${a.arma} · ${AALC[a.alc]||a.alc} · daño ${a.tdmg==="mag"?"mágico":"físico"}`)}"><b class="num">${esc(a.atk)}</b><span class="num">${esc(a.dmg)} ${a.tdmg==="mag"?"mág":"fís"}</span><small>${esc(AALC[a.alc]||a.alc)}</small></div>
         ${vida}
         ${a.es?`<div class="trk"><span class="lab">Es</span>${this.pista(k,e.es,a.es,"ees","st")}</div>`:""}
-        <div class="abils">${a.f.map(([n,kk,t])=>`<span class="abil tipw k${kk}" tabindex="0" data-tip="${tip(t)}">${esc(n)}</span>`).join("")}</div>
+        <div class="abils">${a.f.map(([n,kk,t],i)=>`<div class="abil tipw k${kk}" tabindex="0" data-tip="${tip(n+": "+t)}"><b>${esc(n.replace(/ \(Phase Change\)/,""))}</b><i>${AKIND[kk]}</i><span>${esc(this.res(a,i))}</span></div>`).join("")}</div>
         <div class="cnds">${ACOND.map(([c,l])=>`<button class="cnd" data-econd="${k}" data-c="${c}" aria-pressed="${!!cond[c]}">${l}</button>`).join("")}</div></div>`}).join("");
     const add=`<div class="btns encadd"><select id="enc-addsel" aria-label="Añadir adversario"><option value="">Añadir adversario…</option>${[1,2,3,4].map(t=>`<optgroup label="Tier ${t}">${ADVERSARIOS.filter(a=>a.tier===t).map(a=>`<option value="${a.id}">${esc(a.n)} (${ATIPO[a.ty]})</option>`).join("")}</optgroup>`).join("")}</select><button class="btn ghost" data-encaddc>Añadir</button></div>`;
     return `<section class="block deco enccomb"><header><h2>${esc(C.n)}</h2><span class="note">${vivos} de ${E.length} en pie</span></header>
-      <p class="note">Toca las casillas para marcar PG y Estrés. Pasa el ratón (o toca) por una habilidad, el ataque o el nombre para leerlo.</p>
+      <p class="note">Toca las casillas para marcar PG y Estrés. Pasa el ratón (o toca) por una habilidad, el ataque o el nombre para leer el texto completo.</p>
       <div class="encboard">${cards}</div>${add}
       <div class="btns"><button class="btn warn" data-encfin>${ui.encFin?"¿Seguro? Pulsa otra vez":"Terminar combate"}</button></div></section>`;
   },
