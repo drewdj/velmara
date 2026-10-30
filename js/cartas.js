@@ -127,9 +127,9 @@ function armorCard(a){
 }
 // cost: {p, uno, varios} para mostrar el precio de una tienda concreta (si no, el de su rareza en vales)
 function itemCard(it,cost){
-  const banner=it.k==="rec"?"RECETA":it.k==="cons"?"CONSUMIBLE":"BOTÍN";
+  const banner=it.k==="rec"?"RECETA":it.k==="cons"?"CONSUMIBLE":it.k==="mat"?"MATERIAL":"BOTÍN";
   const p=cost?cost.p:price(it);
-  const tipo=it.k==="rec"?"Receta permanente":`${RAR[it.r]?.n||""} · ${it.k==="cons"?"consumible":"reutilizable"}`;
+  const tipo=it.k==="rec"?"Receta permanente":`${RAR[it.r]?.n||""} · ${it.k==="cons"?"consumible":it.k==="mat"?"material":"objeto"}`;
   return `<div class="dh-card r-${it.r}" tabindex="0">${cardSVG(glyphFor("item",it.id,it),ARTE[it.id],banner,{kind:"hex",big:p,small:cost?(p===1?cost.uno:cost.varios):p===1?"vale":"vales"},TINT[it.r]||TINT.c)}
    <div class="cbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4><div class="ctype">${tipo}${it.hf?" · H&amp;F":""}${it.vel?" · Velmara":""}</div>
    <p class="clamp">${it.k==="rec"?`<b>Ingrediente:</b> ${escC(it.ing)} `:""}${escC(it.t)}</p></div></div>`;
@@ -138,7 +138,7 @@ function itemCard(it,cost){
 function miniCard(it,qty){
   return `<div class="mini" tabindex="0"><svg class="mart" viewBox="0 0 300 170" aria-hidden="true">${scene(300,170,TINT[it.r],glyphFor("item",it.id,it),ARTE[it.id],{cy:82,size:110})}</svg>
    ${qty>1?`<span class="qty num">×${qty}</span>`:""}<div class="mbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4>
-   <div class="mtype">${it.k==="rec"?"Receta":it.k==="cons"?"Consumible":"Objeto"} · ${escC(RAR[it.r].n)}</div>
+   <div class="mtype">${it.k==="rec"?"Receta":it.k==="cons"?"Consumible":it.k==="mat"?"Material":"Objeto"} · ${escC(RAR[it.r].n)}</div>
    <p class="clamp">${escC(it.k==="rec"?`${it.ing} ${it.t}`:it.t)}</p></div></div>`;
 }
 // Carta de dominio: banderín del color del dominio con el nivel, coste de recuperación arriba a la derecha
