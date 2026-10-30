@@ -131,7 +131,7 @@ function itemCard(it,cost){
   const p=cost?cost.p:price(it);
   const tipo=it.k==="rec"?"Receta permanente":`${RAR[it.r]?.n||""} · ${it.k==="cons"?"consumible":"reutilizable"}`;
   return `<div class="dh-card r-${it.r}" tabindex="0">${cardSVG(glyphFor("item",it.id,it),ARTE[it.id],banner,{kind:"hex",big:p,small:cost?(p===1?cost.uno:cost.varios):p===1?"vale":"vales"},TINT[it.r]||TINT.c)}
-   <div class="cbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4><div class="ctype">${tipo}${it.hf?" · H&amp;F":""}</div>
+   <div class="cbody"><h4>${escC(cap(it.n.replace("Receta: ","")))}</h4><div class="ctype">${tipo}${it.hf?" · H&amp;F":""}${it.vel?" · Velmara":""}</div>
    <p class="clamp">${it.k==="rec"?`<b>Ingrediente:</b> ${escC(it.ing)} `:""}${escC(it.t)}</p></div></div>`;
 }
 // Carta pequeña para la mochila: ilustración, nombre, cantidad y efecto resumido

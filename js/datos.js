@@ -74,7 +74,19 @@ const ITEMS=[
  {id:"lupa",n:"Lupa del encantador",r:"r",k:"obj",s:1,t:"Ves a través de ilusiones y encantamientos.",hf:1},
  {id:"moneda-eclipse",n:"Moneda del eclipse",r:"r",k:"obj",s:1,t:"Una vez por descanso, lánzala. Cara: +1 a ataque hasta que aciertes. Cruz: +1 a Evasión hasta que un ataque falle contra ti.",hf:1},
  {id:"sombrero",n:"Sombrero del hechicero",r:"r",k:"obj",s:1,t:"Una vez por descanso, lanzas un conjuro de tu reserva con coste de recuperación igual o menor que tu tier.",hf:1},
- {id:"hilo-cose",n:"Hilo que se cose solo",r:"r",k:"cons",s:1,t:"Limpia 1 PG o 2 espacios de Armadura.",hf:1}
+ {id:"hilo-cose",n:"Hilo que se cose solo",r:"r",k:"cons",s:1,t:"Limpia 1 PG o 2 espacios de Armadura.",hf:1},
+ // Botín de los monjes (tienda de artefactos del campamento de los Monjes Silentes)
+ {id:"lente-memoria",n:"Lente de memoria hendida",r:"pc",k:"obj",s:1,t:"Un cristal montado sobre un visor clank que conserva imágenes incompletas de lo que examina. Una vez por descanso largo, cuando falles una tirada de Conocimiento para analizar magia, ruinas o artefactos, puedes marcar 1 Estrés para repetirla.",vel:1},
+ {id:"silbato-vinculo",n:"Silbato del vínculo",r:"pc",k:"obj",s:1,t:"Un silbato de hueso cuyo sonido solo reconoce la criatura vinculada a él. Una vez por descanso largo, cuando tu compañero animal vaya a marcar su último Estrés, no lo marca y puede moverse de inmediato hasta ti si hay un camino posible.",vel:1},
+ {id:"broche-segunda-voz",n:"Broche de la segunda voz",r:"pc",k:"obj",s:1,t:"Dos pequeñas máscaras unidas por una cadena; una habla un instante después que la otra. Una vez por descanso corto, cuando ayudes a un aliado y su tirada tenga éxito, ambos limpiáis 1 Estrés.",vel:1},
+ {id:"hoja-resonante",n:"Fragmento de hoja resonante",r:"pc",k:"obj",s:1,t:"Una esquirla dracónida que vibra cerca de otros artefactos. Encaja en una espada rota sin repararla. Tres veces por descanso, puedes atacar con esa espada a un objetivo a Cercana, proyectando un instante la parte perdida de la hoja.",vel:1},
+ {id:"sello-fuego",n:"Sello del fuego cautivo",r:"pc",k:"obj",s:1,t:"Un aro de piedra volcánica que se calienta cuando absorbe magia descontrolada. Una vez por descanso largo, cuando recibas daño mágico, puedes marcar 1 Estrés para reducir su gravedad un umbral sin marcar Armadura.",vel:1},
+ {id:"farol-polvo",n:"Farol de polvo claro",r:"c",k:"obj",s:1,t:"Tecnología de los Monjes Silentes. Encendido, quienes estén a Muy Cerca tienen ventaja en tiradas para orientarse, resistir o descubrir criaturas dentro de la niebla. Necesita una carga nueva tras cada descanso largo.",vel:1},
+ {id:"clavo-suspension",n:"Clavo de suspensión",r:"c",k:"obj",s:1,t:"Al activarlo queda inmóvil en el aire, ignorando la gravedad, hasta que alguien lo desactive. Sirve de anclaje, bloqueo o apoyo improvisado.",vel:1},
+ {id:"polvo-disipador",n:"Polvo disipador",r:"c",k:"cons",s:3,t:"Al esparcirlo abre durante unos instantes una zona a Cercana libre de niebla. (Cada uno es una carga.)",vel:1},
+ {id:"ampolla-reparadora",n:"Ampolla reparadora",r:"c",k:"cons",s:2,t:"Limpia 1d4 PG de un clank o constructo.",vel:1},
+ {id:"sal-silente",n:"Sal silente",r:"c",k:"cons",s:2,t:"Aplícala a un arma: su próximo ataque contra un Tocado o un constructo suma 1d6 al daño.",vel:1},
+ {id:"pasta-sutura",n:"Pasta de sutura",r:"c",k:"cons",s:1,t:"Limpia hasta 2 espacios de Armadura, repartidos entre criaturas a Cuerpo a cuerpo.",vel:1}
 ];
 const ITEM=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
 const price=i=>i.p ?? RAR[i.r].p;
