@@ -86,6 +86,7 @@ const ITEMS=[
  {id:"polvo-disipador",n:"Polvo disipador",r:"c",k:"cons",s:3,t:"Al esparcirlo abre durante unos instantes una zona a Cercana libre de niebla. (Cada uno es una carga.)",vel:1},
  {id:"ampolla-reparadora",n:"Ampolla reparadora",r:"c",k:"cons",s:2,t:"Limpia 1d4 PG de un clank o constructo.",vel:1},
  {id:"sal-silente",n:"Sal silente",r:"c",k:"cons",s:2,t:"Aplícala a un arma: su próximo ataque contra un Tocado o un constructo suma 1d6 al daño.",vel:1},
+ {id:"placa-azurmetal",n:"Placa de azurmetal",r:"r",k:"obj",s:1,t:"Reliquia sacada del cráneo del coloso: un mecanismo como una brújula, del mismo metal que el artefacto, que no apunta al norte sino a la mayor concentración de artefactos que percibe. Da para un solo proyecto: reforjar una espada rota (recupera parte de su forma y despierta una propiedad nueva, a decidir con el DM) o crear una brújula que, una vez por descanso largo, indica la dirección del artefacto más potente de la región, sin distancia ni peligros. Cada activación suelta un destello azul visible.",vel:1},
  {id:"pasta-sutura",n:"Pasta de sutura",r:"c",k:"cons",s:1,t:"Limpia hasta 2 espacios de Armadura, repartidos entre criaturas a Cuerpo a cuerpo.",vel:1}
 ];
 const ITEM=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
