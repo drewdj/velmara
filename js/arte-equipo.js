@@ -74,6 +74,21 @@
   },
   {
     "category": "armas",
+    "id": "sable",
+    "img": "img/equipo/armas/sable-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "estoque",
+    "img": "img/equipo/armas/estoque-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "alabarda",
+    "img": "img/equipo/armas/alabarda-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
