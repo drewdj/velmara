@@ -6,6 +6,7 @@ const ATIPO={Bruiser:"Bruto",Horde:"Horda",Leader:"Líder",Minion:"Esbirro",Rang
 const ACOSTE={Minion:1,Social:1,Support:1,Horde:2,Ranged:2,Skulk:2,Standard:2,Leader:3,Bruiser:4,Solo:5};
 const AALC={Melee:"Cuerpo a cuerpo","Very Close":"Muy cerca",Close:"Cerca",Far:"Lejos","Very Far":"Muy lejos"};
 const AKIND={P:"Pasiva",A:"Acción",R:"Reacción"};
+const ACOL={Bruiser:"#B8282E",Horde:"#7E7A74",Leader:"#C9961A",Minion:"#5B5FA8",Ranged:"#3E8441",Skulk:"#6A3FB5",Social:"#C23E8C",Solo:"#DA6A1E",Standard:"#2E5FB0",Support:"#2E8A6C"};
 const ACOND=[["vul","Vulnerable"],["res","Restringido"],["ocu","Oculto"]];
 const AJ_MAN=[["facil",-1,"Combate más fácil o corto"],["dificil",2,"Combate más difícil o largo"],["dano",-2,"+1d4 (o +2) al daño de todos los adversarios"]];
 const Enc={
@@ -103,37 +104,35 @@ const Enc={
     const n=E.pjs||this.nPJs(st),M={};let o=0;
     Object.entries(E.items||{}).forEach(([id,q])=>{const a=ADV[id];if(!a)return;
       for(let i=0;i<q;i++){const k=this.uid()+i;M[k]={id,o:o++,n:a.n+(q>1?` ${i+1}`:""),pg:0,es:0,...(a.ty==="Minion"?{min:n,caidos:0}:{})}}});
-    return Saber.encSet("combate",{n:E.n||"Combate",miedo:Saber.enc.combate?.miedo||0,E:M,t:Date.now()});
+    return Saber.encSet("combate",{n:E.n||"Combate",E:M,t:Date.now()});
   },
   pista(k,cur,max,attr,cls){let h="";for(let i=0;i<max;i++)h+=`<button class="tk ${cls}${i<cur?" on":""}" data-${attr}="${k}" data-i="${i}" aria-label="${i+1}"></button>`;return `<span class="tks">${h}</span>`},
   combate(st){
     const C=Saber.enc.combate;
     if(!C)return `<section class="block deco"><p class="empty">No hay ningún combate en curso. Prepara un encuentro y pulsa «Empezar combate».</p></section>`;
     const E=Object.entries(C.E||{}).sort((a,b)=>a[1].o-b[1].o),vivos=E.filter(([,e])=>!this.fuera(e)).length;
-    const cards=E.map(([k,e])=>{const a=ADV[e.id];if(!a)return "";const out=this.fuera(e),op=ui.encFicha===k,cond=e.cond||{};
+    // Carta compacta por enemigo: lo justo para la mesa; las habilidades y la descripción salen al pasar el ratón (o al tocar)
+    const tip=t=>esc(t).replace(/\n/g," ");
+    const cards=E.map(([k,e])=>{const a=ADV[e.id];if(!a)return "";const out=this.fuera(e),cond=e.cond||{};
       const u=a.umb?`${a.umb[0]??"—"}/${a.umb[1]??"—"}`:"—";
-      const vida=e.min?`<div class="mins">${Array.from({length:e.min},(_,i)=>`<button class="minb${i<(e.caidos||0)?" off":""}" data-emin="${k}" data-i="${i}" aria-label="Esbirro ${i+1}">${i<(e.caidos||0)?"✕":"●"}</button>`).join("")}</div><small class="note">${e.min-(e.caidos||0)} en pie. Caen con cualquier daño${this.minX(a)?`; por cada ${this.minX(a)} de daño cae otro más`:""}.</small>`
-        :`<div class="trk"><span class="lab">PG <b class="num">${e.pg}/${a.pg}</b></span>${this.pista(k,e.pg,a.pg,"ehp","hp")}</div>`;
-      return `<div class="encc${out?" out":""}" data-k="${k}"><div class="ench"><div><b>${esc(e.n)}</b><small>${ATIPO[a.ty]} · Tier ${a.tier}</small></div><button class="linkbtn" data-encficha="${k}">${op?"Cerrar":"Ficha"}</button></div>
-        <div class="encq"><span>Dif <b class="num">${a.dif}</b></span><span>Umbr. <b class="num">${u}</b></span><span>ATK <b class="num">${esc(a.atk)}</b></span><span class="num">${esc(a.dmg)} ${a.tdmg==="mag"?"mág":"fís"}</span></div>
+      const vida=e.min?`<div class="mins">${Array.from({length:e.min},(_,i)=>`<button class="minb${i<(e.caidos||0)?" off":""}" data-emin="${k}" data-i="${i}" aria-label="Esbirro ${i+1}">${i<(e.caidos||0)?"✕":"●"}</button>`).join("")}</div>`
+        :`<div class="trk"><span class="lab">PG</span>${this.pista(k,e.pg,a.pg,"ehp","hp")}</div>`;
+      return `<div class="encc${out?" out":""}" data-k="${k}" style="--ty:${ACOL[a.ty]}">
+        <div class="ench"><span class="tipw" tabindex="0" data-tip="${tip(a.d+" Motivos: "+a.mot+(a.exp?". Experiencia: "+a.exp:""))}"><b>${esc(e.n)}</b><small>${ATIPO[a.ty]} · T${a.tier}</small></span><button class="encx" data-equitar="${k}" aria-label="Quitar del combate">✕</button></div>
+        <div class="encq"><span>Dif <b class="num">${a.dif}</b></span><span>Umbr <b class="num">${u}</b></span></div>
+        <div class="eatk tipw" tabindex="0" data-tip="${tip(`${a.arma} · ${AALC[a.alc]||a.alc} · daño ${a.tdmg==="mag"?"mágico":"físico"}`)}"><b class="num">${esc(a.atk)}</b><span class="num">${esc(a.dmg)} ${a.tdmg==="mag"?"mág":"fís"}</span><small>${esc(AALC[a.alc]||a.alc)}</small></div>
         ${vida}
-        ${a.es?`<div class="trk"><span class="lab">Estrés <b class="num">${e.es}/${a.es}</b></span>${this.pista(k,e.es,a.es,"ees","st")}</div>`:""}
-        ${e.min?"":`<div class="dmgrow"><input type="number" min="0" id="dmg-${k}" placeholder="Daño" aria-label="Daño recibido por ${esc(e.n)}"><button class="btn ghost" data-edmg="${k}">Aplicar</button></div>`}
-        <div class="btns cnds">${ACOND.map(([c,l])=>`<button class="chip" data-econd="${k}" data-c="${c}" aria-pressed="${!!cond[c]}">${l}</button>`).join("")}</div>
-        ${op?`${this.ficha(a)}<div class="field"><label for="en-${k}">Nombre</label><input id="en-${k}" data-enomb="${k}" value="${esc(e.n)}" maxlength="40"></div>
-          <div class="field"><label for="enota-${k}">Notas</label><textarea id="enota-${k}" data-enota="${k}" maxlength="400">${esc(e.notas||"")}</textarea></div>
-          <button class="btn warn" data-equitar="${k}">Quitar del combate</button>`:e.notas?`<p class="note">${esc(e.notas)}</p>`:""}
-        ${out?`<span class="encout">Derrotado</span>`:""}</div>`}).join("");
+        ${a.es?`<div class="trk"><span class="lab">Es</span>${this.pista(k,e.es,a.es,"ees","st")}</div>`:""}
+        <div class="abils">${a.f.map(([n,kk,t])=>`<span class="abil tipw k${kk}" tabindex="0" data-tip="${tip(t)}">${esc(n)}</span>`).join("")}</div>
+        <div class="cnds">${ACOND.map(([c,l])=>`<button class="cnd" data-econd="${k}" data-c="${c}" aria-pressed="${!!cond[c]}">${l}</button>`).join("")}</div></div>`}).join("");
     const add=`<div class="btns encadd"><select id="enc-addsel" aria-label="Añadir adversario"><option value="">Añadir adversario…</option>${[1,2,3,4].map(t=>`<optgroup label="Tier ${t}">${ADVERSARIOS.filter(a=>a.tier===t).map(a=>`<option value="${a.id}">${esc(a.n)} (${ATIPO[a.ty]})</option>`).join("")}</optgroup>`).join("")}</select><button class="btn ghost" data-encaddc>Añadir</button></div>`;
     return `<section class="block deco enccomb"><header><h2>${esc(C.n)}</h2><span class="note">${vivos} de ${E.length} en pie</span></header>
-      <div class="erow"><span class="lab">Miedo</span>${this.pista("miedo",C.miedo||0,12,"emiedo","fear")}<span class="num">${C.miedo||0}</span></div>
-      <p class="note">El daño se convierte en PG según los umbrales: menos que el Mayor marca 1, desde el Mayor 2, desde el Grave 3. Toca las casillas para corregir a mano.</p>
+      <p class="note">Toca las casillas para marcar PG y Estrés. Pasa el ratón (o toca) por una habilidad, el ataque o el nombre para leerlo.</p>
       <div class="encboard">${cards}</div>${add}
       <div class="btns"><button class="btn warn" data-encfin>${ui.encFin?"¿Seguro? Pulsa otra vez":"Terminar combate"}</button></div></section>`;
   },
   minX(a){const f=a.f.find(([n])=>/^Minion \(\d+\)/.test(n));return f?+f[0].match(/\d+/)[0]:0},
   fuera(e){const a=ADV[e.id];return e.min?(e.caidos||0)>=e.min:a&&e.pg>=a.pg},
-  pgDeDano(a,d){if(d<=0)return 0;if(!a.umb)return 1;const [M,G]=a.umb;return G!=null&&d>=G?3:M!=null&&d>=M?2:1},
   set(r,v){return Saber.encSet(r,v).catch(e=>{console.error(e);toast("No se pudo guardar.",true)})},
   // Devuelve true si el clic era suyo
   click(b,st){const d=b.dataset,C=Saber.enc.combate,D=this.draft();
@@ -154,15 +153,11 @@ const Enc={
       if(C&&!confirm("Ya hay un combate en curso. ¿Lo sustituyes por este?"))return true;
       this.empezar(st,E).then(()=>{ui.encTab="combate";render()});return true}
     if(!C)return false;
-    if(d.emiedo!==undefined){const i=+d.i,v=(C.miedo||0)===i+1?i:i+1;this.set("combate/miedo",v);return true}
     if(d.ehp){const e=C.E[d.ehp],i=+d.i;this.set(`combate/E/${d.ehp}/pg`,e.pg===i+1?i:i+1);return true}
     if(d.ees){const e=C.E[d.ees],i=+d.i;this.set(`combate/E/${d.ees}/es`,e.es===i+1?i:i+1);return true}
     if(d.emin){const e=C.E[d.emin],i=+d.i;this.set(`combate/E/${d.emin}/caidos`,(e.caidos||0)===i+1?i:i+1);return true}
-    if(d.edmg){const e=C.E[d.edmg],a=ADV[e.id],v=+($("#dmg-"+d.edmg)?.value||0),n=this.pgDeDano(a,v);if(!n)return true;
-      this.set(`combate/E/${d.edmg}/pg`,Math.min(a.pg,e.pg+n)).then(()=>toast(`${e.n}: ${v} de daño → marca ${n} PG.`));return true}
     if(d.econd){const e=C.E[d.econd],on=!!(e.cond||{})[d.c];this.set(`combate/E/${d.econd}/cond/${d.c}`,on?null:true);return true}
-    if(d.encficha){ui.encFicha=ui.encFicha===d.encficha?null:d.encficha;render();return true}
-    if(d.equitar){this.set(`combate/E/${d.equitar}`,null);ui.encFicha=null;return true}
+    if(d.equitar){this.set(`combate/E/${d.equitar}`,null);return true}
     if(b.hasAttribute("data-encaddc")){const id=$("#enc-addsel")?.value,a=ADV[id];if(!a)return true;const o=Math.max(-1,...Object.values(C.E||{}).map(e=>e.o))+1;
       this.set(`combate/E/${this.uid()}`,{id,o,n:a.n,pg:0,es:0,...(a.ty==="Minion"?{min:this.pjs(st),caidos:0}:{})});return true}
     if(b.hasAttribute("data-encfin")){if(!ui.encFin){ui.encFin=true;render();return true}ui.encFin=false;this.set("combate",null);return true}
@@ -172,8 +167,6 @@ const Enc={
     return false},
   change(t){const C=Saber.enc.combate;
     if(t.dataset?.encadj){const D=this.draft();if(t.checked)D.adj[t.dataset.encadj]=true;else delete D.adj[t.dataset.encadj];this.save();render();return true}
-    if(C&&t.dataset?.enomb){const v=t.value.trim().slice(0,40);if(v)this.set(`combate/E/${t.dataset.enomb}/n`,v);return true}
-    if(C&&t.dataset?.enota){this.set(`combate/E/${t.dataset.enota}/notas`,t.value.slice(0,400));return true}
     return false},
-  key(e){const t=e.target;if(e.key==="Enter"&&t.id?.startsWith("dmg-")){e.preventDefault();document.querySelector(`[data-edmg="${t.id.slice(4)}"]`)?.click();return true}return false}
+  key(e){return false}
 };
