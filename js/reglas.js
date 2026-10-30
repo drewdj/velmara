@@ -229,6 +229,18 @@ const A={
     delete h.subidas["n"+n];h.nivel=n-1;return st},
   // Hoja de personaje: el jugador cambia su propia hoja (mut recibe la hoja y la modifica)
   hoja(st,pj,mut){need(st);mut(st.hojas[pj]);return st},
+  // Cambios de lo que se eligió al crear el PJ (clase, herencia, rasgos…): se avisa al DM
+  hojaBase(st,pj,campo,v){need(st);const h=st.hojas[pj];if(!h)no("Ese personaje no tiene hoja.");
+    const nm=PJ[pj]?.n||pj;let txt;
+    if(campo==="clase"){if(!CLASES[v])no("Esa clase no existe.");h.clase=v;h.sub=CLASE_INFO[v].subs[0].id;txt=`clase a ${CLASES[v].n} (${SUB[h.sub].n})`}
+    else if(campo==="sub"){if(SUB[v]?.clase!==h.clase)no("Esa subclase no es de tu clase.");h.sub=v;txt=`subclase a ${SUB[v].n}`}
+    else if(campo==="asc1"||campo==="asc2"){if(!ASC[v])no("Esa ascendencia no existe.");h[campo]=v;if(h.asc2===h.asc1)h.asc2="";txt=`ascendencia a ${nombreAsc(h)}`}
+    else if(campo==="mixta"){if(v){h.asc2=ASCENDENCIAS.find(a=>a.id!==h.asc1).id}else{h.asc2="";h.ascN=""}txt=v?`ascendencia a mixta (${nombreAsc(h)})`:`ascendencia a ${nombreAsc(h)}`}
+    else if(campo==="com"){if(!COM[v])no("Esa comunidad no existe.");h.com=v;txt=`comunidad a ${COM[v].es||COM[v].n}`}
+    else if(campo==="item"){h.item=String(v).slice(0,80);txt=`objeto de clase a «${h.item}»`}
+    else if(campo.startsWith("r.")){const r=campo.slice(2),n=Math.max(-3,Math.min(5,+v||0));if(!RASGO[r])no("Ese rasgo no existe.");h.rasgos[r]=n;txt=`${RASGO[r]} base a ${n>0?"+":""}${n}`}
+    else no("No se puede cambiar eso.");
+    aviso(st,pj,`${nm} ha cambiado su ${txt}.`);log(st,`${nm} cambia su ${txt}.`);return st},
   lugar(st,id,patch){need(st);Object.assign(st.mundo.lugares[id],patch);
     if("visible" in patch)log(st,patch.visible?`Se abre el camino a ${LUGARES.find(l=>l.id===id).n}.`:`${LUGARES.find(l=>l.id===id).n} deja de estar disponible.`);return st},
   tienda(st,id,patch){need(st);st.mundo.tiendas[id]=st.mundo.tiendas[id]||{abierta:false,nota:""};Object.assign(st.mundo.tiendas[id],patch);
