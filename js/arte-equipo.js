@@ -104,6 +104,21 @@
   },
   {
     "category": "armas",
+    "id": "arco-largo",
+    "img": "img/equipo/armas/arco-largo-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "falcata",
+    "img": "img/equipo/armas/falcata-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "nudillos",
+    "img": "img/equipo/armas/nudillos-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
