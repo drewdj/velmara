@@ -89,6 +89,21 @@
   },
   {
     "category": "armas",
+    "id": "lanza",
+    "img": "img/equipo/armas/lanza-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "arco-corto",
+    "img": "img/equipo/armas/arco-corto-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "ballesta",
+    "img": "img/equipo/armas/ballesta-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
