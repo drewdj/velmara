@@ -10,7 +10,7 @@ const DEF_POS={aelrennor:[166,231],"gaen-gwynyr":[161,262],"el-cruce":[253,240],
 const CATS=[["lugares","Lugares"],["personas","Personas"],["organizaciones","Organizaciones"],["mundo","Mundo"],["artefactos","Artefactos"],["cronica","Crónica"]];
 const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
 const Saber={
-  dm:{},pub:{},pos:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,posRef:null,key:null,
+  dm:{},pub:{},pos:{},enc:{},isDM:false,mode:"local",subs:[],db:null,dmRef:null,posRef:null,encRef:null,key:null,
   emit(){this.subs.forEach(f=>f())},
   init(){
     const cfg=window.FIREBASE_CONFIG;
@@ -42,10 +42,13 @@ const Saber={
     this.dmRef.on("value",s=>{this.dm=s.val()||{};this.dmListo=true;this.emit()},e=>console.error(e));
     this.posRef=this.db.ref(`dm/${k}/pos`);
     this.posRef.on("value",s=>{this.pos=s.val()||{};this.emit()},e=>console.error(e));
+    // Encuentros del DM (solo con la clave): guardados y el combate en curso
+    if(this.encRef)this.encRef.off();this.encRef=this.db.ref(`dm/${k}/enc`);
+    this.encRef.on("value",s=>{this.enc=s.val()||{};this.emit()},e=>console.error(e));
     this.isDM=true;this.emit();
   },
   forget(){try{localStorage.removeItem("v-dmkey")}catch(e){}},
-  async logout(){if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.dmListo=false;this.forget();this.emit()},
+  async logout(){if(this.encRef){this.encRef.off();this.encRef=null}this.enc={};if(this.dmRef){this.dmRef.off();this.dmRef=null}if(this.posRef){this.posRef.off();this.posRef=null}this.dm={};this.pos={};this.key=null;this.isDM=false;this.dmListo=false;this.forget();this.emit()},
   // Lo que ve un PJ: entradas compartidas con todos o con él
   visibleFor(pj){
     // El PJ de prueba (solo DM) ve todas las notas con el texto que les llegaría a los jugadores
@@ -59,6 +62,10 @@ const Saber={
     await this.db.ref("saber/"+id).set(val);
   },
   // Marcadores del mapa del mundo: los coloca el DM; el jugador recibe la posición con lo compartido
+  // Guarda en dm/<clave>/enc/<ruta> (null borra)
+  async encSet(ruta,v){if(!this.isDM)throw new Error("Solo el DM.");
+    if(this.mode==="local"){const ks=ruta.split("/"),last=ks.pop();let o=this.enc;ks.forEach(k=>o=o[k]=o[k]||{});if(v==null)delete o[last];else o[last]=JSON.parse(JSON.stringify(v));this.emit();return}
+    await this.db.ref(`dm/${this.key}/enc/${ruta}`).set(v??null)},
   posOf(id){const p=this.pos[id];return p===false?null:p||DEF_POS[id]||null},
   async setPos(id,x,y){
     const v=x==null?false:[x,y];
