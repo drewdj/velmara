@@ -60,6 +60,8 @@ const TINT={fis:["#F2913A","#3B2350"],mag:["#7C6CFF","#241A52"],arm:["#8FB6E8","
 
 // Escena pintada: cielo, halo, círculo rúnico, chispas, niebla y silueta (o imagen)
 function scene(w,h,tint,glyph,img,opts={}){
+  // Las ilustraciones de equipo necesitan el objeto entero, también en miniaturas.
+  if(typeof img==="string"&&img.startsWith("img/equipo/"))opts={...opts,fit:true};
   const k="a"+(artSeq++),[glow,sky]=tint,cx=w/2,cy=opts.cy??h*.5,R=Math.min(w,h)*.36;
   let sparks="";for(let i=0;i<14;i++){const a=(i*137.5)%360*Math.PI/180,r=R*(.7+((i*53)%40)/50);
     sparks+=`<circle cx="${(cx+Math.cos(a)*r).toFixed(1)}" cy="${(cy+Math.sin(a)*r*.8).toFixed(1)}" r="${(1.5+(i%3)).toFixed(1)}" fill="#FFF3D6" opacity="${(.35+(i%4)*.15).toFixed(2)}"/>`}
@@ -184,3 +186,4 @@ function featCard(o){
   </svg><div class="cbody"><h4>${escC(o.n)}</h4>${o.sub?`<div class="ctype">${escC(o.sub)}</div>`:""}
    <div class="feats-l">${o.feats.map(f=>`<p class="clamp ft">${f.pre?`<span class="fpre">${escC(f.pre)}</span> `:""}<b>${escC(f.n)}.</b> ${escC(f.t)}${f.t2?` <small class="ft2">${escC(f.t2)}</small>`:""}</p>`).join("")}</div></div></div>`;
 }
+

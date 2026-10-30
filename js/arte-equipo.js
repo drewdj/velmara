@@ -1,0 +1,88 @@
+// Ilustraciones base de equipo. Cargar después de cartas.js y antes de contenido.js.
+// Los overrides del DM en Firebase conservan prioridad al mezclar el contenido.
+(() => {
+  const images = [
+  {
+    "category": "armaduras",
+    "id": "gambeson",
+    "img": "img/equipo/armaduras/gambeson-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "cuero",
+    "img": "img/equipo/armaduras/cuero-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "cota",
+    "img": "img/equipo/armaduras/cota-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "placas",
+    "img": "img/equipo/armaduras/placas-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "tunica",
+    "img": "img/equipo/armaduras/tunica-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "brigantina",
+    "img": "img/equipo/armaduras/brigantina-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "espada-ancha",
+    "img": "img/equipo/armas/espada-ancha-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "espada-larga",
+    "img": "img/equipo/armas/espada-larga-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hacha-batalla",
+    "img": "img/equipo/armas/hacha-batalla-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "mandoble",
+    "img": "img/equipo/armas/mandoble-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "maza",
+    "img": "img/equipo/armas/maza-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "martillo",
+    "img": "img/equipo/armas/martillo-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "daga",
+    "img": "img/equipo/armas/daga-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "baston",
+    "img": "img/equipo/armas/baston-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "gran-baston",
+    "img": "img/equipo/armas/gran-baston-v1.jpg"
+  }
+];
+  const collections = {armas: WEAPONS, armaduras: ARMORS, objetos: ITEMS};
+  for (const {category, id, img} of images) {
+    const item = collections[category]?.find(x => x.id === id);
+    if (!item) throw new Error('Ilustración sin entrada de catálogo: ' + category + '/' + id);
+    if (!item.img) item.img = img;
+    if (!ARTE[id]) ARTE[id] = item.img;
+  }
+})();
