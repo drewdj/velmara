@@ -158,12 +158,17 @@ function crearMapa(O){
     const r=tr.getBoundingClientRect(),f=Math.min(1,Math.max(0,(x-r.left)/r.width));let t=n===1?0:f*(n-1);
     const near=Math.round(t);if(Math.abs(t-near)*r.width/Math.max(1,n-1)<8)t=near;setT(t)}
   // Reproducir: la línea de tiempo avanza sola a velocidad constante y el título de la sesión sale sobre el mapa
-  let play=null;const SEG_MS=4000;
+  // Ritmo constante: cada sesión dura lo que tarda el grupo que más anda en recorrer su ruta (sin contar saltos);
+  // si nadie se mueve (están en una ciudad) dura poco, pero no cero
+  let play=null;const VEL=0.12,MIN_MS=1200; // unidades del mapa por milisegundo
+  function durSes(i){const L=sesList();let m=0;for(const g of Object.values(data.grupos)){if(!g?.rutas)continue;const p=gPath(g,L,i);let d=0;
+      for(let j=1;j<p.length;j++)if(!p[j][2])d+=Math.hypot(p[j][0]-p[j-1][0],p[j][1]-p[j-1][1]);m=Math.max(m,d)}
+    return Math.max(MIN_MS,m/VEL)}
   function sesTit(){const b=el?.querySelector("#msestit");if(!b)return;const L=sesList();if(!play||!L.length){b.classList.remove("on");clearTimeout(b._t);b._t=setTimeout(()=>{if(!play)b.hidden=true},400);return}
     const x=L[curIdx()]?.[1];const txt=x?x.n:"";if(b.textContent!==txt)b.textContent=txt;b.hidden=false;b.classList.add("on")}
   function stopPlay(){if(!play)return;cancelAnimationFrame(play.raf);play=null;timeline();sesTit()}
   function startPlay(){const n=sesList().length;if(n<2)return;let t=tNow()??0;if(t>=n-1-1e-6)t=0;setT(t);
-    play={last:performance.now()};const step=now=>{if(!play)return;const dt=now-play.last;play.last=now;const nt=Math.min(n-1,(tNow()??0)+dt/SEG_MS);setT(nt);sesTit();
+    play={last:performance.now()};const step=now=>{if(!play)return;const dt=now-play.last;play.last=now;const t0=tNow()??0;const nt=Math.min(n-1,t0+dt/durSes(Math.min(n-1,Math.floor(t0+1e-9)+1)));setT(nt);sesTit();
       if(nt>=n-1){play=null;timeline();setTimeout(sesTit,1500);return}play.raf=requestAnimationFrame(step)};play.raf=requestAnimationFrame(step);timeline();sesTit()}
   function setT(t){if(t===tpos&&sesManual)return;const was=curSes();tpos=t;sesManual=true;if(curSes()!==was)sel=null;draw();pop();timeline();if(isDM())settings()}
   function key(e){
