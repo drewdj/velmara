@@ -134,6 +134,21 @@
   },
   {
     "category": "armas",
+    "id": "guadana",
+    "img": "img/equipo/armas/guadana-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "trabuco",
+    "img": "img/equipo/armas/trabuco-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "gran-arco",
+    "img": "img/equipo/armas/gran-arco-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
