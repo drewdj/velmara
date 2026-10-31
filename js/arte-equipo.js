@@ -119,6 +119,21 @@
   },
   {
     "category": "armas",
+    "id": "urok",
+    "img": "img/equipo/armas/urok-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "latigo-cuchillas",
+    "img": "img/equipo/armas/latigo-cuchillas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "alabarda-acero",
+    "img": "img/equipo/armas/alabarda-acero-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
