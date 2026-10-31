@@ -149,6 +149,21 @@
   },
   {
     "category": "armas",
+    "id": "arco-pelofino",
+    "img": "img/equipo/armas/arco-pelofino-v2.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "guanteletes",
+    "img": "img/equipo/armas/guanteletes-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hacha-consagrada",
+    "img": "img/equipo/armas/hacha-consagrada-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
