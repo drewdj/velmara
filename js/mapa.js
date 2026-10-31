@@ -3,8 +3,10 @@
    tienda/mapa: items (marcas, trazos, líneas, zonas y textos), sesiones (nombre y número; el texto de cada una vive en la pestaña Sesiones),
    grupos (con la ruta que siguió cada uno en cada sesión) y conf (escala y sesión actual). Cada cosa dibujada recuerda en qué sesión se puso, y la línea
    de tiempo de debajo enseña el mapa hasta la sesión elegida. Sin Firebase funciona en memoria. */
-const Mapa=(()=>{
-  const S=1000,IMG_LO="img/zona-norte-2048.webp",IMG_HI="img/zona-norte.webp";
+// Fábrica: la Zona Norte (con línea de tiempo) y el mapa del mundo (sin ella, con la capa de Mundo encima) usan el mismo motor.
+// O = {W, H, lo, hi, path, timeline, extra}. extra es una capa opcional: marcadores, buscador y ventanas (ver mundo.js).
+function crearMapa(O){
+  const S=O.W,SH=O.H,IMG_LO=O.lo,IMG_HI=O.hi,X=O.extra||null;
   const COLORS=["#F9A72B","#E5484D","#4CC38A","#3E9BFF","#B48CFF","#FF7AC6","#FDFCF7","#1B1230"];
   const ICONS={
     marca:'<circle cx="12" cy="11" r="4"/>',
@@ -46,7 +48,7 @@ const Mapa=(()=>{
 
   /* ---------- Sesiones ---------- */
   // Los jugadores ven hasta la sesión actual; el DM ve también las que prepara
-  const sesList=()=>{const A=Object.entries(data.sesiones).filter(([,x])=>x).sort((a,b)=>a[1].num-b[1].num);
+  const sesList=()=>{if(!O.timeline)return [];const A=Object.entries(data.sesiones).filter(([,x])=>x).sort((a,b)=>a[1].num-b[1].num);
     const cur=data.sesiones[data.conf.actual];return isDM()?A:cur?A.filter(([,x])=>x.num<=cur.num):[]};
   const sesNum=id=>data.sesiones[id]?.num??-Infinity;
   // La línea de tiempo no va a saltos: tpos es continuo (0 = primera sesión, 1 = segunda…).
@@ -67,7 +69,7 @@ const Mapa=(()=>{
     if(!cfg||!window.firebase){mode="local";return}
     try{
       const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
-      ref=app.database().ref("tienda/mapa");mode="live";
+      ref=app.database().ref(O.path);mode="live";
       for(const col of ["items","sesiones","grupos"]){
         const r=ref.child(col);
         r.on("child_added",s=>{data[col][s.key]=fixItem(s.val());later()});
@@ -98,9 +100,9 @@ const Mapa=(()=>{
       <div class="map-tools" id="mtools"></div>
       <div class="map-stage" id="mstage">
         <svg id="msvg" xmlns="http://www.w3.org/2000/svg">
-          <image id="mimg" href="${IMG_LO}" x="0" y="0" width="${S}" height="${S}"/>
-          <g id="gl-area"></g><g id="gl-draw"></g><g id="gl-grp"></g><g id="gl-pin"></g><g id="gl-draft"></g>
-        </svg>
+          <image id="mimg" href="${IMG_LO}" x="0" y="0" width="${S}" height="${SH}"/>
+          <g id="gl-area"></g><g id="gl-draw"></g><g id="gl-grp"></g><g id="gl-pin"></g><g id="gl-extra"></g><g id="gl-draft"></g>
+        </svg>${X?X.html():""}
         <div class="map-zoom"><button data-mz="1" aria-label="Acercar">+</button><button data-mz="-1" aria-label="Alejar">−</button><button data-mz="0" aria-label="Ver todo">⤢</button></div>
         <div class="map-pop" id="mpop" hidden></div>
         <div class="map-hint" id="mhint"></div>
@@ -109,15 +111,15 @@ const Mapa=(()=>{
     <div class="mtime" id="mtime"></div>
     <div class="mset" id="mset"></div>`;
     svg=el.querySelector("#msvg");
-    if(!mounted){connect();mounted=true;addEventListener("resize",()=>{if(visibleNow()){applyView();draw()}});document.addEventListener("keydown",key)}
-    bind();refresh(true);
+    if(!mounted){connect();mounted=true;addEventListener("resize",()=>{if(visibleNow()){applyView();draw();X?.resize?.()}});document.addEventListener("keydown",key)}
+    bind();X?.mount(api,el);refresh(true);
   }
   const visibleNow=()=>svg&&document.body.contains(svg)&&svg.getBoundingClientRect().width>0;
   // Al volver a la pestaña del mapa: encajar si hacía falta y redibujar con lo que llegó mientras tanto
   let lastDM=null;
-  function refresh(refit){if(!visibleNow())return;if(lastDM!==isDM()){lastDM=isDM();sesManual=false;sel=null;if(draft?.t==="ruta"){draft=null;tool="mover"}}if(refit||!fitted){fit();fitted=true}else applyView();tools();draw();pop();hint();timeline();settings()}
+  function refresh(refit){if(!visibleNow())return;if(lastDM!==isDM()){lastDM=isDM();sesManual=false;sel=null;if(draft?.t==="ruta"){draft=null;tool="mover"}}if(refit||!fitted){fit();fitted=true}else applyView();tools();draw();pop();hint();timeline();settings();X?.refresh?.()}
   function fit(){const r=svg.getBoundingClientRect(),a=r.width/Math.max(1,r.height);
-    if(a>=1){view.w=S*a;view.x=-(view.w-S)/2;view.y=0}else{view.w=S;view.x=0;view.y=-(S/a-S)/2}applyView()}
+    if(a>=S/SH){view.w=SH*a;view.x=-(view.w-S)/2;view.y=0}else{view.w=S;view.x=0;view.y=-(S/a-SH)/2}applyView()}
   function applyView(){
     const r=svg.getBoundingClientRect(),h=view.w*(r.height/Math.max(1,r.width));
     svg.setAttribute("viewBox",`${view.x} ${view.y} ${view.w} ${h}`);
@@ -162,6 +164,7 @@ const Mapa=(()=>{
     svg.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(pointers.size===2){const [a,b]=[...pointers.values()];gesture={pinch:Math.hypot(a.x-b.x,a.y-b.y),w:view.w};draft=draft?.t==="draw"?null:draft;return}
     const p=toMap(e.clientX,e.clientY);
+    if(X?.down?.(e,p,tool))return;
     const hit=e.target.closest?.("[data-id]");
     if(tool==="mover"){
       if(hit){const id=hit.dataset.id,it=data.items[id];sel=id;
@@ -179,6 +182,7 @@ const Mapa=(()=>{
   }
   function move(e){
     if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(X?.move?.(e))return;
     if(gesture?.pinch&&pointers.size===2){const [a,b]=[...pointers.values()],d=Math.hypot(a.x-b.x,a.y-b.y);
       zoomAt(view.w/(gesture.w*gesture.pinch/d),(a.x+b.x)/2,(a.y+b.y)/2);return}
     const p=toMap(e.clientX,e.clientY);
@@ -192,6 +196,7 @@ const Mapa=(()=>{
   }
   function up(e){
     pointers.delete(e.pointerId);
+    if(X?.up?.(e))return;
     if(gesture?.drag&&gesture.moved){const it=data.items[gesture.drag];put("items",gesture.drag,it)}
     if(gesture?.pan&&gesture.click){sel=null;draw();pop()}
     if(pointers.size===0)gesture=null;
@@ -243,6 +248,7 @@ const Mapa=(()=>{
       if(s2.trail.length>1)grp+=`<path d="${pathD(s2.trail)}" fill="none" stroke="${g.color}" stroke-width="${K*4}" stroke-linecap="round" stroke-linejoin="round"/><path d="${pathD(s2.trail)}" fill="none" stroke="#FDFCF7" stroke-width="${K*1.2}" stroke-dasharray="${K*2} ${K*6}" stroke-linecap="round"/>`;
       grp+=token(id,g,s2.pos,K)}
     svg.querySelector("#gl-area").innerHTML=area;svg.querySelector("#gl-draw").innerHTML=drw;svg.querySelector("#gl-pin").innerHTML=pin;svg.querySelector("#gl-grp").innerHTML=grp;
+    svg.querySelector("#gl-extra").innerHTML=X?X.layer(K):"";
     drawDraft();
   }
   // Camino del grupo en la sesión i: empieza donde acabó en la anterior que tenga ruta
@@ -308,14 +314,14 @@ const Mapa=(()=>{
     else if(ed)f+=`<input type="text" id="md-title" value="${esc(it.title)}" maxlength="60" placeholder="Título" aria-label="Título">
       <textarea id="md-note" maxlength="1000" placeholder="Nota" aria-label="Nota">${esc(it.note)}</textarea>`;
     else f+=`${it.title?`<b class="mptitle">${esc(it.title)}</b>`:""}${it.note?`<p class="mpnote">${esc(it.note)}</p>`:""}`;
-    if(it.lugar&&ctx.lugares().some(l=>l.id===it.lugar))f+=`<button class="btn ghost" data-golugar="${it.lugar}">Ir a ${esc(ctx.lugares().find(l=>l.id===it.lugar).n)}</button>`;
+    if(it.lugar&&ctx.lugares?.().some(l=>l.id===it.lugar))f+=`<button class="btn ghost" data-golugar="${it.lugar}">Ir a ${esc(ctx.lugares().find(l=>l.id===it.lugar).n)}</button>`;
     if(ed)f+=`<div class="mcolors">${COLORS.map(c=>`<button class="mcolor" data-setcolor="${c}" aria-pressed="${it.color===c}" style="--c:${c}" aria-label="Color ${c}"></button>`).join("")}</div>
       <div class="btns"><button class="btn warn" data-delsel>Borrar</button></div>`;
     box.innerHTML=f;box.hidden=false;
   }
   // Línea de tiempo de sesiones, debajo del mapa
   function timeline(){
-    const box=el?.querySelector("#mtime");if(!box)return;const L=sesList(),c=curSes(),t=tNow();
+    const box=el?.querySelector("#mtime");if(!box)return;if(!O.timeline){box.hidden=true;box.innerHTML="";return}const L=sesList(),c=curSes(),t=tNow();
     if(!L.length){box.innerHTML=isDM()?`<p class="note">Crea la primera sesión en la pestaña Sesiones para que lo que se dibuje quede guardado por sesiones.</p>`:"";box.hidden=!isDM();return}
     box.hidden=false;
     const pos=i=>L.length===1?50:i/(L.length-1)*100,ci=curIdx(),cur=L[ci][1],mid=t<ci-1e-6;
@@ -329,7 +335,7 @@ const Mapa=(()=>{
   // Ajustes del DM: sesiones y escala. Van debajo para no molestar.
   function settings(){
     const box=el?.querySelector("#mset");if(!box)return;
-    if(!isDM()){box.innerHTML="";box.hidden=true;return}
+    if(!isDM()||!O.timeline){box.innerHTML="";box.hidden=true;return}
     if(typing(box))return;box.hidden=false;
     const L=Object.entries(data.sesiones).filter(([,x])=>x).sort((a,b)=>b[1].num-a[1].num),act=data.conf.actual;
     box.innerHTML=`<details class="deco" ${setOpen?"open":""} id="msetd"><summary>Ajustes del mapa <small>solo DM</small></summary>
@@ -393,5 +399,10 @@ const Mapa=(()=>{
   function setActual(id){sesManual=false;setConf({actual:id})}
   const onSes=f=>sesSubs.push(f);
 
-  return {mount,refresh,ensure,sesData,putSes,setActual,onSes,uid};
-})();
+  // Lo que necesita la capa de encima (mundo.js)
+  function center(p){const r=svg.getBoundingClientRect(),h=view.w*(r.height/r.width);
+    if(p[0]<view.x||p[0]>view.x+view.w||p[1]<view.y||p[1]>view.y+h){view.x=p[0]-view.w/2;view.y=p[1]-h/2;applyView();draw()}}
+  const api={toMap,center,k,redraw:()=>draw(),visible:()=>visibleNow(),tool:()=>tool};
+  return {mount,refresh,ensure,sesData,putSes,setActual,onSes,uid,center,redraw:()=>draw()};
+}
+const Mapa=crearMapa({W:1000,H:1000,lo:"img/zona-norte-2048.webp",hi:"img/zona-norte.webp",path:"tienda/mapa",timeline:true});
