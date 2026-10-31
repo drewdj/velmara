@@ -106,6 +106,7 @@ function crearMapa(O){
         <div class="map-zoom"><button data-mz="1" aria-label="Acercar">+</button><button data-mz="-1" aria-label="Alejar">−</button><button data-mz="0" aria-label="Ver todo">⤢</button></div>
         <div class="map-pop" id="mpop" hidden></div>
         <div class="map-hint" id="mhint"></div>
+        <div class="map-sestit" id="msestit" hidden></div>
       </div>
     </div>
     <div class="mtime" id="mtime"></div>
@@ -137,11 +138,16 @@ function crearMapa(O){
     svg.addEventListener("wheel",e=>{e.preventDefault();zoomAt(e.deltaY<0?1.2:1/1.2,e.clientX,e.clientY)},{passive:false});
     svg.addEventListener("pointerdown",down);svg.addEventListener("pointermove",move);
     svg.addEventListener("pointerup",up);svg.addEventListener("pointercancel",up);
+    svg.addEventListener("contextmenu",e=>{if(tool==="ruta")e.preventDefault()});
+    svg.addEventListener("auxclick",e=>{if(e.button===1)e.preventDefault()});
     svg.addEventListener("dblclick",e=>{if(draft&&["line","area","ruta"].includes(draft.t)){e.preventDefault();finish()}});
     el.addEventListener("click",click);el.addEventListener("change",change);el.addEventListener("input",input);
     // Línea de tiempo: se arrastra con el ratón o el dedo y se queda en la sesión más cercana
     const tm=el.querySelector("#mtime");
-    tm.addEventListener("pointerdown",e=>{const tr=e.target.closest("#mtrack");if(!tr)return;tdrag=true;tr.setPointerCapture(e.pointerId);scrub(e.clientX);e.preventDefault()});
+    // El botón se redibuja en cada fotograma mientras suena: se atiende al pulsar, no al soltar
+    tm.addEventListener("pointerdown",e=>{if(e.target.closest("[data-tplay]")){e.preventDefault();play?stopPlay():startPlay();return}});
+    tm.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.closest("[data-tplay]")){e.preventDefault();play?stopPlay():startPlay()}});
+    tm.addEventListener("pointerdown",e=>{const tr=e.target.closest("#mtrack");if(!tr)return;stopPlay();tdrag=true;tr.setPointerCapture(e.pointerId);scrub(e.clientX);e.preventDefault()});
     tm.addEventListener("pointermove",e=>{if(tdrag)scrub(e.clientX)});
     const stop=()=>{tdrag=false};tm.addEventListener("pointerup",stop);tm.addEventListener("pointercancel",stop);
     tm.addEventListener("keydown",e=>{if(!e.target.closest("#mtrack"))return;const n=sesList().length,t=tNow();if(t==null)return;
@@ -151,6 +157,14 @@ function crearMapa(O){
   function scrub(x){const tr=el.querySelector("#mtrack"),n=sesList().length;if(!tr||!n)return;
     const r=tr.getBoundingClientRect(),f=Math.min(1,Math.max(0,(x-r.left)/r.width));let t=n===1?0:f*(n-1);
     const near=Math.round(t);if(Math.abs(t-near)*r.width/Math.max(1,n-1)<8)t=near;setT(t)}
+  // Reproducir: la línea de tiempo avanza sola a velocidad constante y el título de la sesión sale sobre el mapa
+  let play=null;const SEG_MS=4000;
+  function sesTit(){const b=el?.querySelector("#msestit");if(!b)return;const L=sesList();if(!play||!L.length){b.classList.remove("on");clearTimeout(b._t);b._t=setTimeout(()=>{if(!play)b.hidden=true},400);return}
+    const x=L[curIdx()]?.[1];const txt=x?x.n:"";if(b.textContent!==txt)b.textContent=txt;b.hidden=false;b.classList.add("on")}
+  function stopPlay(){if(!play)return;cancelAnimationFrame(play.raf);play=null;timeline();sesTit()}
+  function startPlay(){const n=sesList().length;if(n<2)return;let t=tNow()??0;if(t>=n-1-1e-6)t=0;setT(t);
+    play={last:performance.now()};const step=now=>{if(!play)return;const dt=now-play.last;play.last=now;const nt=Math.min(n-1,(tNow()??0)+dt/SEG_MS);setT(nt);sesTit();
+      if(nt>=n-1){play=null;timeline();setTimeout(sesTit,1500);return}play.raf=requestAnimationFrame(step)};play.raf=requestAnimationFrame(step);timeline();sesTit()}
   function setT(t){if(t===tpos&&sesManual)return;const was=curSes();tpos=t;sesManual=true;if(curSes()!==was)sel=null;draw();pop();timeline();if(isDM())settings()}
   function key(e){
     if(!visibleNow()||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
@@ -164,6 +178,10 @@ function crearMapa(O){
     svg.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(pointers.size===2){const [a,b]=[...pointers.values()];gesture={pinch:Math.hypot(a.x-b.x,a.y-b.y),w:view.w};draft=draft?.t==="draw"?null:draft;return}
     const p=toMap(e.clientX,e.clientY);
+    // Botón central del ratón: mover el mapa con cualquier herramienta
+    if(e.button===1){e.preventDefault();gesture={pan:true,sx:e.clientX,sy:e.clientY,vx:view.x,vy:view.y};return}
+    // Botón derecho dibujando una ruta: salto, el grupo aparece allí sin trazar camino
+    if(e.button===2){if(tool==="ruta"&&draft?.t==="ruta"){draft.pts.push([r1(p.x),r1(p.y),1]);drawDraft();hint()}pointers.delete(e.pointerId);return}
     if(X?.down?.(e,p,tool))return;
     const hit=e.target.closest?.("[data-id]");
     if(tool==="mover"){
@@ -208,7 +226,8 @@ function crearMapa(O){
   function finish(){
     if(!draft)return;const d=draft;draft=null;
     if(d.t==="ruta"){const g=data.grupos[d.g],sid=curSes();setTool("mover");if(!g||!sid||!d.pts.length)return;
-      const pts=d.pts.length>2?simplify(d.pts,k()*1.5):d.pts;g.rutas={...(g.rutas||{}),[sid]:pts};put("grupos",d.g,g);return}
+      const ch=[];d.pts.forEach((p,i)=>{if(!i||p[2])ch.push([]);ch[ch.length-1].push(p)});
+      const pts=ch.flatMap(c=>{const j=c[0][2];const r=c.length>2?simplify(c.map(p=>[p[0],p[1]]),k()*1.5):c.map(p=>[p[0],p[1]]);if(j)r[0]=[r[0][0],r[0][1],1];return r});g.rutas={...(g.rutas||{}),[sid]:pts};put("grupos",d.g,g);return}
     if((d.t==="line"&&d.pts.length<2)||(d.t==="area"&&d.pts.length<3)){draw();hint();return}
     const id=uid();put("items",id,{t:d.t,pts:d.pts,color:d.color,w:r1(d.w*k()),title:"",note:"",...base()});
     sel=id;draw();pop();hint();
@@ -222,7 +241,7 @@ function crearMapa(O){
   }
 
   /* ---------- Dibujo ---------- */
-  const pathD=pts=>pts.map((p,i)=>(i?"L":"M")+p[0]+" "+p[1]).join(" ");
+  const pathD=pts=>pts.map((p,i)=>(i&&!p[2]?"L":"M")+p[0]+" "+p[1]).join(" "); // p[2]=1: salto (la ruta se corta y sigue allí)
   const smoothD=pts=>{if(pts.length<3)return pathD(pts);let d=`M${pts[0][0]} ${pts[0][1]}`;
     for(let i=1;i<pts.length-1;i++){const mx=(pts[i][0]+pts[i+1][0])/2,my=(pts[i][1]+pts[i+1][1])/2;d+=` Q${pts[i][0]} ${pts[i][1]} ${mx} ${my}`}
     const l=pts[pts.length-1];return d+` L${l[0]} ${l[1]}`};
@@ -255,7 +274,7 @@ function crearMapa(O){
   function prevEnd(g,L,i){for(let j=i-1;j>=0;j--){const r=g.rutas?.[L[j][0]];if(r?.length)return r[r.length-1]}return null}
   function gPath(g,L,i){const pv=prevEnd(g,L,i),r=g.rutas?.[L[i][0]]||[];return pv?[pv,...r]:r.slice()}
   // Punto a una fracción f del recorrido, y el tramo ya hecho
-  function along(pts,f){const cum=[0];for(let i=1;i<pts.length;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  function along(pts,f){const cum=[0];for(let i=1;i<pts.length;i++)cum.push(cum[i-1]+(pts[i][2]?0:Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1])));
     const L=cum[cum.length-1],d=L*Math.min(1,Math.max(0,f));if(!L)return {pos:pts[pts.length-1],trail:pts.slice(0,1)};
     let i=1;while(i<cum.length-1&&cum[i]<d)i++;const s=(cum[i]-cum[i-1])||1,q=(d-cum[i-1])/s;
     const pos=[r1(pts[i-1][0]+(pts[i][0]-pts[i-1][0])*q),r1(pts[i-1][1]+(pts[i][1]-pts[i-1][1])*q)];return {pos,trail:[...pts.slice(0,i),pos]}}
@@ -296,7 +315,7 @@ function crearMapa(O){
     const h=el?.querySelector("#mhint");if(!h)return;
     const msg={pin:"Toca el mapa para poner un punto.",draw:"Arrastra para pintar.",line:"Toca para añadir puntos. Doble toque o Intro para terminar.",
       area:"Toca para marcar las esquinas de la zona. Doble toque o Intro para cerrar.",text:"Toca donde quieras escribir.",ruler:"Arrastra para medir.",
-      ruta:draft?.t==="ruta"?`Ruta de ${esc(data.grupos[draft.g]?.n||"el grupo")} en ${esc(data.sesiones[curSes()]?.n||"esta sesión")}: toca o arrastra por el camino. Un solo toque lo coloca. Doble toque o Intro para terminar.`:""}[tool];
+      ruta:draft?.t==="ruta"?`Ruta de ${esc(data.grupos[draft.g]?.n||"el grupo")} en ${esc(data.sesiones[curSes()]?.n||"esta sesión")}: toca o arrastra por el camino. Clic derecho: salto sin camino. Rueda pulsada: mover el mapa. Doble toque o Intro para terminar.`:""}[tool];
     const finishBtn=draft&&["line","area","ruta"].includes(draft.t)?`<button class="btn" data-finish>Terminar</button><button class="btn ghost" data-cancel-draft>Cancelar</button>`:"";
     h.innerHTML=msg?`<span>${msg}</span>${finishBtn}`:"";h.hidden=!msg;
   }
@@ -326,7 +345,7 @@ function crearMapa(O){
     box.hidden=false;
     const pos=i=>L.length===1?50:i/(L.length-1)*100,ci=curIdx(),cur=L[ci][1],mid=t<ci-1e-6;
     const act=data.conf.actual;
-    box.innerHTML=`<div class="mtrack" id="mtrack" tabindex="0" role="slider" aria-label="Sesión" aria-valuemin="0" aria-valuemax="${L.length-1}" aria-valuenow="${Math.round(t*100)/100}" aria-valuetext="${esc(cur.n)}">
+    box.innerHTML=`<button class="mtplay" data-tplay aria-label="${play?"Pausa":"Reproducir"}" title="${play?"Pausa":"Reproducir"}">${play?'<svg viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>':'<svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg>'}</button><div class="mtrack" id="mtrack" tabindex="0" role="slider" aria-label="Sesión" aria-valuemin="0" aria-valuemax="${L.length-1}" aria-valuenow="${Math.round(t*100)/100}" aria-valuetext="${esc(cur.n)}">
         <div class="mtbar"><div class="mtfill" style="width:calc((100% - 16px)*${pos(t)/100})"></div></div>
         ${L.map(([id,x],i)=>`<span class="mtnode${i<=t+1e-6?" on":""}${id===act?" act":""}${i===ci&&!mid?" cur":""}" style="left:${pos(i)}%" title="${esc(x.n)}"><small>${esc(String(x.num))}</small></span>`).join("")}
         <span class="mthandle" style="left:${pos(t)}%"></span></div>`;
