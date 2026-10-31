@@ -164,6 +164,21 @@
   },
   {
     "category": "armas",
+    "id": "anillos",
+    "img": "img/equipo/armas/anillos-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "runas",
+    "img": "img/equipo/armas/runas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hoja-retornante",
+    "img": "img/equipo/armas/hoja-retornante-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
