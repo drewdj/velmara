@@ -178,6 +178,9 @@ const A={
     else{if(Object.keys(me.propios).length>=40)no("Demasiados objetos propios.");
       me.propios[pid]={n:x.n,tipo:ref[0]==="a"?"arm":x.g==="sec"?"sec":"pri",...(ref[0]==="w"&&x.h===2?{h:2}:{}),q:1,base:ref,d:""}}
     aviso(st,pj,`${PJ[pj]?.n||pj} se ha añadido «${x.n}» del Compendio.`);log(st,`${PJ[pj]?.n||pj} se añade ${x.n}.`);return st},
+  // Acceso rápido del inventario: objetos fijados para ver su carta de un vistazo
+  rapido(st,pj,ref,on){need(st);const me=st.pjs[pj],L=(me.rap||[]).filter(r=>r!==ref);
+    if(on){if(L.length>=8)no("Ya tienes 8 cosas en el acceso rápido.");L.push(ref)}me.rap=L;return st},
   propioNuevo(st,pj,id,obj){need(st);A.propio(st,pj,id,obj);aviso(st,pj,`${PJ[pj]?.n||pj} ha creado un objeto propio: «${obj.n}» (${({obj:"objeto",cons:"consumible",pri:"arma principal",sec:"arma secundaria",arm:"armadura"})[obj.tipo]||"objeto"}).`);return st},
   propio(st,pj,id,obj){need(st);const me=st.pjs[pj];
     if(obj===null){["arma","sec","armadura"].forEach(k=>{if(me[k]==="p:"+id)me[k]=null});if(me.propios[id])log(st,`${PJ[pj]?.n||pj} tira «${me.propios[id].n}».`);delete me.propios[id];return st}

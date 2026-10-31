@@ -24,7 +24,7 @@ const Store={
     delete st.stock;for(const k in st.pjs)delete st.pjs[k].vales;
     st.pagos=st.pagos||{};
     if(typeof fillShop==="function")for(const t of TIENDAS)fillShop(st,t,false);
-    for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.bolsa=Array.isArray(p.bolsa)?p.bolsa:Object.values(p.bolsa||{});p.propios=p.propios||{}}
+    for(const k in st.pjs){const p=st.pjs[k];p.inv=p.inv||{};p.arma=p.arma??null;p.sec=p.sec??null;p.armadura=p.armadura??null;p.bolsa=Array.isArray(p.bolsa)?p.bolsa:Object.values(p.bolsa||{});p.propios=p.propios||{};p.rap=Array.isArray(p.rap)?p.rap:Object.values(p.rap||{})}
     for(const k in st.botes){const b=st.botes[k];b.aportes=b.aportes||{};b.tienda=b.tienda||"tres-agujas";b.ref=b.ref||"o:"+b.item;if(b.p==null)b.p=ITEM[b.item]?price(ITEM[b.item]):1}
     // Hojas de personaje: lo que falte (o Firebase haya borrado por vacío) vuelve a su valor inicial
     if(typeof hojaInicial==="function"){
