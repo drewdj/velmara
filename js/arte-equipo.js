@@ -33,6 +33,31 @@
     "img": "img/equipo/armaduras/brigantina-v1.jpg"
   },
   {
+    "category": "armaduras",
+    "id": "escamas",
+    "img": "img/equipo/armaduras/escamas-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "bandas",
+    "img": "img/equipo/armaduras/bandas-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "elundria",
+    "img": "img/equipo/armaduras/elundria-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "hueso-harrow",
+    "img": "img/equipo/armaduras/hueso-harrow-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "peto-hierrarbol",
+    "img": "img/equipo/armaduras/peto-hierrarbol-v1.jpg"
+  },
+  {
     "category": "armas",
     "id": "espada-ancha",
     "img": "img/equipo/armas/espada-ancha-v1.jpg"
@@ -221,6 +246,81 @@
     "category": "armas",
     "id": "martillo-exota",
     "img": "img/equipo/armas/martillo-exota-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "arco-yutari",
+    "img": "img/equipo/armas/arco-yutari-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "arco-anciano",
+    "img": "img/equipo/armas/arco-anciano-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "cetro-elias",
+    "img": "img/equipo/armas/cetro-elias-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "varita-embeleso",
+    "img": "img/equipo/armas/varita-embeleso-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "baston-guardian",
+    "img": "img/equipo/armas/baston-guardian-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "espada-corta",
+    "img": "img/equipo/armas/espada-corta-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "escudo-redondo",
+    "img": "img/equipo/armas/escudo-redondo-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "escudo-torre",
+    "img": "img/equipo/armas/escudo-torre-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "daga-pequena",
+    "img": "img/equipo/armas/daga-pequena-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "latigo",
+    "img": "img/equipo/armas/latigo-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "garfio-agarre",
+    "img": "img/equipo/armas/garfio-agarre-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "ballesta-mano",
+    "img": "img/equipo/armas/ballesta-mano-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "escudo-pinchos",
+    "img": "img/equipo/armas/escudo-pinchos-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "daga-parada",
+    "img": "img/equipo/armas/daga-parada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hacha-retornante",
+    "img": "img/equipo/armas/hacha-retornante-v1.jpg"
   }
 ];
   const collections = {armas: WEAPONS, armaduras: ARMORS, objetos: ITEMS};
