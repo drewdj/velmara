@@ -994,25 +994,25 @@ nav.main .gi{display:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=69"></script>
-<script src="js/datos.js?v=69"></script>
-<script src="js/dominios.js?v=69"></script>
-<script src="js/reglas.js?v=69"></script>
-<script src="js/store.js?v=69"></script>
-<script src="js/creacion.js?v=69"></script>
-<script src="js/chatarra.js?v=69"></script>
-<script src="js/dom-iconos.js?v=69"></script>
-<script src="js/cartas.js?v=69"></script>
+<script src="js/firebase-config.js?v=70"></script>
+<script src="js/datos.js?v=70"></script>
+<script src="js/dominios.js?v=70"></script>
+<script src="js/reglas.js?v=70"></script>
+<script src="js/store.js?v=70"></script>
+<script src="js/creacion.js?v=70"></script>
+<script src="js/chatarra.js?v=70"></script>
+<script src="js/dom-iconos.js?v=70"></script>
+<script src="js/cartas.js?v=70"></script>
 <script src="js/arte-equipo.js?v=4"></script>
-<script src="js/mapa.js?v=69"></script>
-<script src="js/contenido.js?v=69"></script>
-<script src="js/saber.js?v=69"></script>
-<script src="js/mundo.js?v=69"></script>
-<script src="js/libro.js?v=69"></script>
-<script src="js/recorte.js?v=69"></script>
-<script src="js/adversarios.js?v=69"></script>
-<script src="js/adv-res.js?v=69"></script>
-<script src="js/encuentros.js?v=69"></script>
+<script src="js/mapa.js?v=70"></script>
+<script src="js/contenido.js?v=70"></script>
+<script src="js/saber.js?v=70"></script>
+<script src="js/mundo.js?v=70"></script>
+<script src="js/libro.js?v=70"></script>
+<script src="js/recorte.js?v=70"></script>
+<script src="js/adversarios.js?v=70"></script>
+<script src="js/adv-res.js?v=70"></script>
+<script src="js/encuentros.js?v=70"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1864,21 +1864,24 @@ function chEnHoja(st){const H=Object.values(st.chatarra?.hechos||{}).filter(x=>x
 const chMeta=r=>{const e=chEfTxt(r.ef);return e||r.pre?`<p class="note">${e?`En la hoja: <b>${esc(e)}</b>`:""}${e&&r.pre?" · ":""}${r.pre?`Pide tier ${r.pre}`:""}</p>`:""};
 // Piezas del almacén común y botín de combate: van en el Inventario
 function chPiezas(st){const P=st.chatarra?.p||{};
-  const piezas=CHATARRA.map(g=>`<section class="block deco"><span class="tab-label">${g.n}${g.dado?` · d${g.dado}`:""}</span>${g.dado?"":`<p class="note">Botín especial de los remanentes importantes. Vale 20 quantum.</p>`}<div class="chps">${g.p.map(([k,n])=>`<div class="chp${P[k]?"":" cero"}"><span class="chn">${n}</span><b class="num">${P[k]||0}</b>
-     <span class="chbs"><button class="chb" data-chp="${k}" data-d="-1" ${dis(!P[k])} aria-label="Gastar un ${n}">−</button><button class="chb" data-chp="${k}" data-d="1" ${dis()} aria-label="Añadir un ${n}">+</button></span></div>`).join("")}</div></section>`).join("");
-  return `<section class="block chinv"><header><span class="tab-label">Chatarra del grupo</span><p class="note">Almacén común: si alguien gasta piezas, desaparecen para todos. Con ellas se fabrica en Crafteo.</p></header>
-   <div class="chgrid">${piezas}</div><section class="block deco"><span class="tab-label">Botín de un combate</span><p class="note">El DM dice cuántos dados de cada tipo hay que tirar. Cada dado es una pieza y va al almacén común.</p>
-    <div class="chtir">${CHATARRA.filter(g=>g.dado).map(g=>`<label class="field"><span class="lab">${g.n} (d${g.dado})</span><input type="number" id="cht-${g.k}" min="0" max="30" value="0" inputmode="numeric"></label>`).join("")}<button class="btn" data-chtirar ${dis()}>Tirar y guardar</button></div></section></section>`}
+  const piezas=CHATARRA.map(g=>`<section class="block deco"><span class="tab-label">${g.n}${g.dado?` · d${g.dado}`:""}</span><div class="chps">${g.p.map(([k,n])=>`<div class="chp${P[k]?"":" cero"}"><span class="chn">${n}</span><b class="num">${P[k]||0}</b>
+     ${ui.canDM?`<span class="chbs"><button class="chb" data-chp="${k}" data-d="-1" ${dis(!P[k])} aria-label="Gastar un ${n}">−</button><button class="chb" data-chp="${k}" data-d="1" ${dis()} aria-label="Añadir un ${n}">+</button></span>`:""}</div>`).join("")}</div></section>`).join("");
+  return `<section class="block chinv"><header><span class="tab-label">Chatarra del grupo</span></header>
+   <div class="chgrid">${piezas}</div></section>`}
+// Botín de un combate (solo DM): en Partida y en Encuentros. Cada dado es una pieza para el almacén común.
+function chBotin(){if(!ui.canDM)return "";
+  return `<section class="block deco chbotin"><span class="tab-label">Botín de combate</span><p class="note">Dados de chatarra a tirar; cada dado es una pieza para el almacén del grupo.</p>
+    <div class="chtir">${CHATARRA.filter(g=>g.dado).map(g=>`<label class="field"><span class="lab">${g.n} (d${g.dado})</span><input type="number" id="cht-${g.k}" min="0" max="30" value="0" inputmode="numeric"></label>`).join("")}<button class="btn" data-chtirar ${dis()}>Tirar y guardar</button></div></section>`}
 // Crafteo: recetas de chatarra (aumentos y artilugios), lo fabricado y las recetas de pociones del PJ
 function viewCrafteo(st){
   const c=st.chatarra||{},P=c.p||{},R=chRecetas(st),H=Object.entries(c.hechos||{}).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
-  const me=ui.me&&!PJ[ui.me]?.prueba?ui.me:null,h=me?st.hojas[me]:null,usadas=me?H.filter(([,x])=>x.pj===me&&x.tipo==="aumento").length:0;
+  const me=ui.me&&st.hojas[ui.me]&&st.pjs[ui.me]?ui.me:null,h=me?st.hojas[me]:null,usadas=me?H.filter(([,x])=>x.pj===me&&x.tipo==="aumento").length:0;
   const quien=x=>x.pj?(x.pj===ui.me?"Lo llevas tú":`Lo lleva ${esc(PJ[x.pj]?.n||"otro PJ")}`):"En el almacén";
   const coste=r=>`<span class="chcost">${Object.entries(r.coste||{}).map(([k,n])=>{const f=(P[k]||0)<n;return `<span class="chc${f?" falta":""}" title="Hay ${P[k]||0}">${n} ${esc(PIEZA[k]?.n||k)}</span>`}).join("")}</span>`;
   const RL=Object.entries(R),nOk=RL.filter(([,r])=>!chFalta(st,r.coste).length).length;
   const recetas=RL.filter(([,r])=>ui.chtodas||!chFalta(st,r.coste).length).sort((a,b)=>(a[1].tipo>b[1].tipo?-1:a[1].tipo<b[1].tipo?1:0)||(a[1].pre||1)-(b[1].pre||1)||a[1].n.localeCompare(b[1].n,"es")).map(([id,r])=>{const f=chFalta(st,r.coste).length;
     return `<div class="chrec deco"><header><b>${esc(r.n)}${r.en?` <small class="note">(${esc(r.en)})</small>`:""}</b><span class="state ${r.tipo==="aumento"?"open":"shut"}">${r.tipo==="aumento"?"Aumento":"Artilugio"}</span></header>${r.t?`<p>${esc(r.t)}</p>`:""}${chMeta(r)}${coste(r)}
-      <div class="btns"><button class="btn" data-chfab="${id}" ${dis(!!f)}>Fabricar</button><button class="btn ghost" data-chredit="${id}">Editar</button>${ui.canDM?`<button class="btn warn" data-chrdel="${id}" ${dis()}>${ui.chconf==="r:"+id?"¿Seguro?":"Borrar"}</button>`:""}</div></div>`}).join("")||`<p class="empty">${RL.length?"Con las piezas del almacén no se puede fabricar ninguna. Pulsa «Ver todas» para ver lo que falta.":"Ninguna receta todavía."}</p>`;
+      <div class="btns"><button class="btn" data-chfab="${id}" ${dis(!!f)}>Fabricar</button>${ui.canDM?`<button class="btn ghost" data-chredit="${id}">Editar</button>`:""}${ui.canDM?`<button class="btn warn" data-chrdel="${id}" ${dis()}>${ui.chconf==="r:"+id?"¿Seguro?":"Borrar"}</button>`:""}</div></div>`}).join("")||`<p class="empty">No hay recetas disponibles.</p>`;
   const e0=ui.chnew===true?{n:"",tipo:"aumento",t:"",coste:{},ef:{}}:R[ui.chnew]||{n:"",tipo:"aumento",t:"",coste:{},ef:{}},Dr=ui.chdraft||{};
   const ed=ui.chnew?{...e0,...Dr,coste:{...e0.coste,...(Dr.coste||{})},ef:{...(e0.ef||{}),...(Dr.ef||{})}}:null; // lo escrito sobrevive a los redibujados
   const form=ed?`<div class="chrec deco chform"><header><b>${ui.chnew===true?"Receta nueva":"Editar receta"}</b></header>
@@ -1895,17 +1898,16 @@ function viewCrafteo(st){
       x.tipo==="artilugio"&&(mio||libre)?`<button class="btn warn" data-chgas="${id}" ${dis()}>${ui.chconf===id?"¿Usarlo? Se gasta":"Usar"}</button>`:"",
       ui.canDM||mio||libre?(x.tipo==="aumento"?`<button class="btn warn" data-chgas="${id}" ${dis()}>${ui.chconf===id?"¿Seguro? Se pierde":"Desmontar"}</button>`:""):""].join("");
     return `<div class="chrec deco${mio?" mio":""}"><header><b>${esc(x.n)}</b><span class="state ${x.tipo==="aumento"?"open":"shut"}">${x.tipo==="aumento"?"Aumento":"Artilugio"}</span></header>
-      <p class="note">${quien(x)}${x.por&&PJ[x.por]?` · lo fabricó ${esc(PJ[x.por].n)}`:""}</p>${x.t?`<p>${esc(x.t)}</p>`:""}${R[x.rec]?chMeta(R[x.rec]):""}${b?`<div class="btns">${b}</div>`:""}</div>`}).join("")||`<p class="empty">Aún no habéis fabricado nada.</p>`;
+      <p class="note">${quien(x)}${x.por&&PJ[x.por]?` · lo fabricó ${esc(PJ[x.por].n)}`:""}</p>${x.t?`<p>${esc(x.t)}</p>`:""}${R[x.rec]?chMeta(R[x.rec]):""}${b?`<div class="btns">${b}</div>`:""}</div>`}).join("");
   // Recetas de pociones del grupo: la que tenga cualquier PJ la ven y la usan todos
   const inv=me?st.pjs[me].inv:{},RP=[...new Set(Object.values(st.pjs).flatMap(x=>Object.keys(x.inv||{})))].map(id=>ITEM[id]).filter(x=>x&&x.k==="rec").sort((a,b)=>a.n.localeCompare(b.n,"es"));
-  const pociones=me?`<section class="block"><header><span class="tab-label">Pociones y preparados</span><p class="note">Las recetas del grupo: en cuanto alguien consigue una, la tenéis todos. Preparar una gasta los ingredientes que diga (eso lo lleváis en mesa).</p></header>
+  const pociones=me&&RP.length?`<section class="block"><header><span class="tab-label">Pociones</span></header>
     <div class="chlist">${RP.map(r=>{const it=ITEM[r.mk],n=inv[it?.id]||0;return `<div class="chrec deco"><header><b>${esc(cap(it?.n||r.n.replace("Receta: ","")))}</b><span class="state shut">Poción</span></header>${it?.t?`<p>${esc(it.t)}</p>`:""}
-      <p class="note">Ingredientes: ${esc(r.ing||"—")}</p><p class="note">Llevas ${n} de ${MAX_CONS}.</p><div class="btns"><button class="btn" data-brew="${r.id}" ${dis(n>=MAX_CONS)}>Preparar</button></div></div>`}).join("")||`<p class="empty">El grupo no tiene ninguna receta de poción. Se consiguen en las tiendas o como botín.</p>`}</div></section>`:"";
+      <p class="note">Ingredientes: ${esc(r.ing||"—")}</p><p class="note">Llevas ${n} de ${MAX_CONS}.</p><div class="btns"><button class="btn" data-brew="${r.id}" ${dis(n>=MAX_CONS)}>Preparar</button></div></div>`}).join("")}</div></section>`:"";
   const npz=Object.values(P).reduce((a,b)=>a+b,0);
-  return `<div class="chhead"><p class="note">Fabrica con la chatarra del grupo (${npz} pieza${npz===1?"":"s"} en el almacén; se ven en el Inventario) y prepara tus pociones.${me?` Tus ranuras de aumento: <b>${usadas} de ${chRanuras(h)}</b> (2 en tier 1 y una más por tier).`:""}</p></div>
-   ${pociones}
-   <section class="block"><header><span class="tab-label">Fabricado con chatarra</span></header><div class="chlist">${hechos}</div></section>
-   <section class="block"><header><span class="tab-label">Recetas de chatarra</span><p class="note">${ui.chtodas?`Todas las recetas (${RL.length}).`:`Las que podéis fabricar ahora (${nOk} de ${RL.length}).`}</p><button class="btn ghost" data-chtodas>${ui.chtodas?"Solo las que puedo fabricar":`Ver todas (${RL.length})`}</button>${ui.chnew?"":`<button class="btn ghost" data-chnew="1">+ Receta nueva</button>`}</header>${form}<div class="chlist">${recetas}</div></section>`;
+  return `${pociones}
+   ${hechos?`<section class="block"><span class="tab-label">Fabricado</span><div class="chlist">${hechos}</div></section>`:""}
+   <section class="block"><header><span class="tab-label">Recetas de chatarra</span>${RL.length?`<button class="btn ghost" data-chtodas>${ui.chtodas?"Solo las disponibles":"Ver todas"}</button>`:""}${ui.canDM&&!ui.chnew?`<button class="btn ghost" data-chnew="1">+ Receta nueva</button>`:""}</header>${form}<div class="chlist">${recetas}</div></section>`;
 }
 
 /* ---------- Mesa del DM: Compendio (crear y editar todo) y Partida ---------- */
@@ -1930,6 +1932,7 @@ function dmPartida(st){
       <span class="state ${h.nivel<nv?"shut":"open"}">${h.nivel<nv?`Le falta subir a ${nv}`:"Al día"}</span><span class="btns"><button class="btn ghost" data-verpj="${p.id}">Ver hoja</button><button class="btn warn" data-pjborrar="${p.id}" ${dis()}>${ui.pjborrar===p.id?"¿Seguro? Pulsa otra vez":"Borrar"}</button></span></div>`}).join("")||`<p class="note">Aún no se ha creado ningún personaje.</p>`}</div>
     <p class="note">Borrar quita al personaje con su hoja, su inventario y sus puntos de tienda; lo que llevara de la armería vuelve a la tienda. No se puede deshacer.</p></section>
    ${dmRegistro(st)}
+   ${chBotin()}
    <section class="block deco"><header><h2>Chatarra</h2></header><p class="note">Almacén común del grupo: ${Object.values(st.chatarra?.p||{}).reduce((a,b)=>a+b,0)} piezas y ${Object.keys(st.chatarra?.hechos||{}).length} cosas fabricadas.</p>
     <div class="btns"><button class="btn warn" data-chvaciar="0" ${dis()}>${ui.chconf==="vac0"?"¿Seguro? Pulsa otra vez":"Vaciar las piezas"}</button><button class="btn warn" data-chvaciar="1" ${dis()}>${ui.chconf==="vac1"?"¿Seguro? Pulsa otra vez":"Vaciar piezas y lo fabricado"}</button></div></section>
    <section class="block deco"><header><h2>Notas del vault</h2></header>
@@ -2230,7 +2233,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=69")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=70")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){

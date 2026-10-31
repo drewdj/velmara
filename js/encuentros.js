@@ -74,7 +74,7 @@ const Enc={
   view(st){
     const t=ui.encTab==="combate"?"combate":"preparar",C=Saber.enc.combate;
     return `<nav class="subtabs enct" role="tablist"><button role="tab" data-enctab="preparar" aria-selected="${t==="preparar"}">Preparar</button><button role="tab" data-enctab="combate" aria-selected="${t==="combate"}">Combate${C?" · en curso":""}</button></nav>`
-      +(t==="combate"?this.combate(st):this.preparar(st));
+      +(t==="combate"?this.combate(st)+(typeof chBotin==="function"?chBotin():""):this.preparar(st));
   },
   preparar(st){
     const D=this.draft(),c=this.calc(st),q=(ui.encQ||"").toLowerCase(),ft=ui.encFT||"",fty=ui.encFTy||"";
