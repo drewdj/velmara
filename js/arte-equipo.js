@@ -194,8 +194,33 @@
   },
   {
     "category": "armas",
+    "id": "varita",
+    "img": "img/equipo/armas/varita-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hoja-ego",
+    "img": "img/equipo/armas/hoja-ego-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "espada-lanzamiento",
+    "img": "img/equipo/armas/espada-lanzamiento-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "daga-devoradora",
+    "img": "img/equipo/armas/daga-devoradora-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "martillo-exota",
+    "img": "img/equipo/armas/martillo-exota-v1.jpg"
   }
 ];
   const collections = {armas: WEAPONS, armaduras: ARMORS, objetos: ITEMS};
