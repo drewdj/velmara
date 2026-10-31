@@ -172,6 +172,14 @@ const A={
     if(slot==="arma"&&g.h===2&&me.sec){const s2=me.sec;me.sec=null;stash(s2)}
     return st;
   },
+  // Tirar algo de la mochila (todas sus unidades); se avisa al DM
+  tirar(st,pj,ref){need(st);const me=st.pjs[pj];let n;
+    if(ref.startsWith("i:")){const id=ref.slice(2);if(!me.inv[id])no("No lo tienes.");n=ITEM[id]?.n||id;delete me.inv[id]}
+    else if(ref.startsWith("p:")){const o=me.propios[ref.slice(2)];if(!o)no("No lo tienes.");n=o.n;
+      ["arma","sec","armadura"].forEach(k=>{if(me[k]===ref)me[k]=null});delete me.propios[ref.slice(2)]}
+    else{const g=gearInfo(st,pj,ref);if(!g)no("No lo tienes.");n=g.n;["arma","sec","armadura"].forEach(k=>{if(me[k]===ref)me[k]=null});me.bolsa=me.bolsa.filter(x=>x!==ref)}
+    me.rap=(me.rap||[]).filter(r=>r!==ref);
+    log(st,`${PJ[pj]?.n||pj} tira ${n}.`);aviso(st,pj,`${PJ[pj]?.n||pj} ha tirado «${n}».`);return st},
   // Añadir a la mochila algo del Compendio (ref "o:", "w:" o "a:"); se avisa al DM
   anadir(st,pj,ref,pid){need(st);const me=st.pjs[pj],x=refX(ref);if(!x)no("Eso ya no está en el Compendio.");
     if(ref[0]==="o"){checkCanReceive(st,pj,x);me.inv[x.id]=(me.inv[x.id]||0)+1}
