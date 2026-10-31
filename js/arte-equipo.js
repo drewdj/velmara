@@ -58,6 +58,106 @@
     "img": "img/equipo/armaduras/peto-hierrarbol-v1.jpg"
   },
   {
+    "category": "armaduras",
+    "id": "runetan-flotante",
+    "img": "img/equipo/armaduras/runetan-flotante-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "tyris-blanda",
+    "img": "img/equipo/armaduras/tyris-blanda-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "rosasalvaje",
+    "img": "img/equipo/armaduras/rosasalvaje-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "tunica-encantador",
+    "img": "img/equipo/armaduras/tunica-encantador-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "manto-halcon",
+    "img": "img/equipo/armaduras/manto-halcon-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "tunica-araña",
+    "img": "img/equipo/armaduras/tunica-araña-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "habito-tormenta",
+    "img": "img/equipo/armaduras/habito-tormenta-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "tablillas-raromadera",
+    "img": "img/equipo/armaduras/tablillas-raromadera-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "coraza-trol",
+    "img": "img/equipo/armaduras/coraza-trol-v1.jpg"
+  },
+  {
+    "category": "armaduras",
+    "id": "placas-sol",
+    "img": "img/equipo/armaduras/placas-sol-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "p-men-salud",
+    "img": "img/equipo/objetos/p-men-salud-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "p-men-res",
+    "img": "img/equipo/objetos/p-men-res-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "p-atributo",
+    "img": "img/equipo/objetos/p-atributo-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "veneno-grindle",
+    "img": "img/equipo/objetos/veneno-grindle-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "hojas-varik",
+    "img": "img/equipo/objetos/hojas-varik-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "gota-lunar",
+    "img": "img/equipo/objetos/gota-lunar-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "frag-inestable",
+    "img": "img/equipo/objetos/frag-inestable-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "vela-protectora",
+    "img": "img/equipo/objetos/vela-protectora-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "pastilla-lira",
+    "img": "img/equipo/objetos/pastilla-lira-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "hierba-pipa",
+    "img": "img/equipo/objetos/hierba-pipa-v1.jpg"
+  },
+  {
     "category": "armas",
     "id": "espada-ancha",
     "img": "img/equipo/armas/espada-ancha-v1.jpg"
