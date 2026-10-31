@@ -179,6 +179,21 @@
   },
   {
     "category": "armas",
+    "id": "baston-corto",
+    "img": "img/equipo/armas/baston-corto-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "baston-doble",
+    "img": "img/equipo/armas/baston-doble-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "cetro",
+    "img": "img/equipo/armas/cetro-v1.jpg"
+  },
+  {
+    "category": "armas",
     "id": "gran-baston",
     "img": "img/equipo/armas/gran-baston-v1.jpg"
   }
