@@ -327,10 +327,9 @@ function crearMapa(O){
     const pos=i=>L.length===1?50:i/(L.length-1)*100,ci=curIdx(),cur=L[ci][1],mid=t<ci-1e-6;
     const act=data.conf.actual;
     box.innerHTML=`<div class="mtrack" id="mtrack" tabindex="0" role="slider" aria-label="Sesión" aria-valuemin="0" aria-valuemax="${L.length-1}" aria-valuenow="${Math.round(t*100)/100}" aria-valuetext="${esc(cur.n)}">
-        <div class="mtline"></div><div class="mtfill" style="width:${pos(t)}%"></div>
-        ${L.map(([id,x],i)=>`<span class="mtnode${i<=t+1e-6?" on":""}${id===act?" act":""}" style="left:${pos(i)}%" title="${esc(x.n)}"><i></i><small>${esc(String(x.num))}</small></span>`).join("")}
-        <span class="mthandle" style="left:${pos(t)}%"></span></div>
-      <div class="mtinfo"><b>${mid?"Durante la ":""}${esc(cur.n)}</b>${c===act&&!mid?`<span class="mtnow">Sesión actual</span>`:""}${ctx.sesTitulo?.(c)?`<p>${esc(ctx.sesTitulo(c))}</p>`:""}${ctx.goSesion?`<button class="btn ghost mtread" data-leerses="${c}">Leer la sesión</button>`:""}</div>`;
+        <div class="mtbar"><div class="mtfill" style="width:calc((100% - 16px)*${pos(t)/100})"></div></div>
+        ${L.map(([id,x],i)=>`<span class="mtnode${i<=t+1e-6?" on":""}${id===act?" act":""}${i===ci&&!mid?" cur":""}" style="left:${pos(i)}%" title="${esc(x.n)}"><small>${esc(String(x.num))}</small></span>`).join("")}
+        <span class="mthandle" style="left:${pos(t)}%"></span></div>`;
   }
   // Ajustes del DM: sesiones y escala. Van debajo para no molestar.
   function settings(){
