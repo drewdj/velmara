@@ -804,6 +804,8 @@ details.feats[open] summary::after{content:"▴"}
 .iadd input,.iadd select,.iadd textarea{max-width:100%;min-width:0;box-sizing:border-box;width:100%}.iadd .padd select{width:auto}.iarow .btn{flex:none}.iadd .padd .lab,.iadd .padd textarea{grid-column:1/-1}
 .baghead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.baghead .btn{margin-left:auto}
 .dgive{display:inline-flex;gap:6px;align-items:center}.dgive select{font-size:.9rem;padding:4px 6px}
+.btn.icon{min-width:42px;padding-left:10px;padding-right:10px;font-size:1.1rem}.btn.icon[aria-pressed="true"]{border-color:var(--gold);color:var(--gold-hi)}
+.invdet .btns{justify-content:center}
 .pedit{border-top:1px solid var(--line);padding-top:8px}.pedit summary{cursor:pointer;color:var(--gold-hi)}.pedit .fields,.pedit .field{margin-top:8px}
 .chhead{margin:4px 0 14px}
 .dmlog,.dmav{max-height:360px;overflow:auto;margin:6px 0 12px}.dmlog time,.dmav time{width:auto;min-width:96px}.dmav li{border-left:3px solid var(--gold);padding-left:8px}
@@ -997,25 +999,25 @@ nav.main .gi{display:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="js/firebase-config.js?v=74"></script>
-<script src="js/datos.js?v=74"></script>
-<script src="js/dominios.js?v=74"></script>
-<script src="js/reglas.js?v=74"></script>
-<script src="js/store.js?v=74"></script>
-<script src="js/creacion.js?v=74"></script>
-<script src="js/chatarra.js?v=74"></script>
-<script src="js/dom-iconos.js?v=74"></script>
-<script src="js/cartas.js?v=74"></script>
+<script src="js/firebase-config.js?v=75"></script>
+<script src="js/datos.js?v=75"></script>
+<script src="js/dominios.js?v=75"></script>
+<script src="js/reglas.js?v=75"></script>
+<script src="js/store.js?v=75"></script>
+<script src="js/creacion.js?v=75"></script>
+<script src="js/chatarra.js?v=75"></script>
+<script src="js/dom-iconos.js?v=75"></script>
+<script src="js/cartas.js?v=75"></script>
 <script src="js/arte-equipo.js?v=11"></script>
-<script src="js/mapa.js?v=74"></script>
-<script src="js/contenido.js?v=74"></script>
-<script src="js/saber.js?v=74"></script>
-<script src="js/mundo.js?v=74"></script>
-<script src="js/libro.js?v=74"></script>
-<script src="js/recorte.js?v=74"></script>
-<script src="js/adversarios.js?v=74"></script>
-<script src="js/adv-res.js?v=74"></script>
-<script src="js/encuentros.js?v=74"></script>
+<script src="js/mapa.js?v=75"></script>
+<script src="js/contenido.js?v=75"></script>
+<script src="js/saber.js?v=75"></script>
+<script src="js/mundo.js?v=75"></script>
+<script src="js/libro.js?v=75"></script>
+<script src="js/recorte.js?v=75"></script>
+<script src="js/adversarios.js?v=75"></script>
+<script src="js/adv-res.js?v=75"></script>
+<script src="js/encuentros.js?v=75"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1430,7 +1432,7 @@ function viewPersonaje(st){
     ...(m&&CLASES[m.clase]?[fcClase(m.clase,{multi:true,dom:m.dom,sub:`Desde nivel ${m.l}`}),SUB[m.sub]&&fcSub(m.sub,{multi:true,dom:m.dom,sub:"Base"})]:[]),
     ASC[h.asc1]&&fcAsc(h.asc1,h.asc2,{n:nombreAsc(h)}),
     COM[h.com]&&fcCom(h.com)].filter(Boolean);
-  const rasgosT=`<div class="cards featcards">${cartasR.map(x=>`<div class="slotcard">${x}</div>`).join("")}</div><p class="note">Toca una carta para leerla entera.</p>`;
+  const rasgosT=`<div class="cards featcards">${cartasR.map(x=>`<div class="slotcard">${x}</div>`).join("")}</div>`;
   return `<div class="sheet">${top}
    <section class="stats sheetpanel">
     <div class="traits">${RASGOS.map(([r,n])=>`<div class="trait${r===k.sc?" sc":""}"${r===k.sc?' title="Rasgo de lanzamiento"':""}><span class="tl${n.length>10?" lg":""}">${n}</span><span class="val num">${sgn(k.r[r])}</span>${r===k.sc?`<svg class="scic" viewBox="0 0 24 24" aria-label="Rasgo de lanzamiento"><path d="M12 1.5 14.2 9.8 22.5 12 14.2 14.2 12 22.5 9.8 14.2 1.5 12 9.8 9.8Z"/><path d="M19.5 2.5 20.3 4.7 22.5 5.5 20.3 6.3 19.5 8.5 18.7 6.3 16.5 5.5 18.7 4.7Z"/></svg>`:""}</div>`).join("")}</div>
@@ -1448,7 +1450,7 @@ function viewPersonaje(st){
     ${k.ataques.length?`<div class="atks">${k.ataques.map(a=>`<div class="atk"><b>${esc(a.n)}</b><span class="dmg num">${a.dmg} <small>${a.tipo}</small></span><span class="am">${esc(a.rasgo)} ${sgn(a.mod)} · ${esc(a.alc)}</span></div>`).join("")}</div>`:`<p class="empty">Sin arma equipada.</p>`}
     <span class="tab-label xpl">Experiencias</span>${exps.length?`<div class="xps">${exps.map(e=>`<span class="xp">${esc(e.n)} <b class="num">+${e.b}</b></span>`).join("")}</div>`:`<p class="empty">Ninguna todavía. Añádelas en Editar.</p>`}</section>
    </div>
-   <details class="block deco feats" ${ui.featsOpen!==false?"open":""}><summary><span class="tab-label">Rasgos</span><span class="note">Clase, subclase, ascendencia y comunidad</span></summary>${rasgosT}</details>
+   <details class="block deco feats" ${ui.featsOpen!==false?"open":""}><summary><span class="tab-label">Rasgos</span></summary>${rasgosT}</details>
    ${h.sub==="bestia"?compHoja(st,h,p):""}
    ${chEnHoja(st)}
    ${MOVIL.matches?manoMovil(h):manoEscritorio(h)}
@@ -1457,10 +1459,10 @@ function viewPersonaje(st){
   </div>`;
 }
 function manoEscritorio(h){return `<div class="handgrid">
-   <section class="block"><header><span class="tab-label">En la mano</span><p>${h.cartas.length} de 5. Arrastra una carta al baúl para guardarla; tócala para leerla entera.</p></header>
-    <div class="cards cdrop" data-drop="uso">${h.cartas.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="uso">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Ninguna carta en la mano. Arrastra aquí una del baúl.</p>`}</div></section>
-   <section class="block baul"><header><span class="tab-label">Baúl</span><p>Pasarla a la mano cuesta su recuperación en Estrés (salvo en un descanso).</p></header>
-    <div class="cards cdrop small" data-drop="baul">${h.baul.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="baul">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Vacío. Arrastra aquí una carta de la mano.</p>`}</div></section>
+   <section class="block"><header class="baghead"><span class="tab-label">En la mano</span><span class="pips" title="${h.cartas.length} de 5">${Array.from({length:5},(_,i)=>`<i class="${i<h.cartas.length?"on":""}"></i>`).join("")}</span></header>
+    <div class="cards cdrop" data-drop="uso">${h.cartas.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="uso">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Vacío.</p>`}</div></section>
+   <section class="block baul"><header><span class="tab-label">Baúl</span></header>
+    <div class="cards cdrop small" data-drop="baul">${h.baul.map(id=>CARTA[id]?`<div class="slotcard" data-cdrag="${id}" data-where="baul">${domainCard(CARTA[id])}</div>`:"").join("")||`<p class="empty">Vacío.</p>`}</div></section>
    </div>`}
 // En el móvil, como en Lugares: las cartas en pequeño (mano y baúl) y la elegida en grande, entera
 const MOVIL=matchMedia("(max-width:760px)");
@@ -1469,13 +1471,13 @@ function manoMovil(h){const all=[...h.cartas,...h.baul].filter(id=>CARTA[id]);
   const mini=(id,w)=>{const c=CARTA[id],D=DOMINIOS[c.d],a=arteDom(id);
     return `<button class="dcmini${id===cur?" sel":""}" data-dsel="${id}" data-cdrag="${id}" data-where="${w}" aria-pressed="${id===cur}" style="--dom:${D.c}">
      <span class="dcart">${a?`<img src="${esc(a)}" alt="" loading="lazy" draggable="false">`:""}<b class="dclv">${c.lv}</b></span><span class="ctn">${esc(c.n)}</span></button>`};
-  return `<section class="block"><header><span class="tab-label">En la mano</span><p>${h.cartas.length} de 5. Toca una para verla en grande.</p></header>
-    <div class="dcrow cdrop" data-drop="uso">${h.cartas.filter(id=>CARTA[id]).map(id=>mini(id,"uso")).join("")||`<p class="empty">Ninguna carta en la mano.</p>`}</div>
+  return `<section class="block"><header class="baghead"><span class="tab-label">En la mano</span><span class="pips" title="${h.cartas.length} de 5">${Array.from({length:5},(_,i)=>`<i class="${i<h.cartas.length?"on":""}"></i>`).join("")}</span></header>
+    <div class="dcrow cdrop" data-drop="uso">${h.cartas.filter(id=>CARTA[id]).map(id=>mini(id,"uso")).join("")||`<p class="empty">Vacío.</p>`}</div>
    <span class="tab-label dcbl">Baúl</span>
     <div class="dcrow cdrop small" data-drop="baul">${h.baul.filter(id=>CARTA[id]).map(id=>mini(id,"baul")).join("")||`<p class="empty">Vacío.</p>`}</div>
    ${cur?`<div class="dcbig">${domainCard(CARTA[cur]).replace('class="dh-card','class="dh-card open')}
     <div class="btns"><button class="btn ghost" data-dmove="${cur}" data-to="${enMano?"baul":"uso"}" ${dis()}>${enMano?"Guardar en el baúl":"Pasar a la mano"}</button></div>
-    ${enMano?"":`<p class="note">Pasarla a la mano cuesta su recuperación en Estrés (salvo en un descanso).</p>`}</div>`:""}</section>`}
+</div>`:""}</section>`}
 function hojaEditar(st,h,k){
   const p=PJ[ui.me];
   const known=new Set([...h.cartas,...h.baul]),D=dominiosDe(h);
@@ -1706,9 +1708,7 @@ function viewInventario(st){
   const pips=n=>Array.from({length:BOLSA_MAX},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("");
   let det="";
   if(selX){const eqd=["arma","sec","armadura"].find(kk=>s[kk]===selX.ref),btn=[];
-    if(selX.g?.slot&&!eqd)btn.push(`<button class="btn" data-eq="${esc(selX.ref)}" data-slot="${selX.g.slot}" ${dis()}>Equipar</button>`);
     if(eqd)btn.push(`<button class="btn ghost" data-eq="${esc(selX.ref)}" data-slot="" ${dis()}>Quitar</button>`);
-    const fij=(s.rap||[]).includes(selX.ref);btn.push(`<button class="btn${fij?" ghost":""}" data-rap="${esc(selX.ref)}" data-on="${fij?"":"1"}" ${dis()}>${fij?"A la mochila":"Al cinturón"}</button>`);
     if(selX.it?.k==="cons")btn.push(`<button class="btn" data-use="${selX.it.id}" ${dis()}>Usar uno</button>`);
     if(selX.it?.k==="rec")btn.push(`<button class="btn" data-brew="${selX.it.id}" ${dis()}>Preparar</button>`);
     if(selX.o?.tipo==="cons")btn.push(`<button class="btn" data-puse="${selX.ref.slice(2)}" ${dis()}>Usar uno</button>`);
@@ -1716,25 +1716,21 @@ function viewInventario(st){
     if(selX.it&&selX.it.k!=="rec"&&others.length)btn.push(`<span class="dgive"><select id="to-${selX.it.id}" aria-label="Dar a">${others.map(o=>`<option value="${o.id}">${esc(o.n)}</option>`).join("")}</select><button class="btn ghost" data-pass="${selX.it.id}" ${dis()}>Dar</button></span>`);
     if(selX.g&&!selX.o&&!selX.ref.startsWith("p:")&&!eqd)btn.push(`<button class="btn warn" data-devolver="${esc(selX.ref)}" ${dis()}>Devolver a la armería</button>`);
     const po=selX.ref.startsWith("p:")?s.propios[selX.ref.slice(2)]:null,pid=selX.ref.slice(2);
-    const pedit=!po?"":`<details class="pedit"><summary>Editar este objeto</summary><div class="fields">
+    if(po)btn.push(`<button class="btn ghost icon" data-pedit aria-label="Editar" title="Editar" aria-pressed="${!!ui.pedit}">✎</button>`);
+    const pedit=!po||!ui.pedit?"":`<div class="pedit"><div class="fields">
       <div class="field"><label for="pn-${pid}">Nombre</label><input type="text" data-pf="${pid}.n" id="pn-${pid}" value="${esc(po.n)}" maxlength="60"></div>
       ${po.base?"":`<div class="field"><label for="pt-${pid}">Tipo</label><select id="pt-${pid}" data-pf="${pid}.tipo">${Object.entries(PTIPO).map(([k2,v])=>`<option value="${k2}" ${po.tipo===k2?"selected":""}>${v}</option>`).join("")}</select></div>`}</div>
       ${po.base?"":`<div class="field"><label for="pd-${pid}">Qué hace</label><textarea data-pf="${pid}.d" id="pd-${pid}" maxlength="400">${esc(po.d||"")}</textarea></div>`}
       <div class="btns"><span class="step"><button data-pq="${pid}" data-d="-1" aria-label="Uno menos" ${dis()}>−</button><span class="v num">${po.q||1}</span><button data-pq="${pid}" data-d="1" aria-label="Uno más" ${dis()}>+</button></span>
-      <button class="btn warn" data-pdel="${pid}" ${dis()}>Borrar</button></div></details>`;
-    const cmp=selX.g?.slot?compara(st,selX.ref,eqd?null:selX.g.slot):null;
-    const cmpH=!cmp?"":cmp.err?`<p class="note warnt">${esc(cmp.err)}</p>`:cmp.D.length?`<div class="cmp"><span class="lab">${eqd?"Si lo quitas":"Si lo equipas"}</span>${cmp.D.map(d=>d.txt?`<div class="cl"><span>${d.l}</span><small>${esc(d.y)}</small></div>`
-      :`<div class="cl"><span>${d.l}</span><b class="${d.up?"up":"down"}">${d.x} → ${d.y} ${d.up?"▲":"▼"}</b></div>`).join("")}</div>`:`<p class="note">No cambia tus números.</p>`;
-    det=`<aside class="invdet" aria-label="Detalle"><div class="detcard">${fullCard(st,ui.me,selX)}</div>
-      <div class="dmeta"><span class="rtag r-${rarOf(selX)}">${RARN[rarOf(selX)]||""}</span>${selX.q>1?`<span class="note">Llevas ${selX.q}</span>`:""}${eqd?`<span class="note">Equipado</span>`:""}</div>
-      ${cmpH}<div class="btns">${btn.join("")}<button class="btn ghost" data-sel="">Cerrar</button></div>${pedit}</aside>`}
+      <button class="btn warn" data-pdel="${pid}" ${dis()}>Borrar</button></div></div>`;
+    det=`<aside class="invdet" aria-label="Detalle"><div class="detcard">${fullCard(st,ui.me,selX).replace('class="dh-card','class="dh-card open')}</div>
+      ${btn.length?`<div class="btns">${btn.join("")}</div>`:""}${pedit}</aside>`}
   return top+`<div class="invgrid">
     <div class="invcol"><section class="block equip"><span class="tab-label">Equipado</span><div class="eslots">${eslot("arma")}${s.arma&&gearInfo(st,ui.me,s.arma)?.h===2&&!s.sec?"":eslot("sec")}${eslot("armadura")}</div>
      ${invAumentos(st)}</section>${det}</div>
     <div class="invcol">${invRapido(st,all)}
-    <section class="block bag"><header class="baghead"><span class="tab-label">Mochila</span><span class="note">${L.length} cosa${L.length===1?"":"s"}</span><button class="btn${ui.iadd?" ghost":""}" data-iadd>${ui.iadd?"Cerrar":"+ Añadir"}</button></header>
+    <section class="block bag"><header class="baghead"><span class="tab-label">Mochila</span><div class="ifil" role="tablist">${KINDS.filter(([kk])=>kk==="todo"||cnt(kk)).map(([kk,l])=>`<button role="tab" data-ifil="${kk}" aria-selected="${fil===kk}">${kk!=="todo"?`<span aria-hidden="true">${KICON[kk]}</span> `:""}${l} <small class="num">${cnt(kk)}</small></button>`).join("")}</div><button class="btn${ui.iadd?" ghost":""}" data-iadd>${ui.iadd?"Cerrar":"+ Añadir"}</button></header>
      ${ui.iadd?invAnadir(st):""}
-     <div class="ifil" role="tablist">${KINDS.filter(([kk])=>kk==="todo"||cnt(kk)).map(([kk,l])=>`<button role="tab" data-ifil="${kk}" aria-selected="${fil===kk}">${kk!=="todo"?`<span aria-hidden="true">${KICON[kk]}</span> `:""}${l} <small class="num">${cnt(kk)}</small></button>`).join("")}</div>
      <div class="tiles" data-drop="lista">${F.length?F.map(x=>tile(x,"lista")).join(""):`<p class="empty">${L.length?"Nada de este tipo.":"Nada por ahora. Pulsa «+ Añadir»."}</p>`}</div></section></div>
     </div>${chPiezas(st)}`;
 }
@@ -2236,7 +2232,7 @@ async function sesGuardar(){
 async function sesImportar(){
   ui.busy=true;render();
   try{
-    const V=await (await fetch("data/sesiones-vault.json?v=74")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
+    const V=await (await fetch("data/sesiones-vault.json?v=75")).json(),S=Mapa.sesData().sesiones;let n=0,sk=0;
     // Los resúmenes que se escribieron en el mapa pasan al libro
     for(const [id,x] of Object.entries(S))if(x?.resumen&&!Libro.libro[id])await Libro.guardar(id,{titulo:"",lugar:"",tldr:[],texto:x.resumen});
     for(const e of V){
@@ -2500,7 +2496,7 @@ document.addEventListener("click",e=>{
   if(d.ifil){ui.ifil=d.ifil;render();return}
   if(d.slotpick){ui.ifil=d.slotpick==="armadura"?"armadura":"arma";render();return}
   if(d.wf){ui.wf=d.wf;render();return}
-  if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;render();return}
+  if(d.ref){ui.sel=ui.sel===d.ref?null:d.ref;ui.pedit=false;render();return}
   if(d.sel!==undefined){ui.sel=null;render();return}
   if(d.eq!==undefined){const r=d.eq,to=d.slot||null;ui.sel=null;return act(st=>A.slot(st,ui.me,r,to))}
   if(d.devolver)return act(st=>A.devolver(st,ui.me,d.devolver),"Devuelta.");
@@ -2549,6 +2545,7 @@ document.addEventListener("click",e=>{
   if(d.give)return act(st=>A.give(st,ui.me,d.give,+d.d));
   if(d.cancel)return act(st=>A.cancelPot(st,ui.me,d.cancel),"Bote cancelado.");
   if(d.chtodas!=null){ui.chtodas=!ui.chtodas;render();return}
+  if(b.hasAttribute("data-pedit")){ui.pedit=!ui.pedit;render();return}
   if(d.rap!=null)return act(st=>A.rapido(st,ui.me,d.rap,!!d.on),d.on?"Al cinturón.":"A la mochila.");
   if(d.use)return act(st=>A.use(st,ui.me,d.use),"Usado.");
   if(d.brew)return act(st=>A.brew(st,ui.me,d.brew),"Poción preparada.");
