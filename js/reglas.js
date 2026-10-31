@@ -246,7 +246,9 @@ const A={
     aviso(st,pj,`${nm} ha cambiado su ${txt}.`);log(st,`${nm} cambia su ${txt}.`);return st},
   lugar(st,id,patch){need(st);Object.assign(st.mundo.lugares[id],patch);
     if("visible" in patch)log(st,patch.visible?`Se abre el camino a ${LUGARES.find(l=>l.id===id).n}.`:`${LUGARES.find(l=>l.id===id).n} deja de estar disponible.`);return st},
-  tienda(st,id,patch){need(st);st.mundo.tiendas[id]=st.mundo.tiendas[id]||{abierta:false,nota:""};Object.assign(st.mundo.tiendas[id],patch);
+  tienda(st,id,patch){need(st);st.mundo.tiendas[id]=st.mundo.tiendas[id]||{abierta:false,nota:""};
+    if(patch.abierta)for(const [k,o] of Object.entries(st.mundo.tiendas))if(k!==id&&o?.abierta){o.abierta=false;log(st,`${TIENDA[k]?.n||k} cierra.`)} // solo una abierta a la vez
+    Object.assign(st.mundo.tiendas[id],patch);
     if("abierta" in patch)log(st,`${TIENDA[id].n} ${patch.abierta?"abre sus puertas":"cierra"}.`);return st}
 };
 
