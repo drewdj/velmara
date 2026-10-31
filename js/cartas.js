@@ -180,7 +180,7 @@ function featCard(o){
     :`<g transform="translate(80 60) scale(1)" fill="#fff" stroke="none">${GLYPH[o.glyph]||""}</g>`;
   return `<div class="dh-card dom feat" tabindex="0" style="--dom:${o.c}"><svg class="cframe" viewBox="0 0 740 640" aria-hidden="true">
    <svg width="740" height="600" viewBox="0 0 740 600">${o.imgs?.length>1?featSplit(o.imgs):scene(740,600,[o.c,mix(o.c,"#140D24")],o.glyph,o.img||null,{cy:300,size:300,emblem:!!o.emblem})}</svg>
-   <path d="M60 0 H200 V230 L130 270 L60 230Z" fill="${o.c}" stroke="#FAC472" stroke-width="6"/>${ban}
+   ${o.noban?"":`<path d="M60 0 H200 V230 L130 270 L60 230Z" fill="${o.c}" stroke="#FAC472" stroke-width="6"/>${ban}`}
    <rect y="596" width="740" height="44" fill="#FBF7EE"/><path d="M0 600 H740" stroke="${o.c}" stroke-width="12"/><path d="M0 612 H740" stroke="#F9A72B" stroke-width="4"/>
    <rect x="220" y="578" width="300" height="50" rx="25" fill="${o.c}" stroke="#F9A72B" stroke-width="4"/><text x="370" y="614" class="d-ty" text-anchor="middle">${escC(o.tipo.toUpperCase())}</text>
   </svg><div class="cbody"><h4>${escC(o.n)}</h4>${o.sub?`<div class="ctype">${escC(o.sub)}</div>`:""}
