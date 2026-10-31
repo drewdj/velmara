@@ -139,7 +139,7 @@ const A={
     log(st,`${PJ[pj].n} le da ${it.n} a ${PJ[to].n}.`);return st;
   },
   brew(st,pj,recId){
-    need(st);const r=ITEM[recId],me=st.pjs[pj];if(!me.inv[recId])no("No conoces esa receta.");
+    need(st);const r=ITEM[recId],me=st.pjs[pj];if(!Object.values(st.pjs).some(x=>x.inv?.[recId]))no("Nadie del grupo conoce esa receta.");
     const it=ITEM[r.mk];if((me.inv[it.id]||0)>=MAX_CONS)no(`Ya llevas ${MAX_CONS} de «${it.n}».`);
     me.inv[it.id]=(me.inv[it.id]||0)+1;
     log(st,`${PJ[pj].n} prepara ${it.n} (gasta: ${r.ing.replace(/\.$/,"").toLowerCase()}).`);return st;
