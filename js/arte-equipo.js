@@ -5,32 +5,32 @@
   {
     "category": "armaduras",
     "id": "gambeson",
-    "img": "img/equipo/armaduras/gambeson-v1.jpg"
+    "img": "img/equipo/armaduras/gambeson-v2.jpg"
   },
   {
     "category": "armaduras",
     "id": "cuero",
-    "img": "img/equipo/armaduras/cuero-v1.jpg"
+    "img": "img/equipo/armaduras/cuero-v2.jpg"
   },
   {
     "category": "armaduras",
     "id": "cota",
-    "img": "img/equipo/armaduras/cota-v1.jpg"
+    "img": "img/equipo/armaduras/cota-v2.jpg"
   },
   {
     "category": "armaduras",
     "id": "placas",
-    "img": "img/equipo/armaduras/placas-v1.jpg"
+    "img": "img/equipo/armaduras/placas-v2.jpg"
   },
   {
     "category": "armaduras",
     "id": "tunica",
-    "img": "img/equipo/armaduras/tunica-v1.jpg"
+    "img": "img/equipo/armaduras/tunica-v2.jpg"
   },
   {
     "category": "armaduras",
     "id": "brigantina",
-    "img": "img/equipo/armaduras/brigantina-v1.jpg"
+    "img": "img/equipo/armaduras/brigantina-v2.jpg"
   },
   {
     "category": "armaduras",
@@ -455,57 +455,57 @@
   {
     "category": "armas",
     "id": "espada-ancha",
-    "img": "img/equipo/armas/espada-ancha-v1.jpg"
+    "img": "img/equipo/armas/espada-ancha-v2.jpg"
   },
   {
     "category": "armas",
     "id": "espada-larga",
-    "img": "img/equipo/armas/espada-larga-v1.jpg"
+    "img": "img/equipo/armas/espada-larga-v2.jpg"
   },
   {
     "category": "armas",
     "id": "hacha-batalla",
-    "img": "img/equipo/armas/hacha-batalla-v1.jpg"
+    "img": "img/equipo/armas/hacha-batalla-v2.jpg"
   },
   {
     "category": "armas",
     "id": "mandoble",
-    "img": "img/equipo/armas/mandoble-v1.jpg"
+    "img": "img/equipo/armas/mandoble-v2.jpg"
   },
   {
     "category": "armas",
     "id": "maza",
-    "img": "img/equipo/armas/maza-v1.jpg"
+    "img": "img/equipo/armas/maza-v2.jpg"
   },
   {
     "category": "armas",
     "id": "martillo",
-    "img": "img/equipo/armas/martillo-v1.jpg"
+    "img": "img/equipo/armas/martillo-v2.jpg"
   },
   {
     "category": "armas",
     "id": "daga",
-    "img": "img/equipo/armas/daga-v1.jpg"
+    "img": "img/equipo/armas/daga-v2.jpg"
   },
   {
     "category": "armas",
     "id": "baston",
-    "img": "img/equipo/armas/baston-v1.jpg"
+    "img": "img/equipo/armas/baston-v2.jpg"
   },
   {
     "category": "armas",
     "id": "sable",
-    "img": "img/equipo/armas/sable-v1.jpg"
+    "img": "img/equipo/armas/sable-v2.jpg"
   },
   {
     "category": "armas",
     "id": "estoque",
-    "img": "img/equipo/armas/estoque-v1.jpg"
+    "img": "img/equipo/armas/estoque-v2.jpg"
   },
   {
     "category": "armas",
     "id": "alabarda",
-    "img": "img/equipo/armas/alabarda-v1.jpg"
+    "img": "img/equipo/armas/alabarda-v2.jpg"
   },
   {
     "category": "armas",
@@ -620,7 +620,7 @@
   {
     "category": "armas",
     "id": "gran-baston",
-    "img": "img/equipo/armas/gran-baston-v1.jpg"
+    "img": "img/equipo/armas/gran-baston-v2.jpg"
   },
   {
     "category": "armas",
