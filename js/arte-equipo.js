@@ -716,6 +716,176 @@
     "category": "armas",
     "id": "hacha-retornante",
     "img": "img/equipo/armas/hacha-retornante-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "katana-mejorada",
+    "img": "img/equipo/armas/katana-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "nudilleras-mejoradas",
+    "img": "img/equipo/armas/nudilleras-mejoradas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "cimitarra-mejorada",
+    "img": "img/equipo/armas/cimitarra-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "daga-retorcida-mejorada",
+    "img": "img/equipo/armas/daga-retorcida-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "espada-latigo-mejorada",
+    "img": "img/equipo/armas/espada-latigo-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "dardo-cuerda-mejorado",
+    "img": "img/equipo/armas/dardo-cuerda-mejorado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "pico-guerra",
+    "img": "img/equipo/armas/pico-guerra-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "baston-estoque",
+    "img": "img/equipo/armas/baston-estoque-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "abanico-cuchillas",
+    "img": "img/equipo/armas/abanico-cuchillas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "escalpelo-cirujano",
+    "img": "img/equipo/armas/escalpelo-cirujano-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "lanza-justa",
+    "img": "img/equipo/armas/lanza-justa-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "jabalinas",
+    "img": "img/equipo/armas/jabalinas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "espada-brillante-mejorada",
+    "img": "img/equipo/armas/espada-brillante-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hoja-sombria-mejorada",
+    "img": "img/equipo/armas/hoja-sombria-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "chakram-mejorado",
+    "img": "img/equipo/armas/chakram-mejorado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "daga-conjuro-mejorada",
+    "img": "img/equipo/armas/daga-conjuro-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "pistola-runica-mejorada",
+    "img": "img/equipo/armas/pistola-runica-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "rifle-arcano-mejorado",
+    "img": "img/equipo/armas/rifle-arcano-mejorado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "garrote-encantado",
+    "img": "img/equipo/armas/garrote-encantado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "cuchilla-desplazamiento",
+    "img": "img/equipo/armas/cuchilla-desplazamiento-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "brazaletes-hechizados",
+    "img": "img/equipo/armas/brazaletes-hechizados-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "gema-furia",
+    "img": "img/equipo/armas/gema-furia-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "laud-encantado",
+    "img": "img/equipo/armas/laud-encantado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "arco-astillas",
+    "img": "img/equipo/armas/arco-astillas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "hachuela-mejorada",
+    "img": "img/equipo/armas/hachuela-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "nudilleras-torpe-mejoradas",
+    "img": "img/equipo/armas/nudilleras-torpe-mejoradas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "cuchillos-arrojadizos-mejorados",
+    "img": "img/equipo/armas/cuchillos-arrojadizos-mejorados-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "capa-combate-mejorada",
+    "img": "img/equipo/armas/capa-combate-mejorada-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "escudo-runico-mejorado",
+    "img": "img/equipo/armas/escudo-runico-mejorado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "runas-foco-mejoradas",
+    "img": "img/equipo/armas/runas-foco-mejoradas-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "porra-plegable",
+    "img": "img/equipo/armas/porra-plegable-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "brazal-sobrenatural",
+    "img": "img/equipo/armas/brazal-sobrenatural-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "baston-segmentado",
+    "img": "img/equipo/armas/baston-segmentado-v1.jpg"
+  },
+  {
+    "category": "armas",
+    "id": "alambre-cuchillas",
+    "img": "img/equipo/armas/alambre-cuchillas-v1.jpg"
   }
 ];
   const collections = {armas: WEAPONS, armaduras: ARMORS, objetos: ITEMS};
