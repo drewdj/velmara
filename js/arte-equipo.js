@@ -258,6 +258,201 @@
     "img": "img/equipo/objetos/limo-rojo-v1.jpg"
   },
   {
+    "category": "objetos",
+    "id": "niebla-cisca",
+    "img": "img/equipo/objetos/niebla-cisca-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "semilla-espino",
+    "img": "img/equipo/objetos/semilla-espino-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "botella-duende",
+    "img": "img/equipo/objetos/botella-duende-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "estuche",
+    "img": "img/equipo/objetos/estuche-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "prisma",
+    "img": "img/equipo/objetos/prisma-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "flechas-perf",
+    "img": "img/equipo/objetos/flechas-perf-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "piedra-valor",
+    "img": "img/equipo/objetos/piedra-valor-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "duende-corrector",
+    "img": "img/equipo/objetos/duende-corrector-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "guardasaberes",
+    "img": "img/equipo/objetos/guardasaberes-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "cuerda",
+    "img": "img/equipo/objetos/cuerda-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "brujula",
+    "img": "img/equipo/objetos/brujula-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "anillo-retorno",
+    "img": "img/equipo/objetos/anillo-retorno-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "cenidor",
+    "img": "img/equipo/objetos/cenidor-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "rec-men-salud",
+    "img": "img/equipo/objetos/rec-men-salud-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "rec-men-res",
+    "img": "img/equipo/objetos/rec-men-res-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "rec-atributo",
+    "img": "img/equipo/objetos/rec-atributo-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "rec-salud",
+    "img": "img/equipo/objetos/rec-salud-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "rec-res",
+    "img": "img/equipo/objetos/rec-res-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "rec-estabilidad",
+    "img": "img/equipo/objetos/rec-estabilidad-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "piedra-sangre",
+    "img": "img/equipo/objetos/piedra-sangre-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "gran-piedra",
+    "img": "img/equipo/objetos/gran-piedra-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "anillo-resist",
+    "img": "img/equipo/objetos/anillo-resist-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "colgante",
+    "img": "img/equipo/objetos/colgante-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "homet",
+    "img": "img/equipo/objetos/homet-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "yorgi",
+    "img": "img/equipo/objetos/yorgi-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "piedra-canal",
+    "img": "img/equipo/objetos/piedra-canal-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "lupa",
+    "img": "img/equipo/objetos/lupa-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "moneda-eclipse",
+    "img": "img/equipo/objetos/moneda-eclipse-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "sombrero",
+    "img": "img/equipo/objetos/sombrero-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "hilo-cose",
+    "img": "img/equipo/objetos/hilo-cose-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "lente-memoria",
+    "img": "img/equipo/objetos/lente-memoria-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "silbato-vinculo",
+    "img": "img/equipo/objetos/silbato-vinculo-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "farol-polvo",
+    "img": "img/equipo/objetos/farol-polvo-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "clavo-suspension",
+    "img": "img/equipo/objetos/clavo-suspension-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "polvo-disipador",
+    "img": "img/equipo/objetos/polvo-disipador-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "ampolla-reparadora",
+    "img": "img/equipo/objetos/ampolla-reparadora-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "sal-silente",
+    "img": "img/equipo/objetos/sal-silente-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "placa-azurmetal",
+    "img": "img/equipo/objetos/placa-azurmetal-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "pasta-sutura",
+    "img": "img/equipo/objetos/pasta-sutura-v1.jpg"
+  },
+  {
     "category": "armas",
     "id": "espada-ancha",
     "img": "img/equipo/armas/espada-ancha-v1.jpg"
