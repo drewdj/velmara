@@ -158,6 +158,106 @@
     "img": "img/equipo/objetos/hierba-pipa-v1.jpg"
   },
   {
+    "category": "objetos",
+    "id": "saco-dormir",
+    "img": "img/equipo/objetos/saco-dormir-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "carcaj",
+    "img": "img/equipo/objetos/carcaj-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "antorcha",
+    "img": "img/equipo/objetos/antorcha-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "orbes",
+    "img": "img/equipo/objetos/orbes-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "capa-arcana",
+    "img": "img/equipo/objetos/capa-arcana-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "piedra-apariencia",
+    "img": "img/equipo/objetos/piedra-apariencia-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "abrojos",
+    "img": "img/equipo/objetos/abrojos-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "garfio",
+    "img": "img/equipo/objetos/garfio-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "catalejo",
+    "img": "img/equipo/objetos/catalejo-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "p-salud",
+    "img": "img/equipo/objetos/p-salud-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "p-res",
+    "img": "img/equipo/objetos/p-res-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "polvo-chasquido",
+    "img": "img/equipo/objetos/polvo-chasquido-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "p-estabilidad",
+    "img": "img/equipo/objetos/p-estabilidad-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "arcilla",
+    "img": "img/equipo/objetos/arcilla-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "humo-oscuro",
+    "img": "img/equipo/objetos/humo-oscuro-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "branquias",
+    "img": "img/equipo/objetos/branquias-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "costurador",
+    "img": "img/equipo/objetos/costurador-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "frag-mejorado",
+    "img": "img/equipo/objetos/frag-mejorado-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "leche-yakamel",
+    "img": "img/equipo/objetos/leche-yakamel-v1.jpg"
+  },
+  {
+    "category": "objetos",
+    "id": "limo-rojo",
+    "img": "img/equipo/objetos/limo-rojo-v1.jpg"
+  },
+  {
     "category": "armas",
     "id": "espada-ancha",
     "img": "img/equipo/armas/espada-ancha-v1.jpg"
