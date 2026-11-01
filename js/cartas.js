@@ -110,7 +110,7 @@ function cardSVG(glyph,img,banner,medal,tint){
 }
 const HAND='<path d="M8 30 L8 12 C8 9 12 9 12 12 L12 22 L12 7 C12 4 16 4 16 7 L16 21 L16 5 C16 2 20 2 20 5 L20 21 L20 8 C20 5 24 5 24 8 L24 26 L26 22 C28 18 32 20 30 24 L25 36 C23 40 20 42 16 42 L14 42 C10 42 8 38 8 34Z"/>';
 const SHIELD='<path d="M12 2 L22 5 C22 15 18 21 12 25 C6 21 2 15 2 5Z"/>';
-function hands(n){return `<span class="hands" aria-label="${n===2?"Dos manos":"Una mano"}">${`<svg viewBox="0 0 34 44">${HAND}</svg>`.repeat(n)}</span>`}
+function hands(n){return `<span class="hands" role="img" aria-label="${n===2?"Dos manos":"Una mano"}">${`<svg viewBox="0 0 34 44">${HAND}</svg>`.repeat(n)}</span>`}
 // "Fiable: +1..." → nombre del rasgo en negrita, como en las cartas
 function fmtFeature(f){const i=f.indexOf(":");return i>0&&i<24?`<b>${escC(f.slice(0,i))}:</b>${escC(f.slice(i+1))}`:escC(f)}
 
