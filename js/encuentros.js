@@ -72,9 +72,9 @@ const Enc={
     return ""},
   linea(a){return `Tier ${a.tier} · ${ATIPO[a.ty]} · ${ACOSTE[a.ty]} pt${ACOSTE[a.ty]>1?"s":""}`},
   view(st){
-    const t=["combate","sim"].includes(ui.encTab)?ui.encTab:"preparar",C=Saber.enc.combate;
-    return `<nav class="subtabs enct" role="tablist"><button role="tab" data-enctab="preparar" aria-selected="${t==="preparar"}">Preparar</button><button role="tab" data-enctab="combate" aria-selected="${t==="combate"}">Combate${C?" · en curso":""}</button><button role="tab" data-enctab="sim" aria-selected="${t==="sim"}">Simulador</button></nav>`
-      +(t==="sim"?Sim.view(st):t==="combate"?this.combate(st)+(typeof chBotin==="function"?chBotin():""):this.preparar(st));
+    const t=["combate","lista"].includes(ui.encTab)?ui.encTab:"preparar",C=Saber.enc.combate,nG=Object.keys(Saber.enc.lista||{}).length;
+    return `<nav class="subtabs enct" role="tablist"><button role="tab" data-enctab="preparar" aria-selected="${t==="preparar"}">Crear</button><button role="tab" data-enctab="lista" aria-selected="${t==="lista"}">Guardados${nG?` · ${nG}`:""}</button><button role="tab" data-enctab="combate" aria-selected="${t==="combate"}">Combate${C?" · en curso":""}</button></nav>`
+      +(t==="lista"?this.guardados(st):t==="combate"?this.combate(st)+(typeof chBotin==="function"?chBotin():""):this.preparar(st));
   },
   preparar(st){
     const D=this.draft(),c=this.calc(st),q=(ui.encQ||"").toLowerCase(),ft=ui.encFT||"",fty=ui.encFTy||"";
@@ -104,12 +104,19 @@ const Enc={
       <div class="encits">${items||`<p class="empty">Añade adversarios con «+» o genera uno equilibrado.</p>`}</div>
       <div class="btns"><button class="btn ghost" data-encgen>🎲 Generar equilibrado</button>${c.L.length?`<button class="btn ghost" data-encvaciar>Vaciar</button>`:""}</div>
       <div class="field"><label for="enc-n">Nombre</label><input id="enc-n" value="${esc(D.n||"")}" maxlength="60" placeholder="Por ejemplo: Emboscada en el Cruce"></div>
-      <div class="btns"><button class="btn ghost" data-encsave ${c.L.length?"":"disabled"}>Guardar</button><button class="btn" data-encstart ${c.L.length?"":"disabled"}>⚔ Empezar combate</button></div>
-      ${lista.length?`<span class="lab">Guardados</span><div class="enclist">${lista.map(([k,e])=>`<div class="encsv"><div><b>${esc(e.n||"Sin nombre")}</b><small>${Object.entries(e.items||{}).map(([id,q])=>`${q}× ${ADV[id]?.n||id}`).join(", ")}</small></div>
-        <span class="btns"><button class="btn ghost" data-encload="${k}">Cargar</button><button class="btn ghost" data-encstartk="${k}">Empezar</button><button class="btn warn" data-encdel="${k}">${ui.encDel===k?"¿Seguro?":"Borrar"}</button></span></div>`).join("")}</div>`:""}
+      <div class="btns"><button class="btn" data-encsave ${c.L.length?"":"disabled"}>${D.k&&Saber.enc.lista?.[D.k]?"Guardar cambios":"Guardar"}</button>${D.k?`<button class="btn ghost" data-encnuevo>Nuevo</button>`:""}</div>
       </section>`;
     return `<div class="encgrid">${best}${panel}</div>`;
   },
+  pts(items){return Object.entries(items||{}).reduce((t,[id,q])=>t+(ADV[id]?ACOSTE[ADV[id].ty]*q:0),0)},
+  guardados(st){
+    const lista=Object.entries(Saber.enc.lista||{}).sort((a,b)=>(b[1].t||0)-(a[1].t||0)),k=ui.encVer,e=k&&Saber.enc.lista?.[k];
+    if(e){const its=Object.entries(e.items||{}).filter(([id])=>ADV[id]);
+      return `<section class="block deco encver"><header><button class="btn ghost" data-encver="" aria-label="Volver">←</button><h2>${esc(e.n||"Sin nombre")}</h2><span class="note num">${this.pts(e.items)} pts</span></header>
+        <div class="encits">${its.map(([id,q])=>{const a=ADV[id];return `<div class="encit"><div><b>${q}× ${esc(a.n)}</b><small>${ATIPO[a.ty]} · Tier ${a.tier} · Dif ${a.dif} · PG ${a.pg}</small></div><span class="num encpts">${ACOSTE[a.ty]*q} pts</span></div>`}).join("")}</div>
+        <div class="btns"><button class="btn" data-encstartk="${k}">⚔ Empezar combate</button><button class="btn ghost" data-encload="${k}">Editar</button><button class="btn warn" data-encdel="${k}">${ui.encDel===k?"¿Seguro?":"Borrar"}</button></div></section>
+        ${Sim.view(st)}`}
+    return `<section class="block deco"><div class="enclist">${lista.map(([k,e])=>`<button class="encsv" data-encver="${k}"><b>${esc(e.n||"Sin nombre")}</b><small>${Object.entries(e.items||{}).filter(([id])=>ADV[id]).map(([id,q])=>`${q}× ${esc(ADV[id].n)}`).join(", ")}</small><span class="num encpts">${this.pts(e.items)} pts</span></button>`).join("")||`<p class="empty">Ninguno</p>`}</div></section>`},
   // Pasa un encuentro a la mesa de combate: una ficha por adversario (los esbirros, por grupos)
   empezar(st,E){
     const n=E.pjs||this.nPJs(st),M={};let o=0;
@@ -147,7 +154,7 @@ const Enc={
   set(r,v){return Saber.encSet(r,v).catch(e=>{console.error(e);toast("No se pudo guardar.",true)})},
   // Devuelve true si el clic era suyo
   click(b,st){const d=b.dataset,C=Saber.enc.combate,D=this.draft();
-    if(ui.encTab==="sim"&&Sim.click(b,st))return true;
+    if(ui.encTab==="lista"&&ui.encVer&&Sim.click(b,st))return true;
     if(d.enctab){ui.encTab=d.enctab;render();return true}
     if(d.encopen){ui.encOpen=ui.encOpen===d.encopen?null:d.encopen;render();return true}
     if(d.encft!==undefined){ui.encFT=d.encft;render();return true}
@@ -158,9 +165,12 @@ const Enc={
     if(d.enctier){ui.encTier=+d.enctier;render();return true}
     if(b.hasAttribute("data-encgen")){this.generar(st);render();return true}
     if(b.hasAttribute("data-encvaciar")){D.items={};this.save();render();return true}
-    if(b.hasAttribute("data-encsave")){const k=D.k||this.uid();D.k=k;this.save();this.set("lista/"+k,{n:D.n||"Sin nombre",items:D.items,adj:D.adj,pjs:D.pjs||0,t:Date.now()}).then(()=>toast("Encuentro guardado."));return true}
-    if(d.encload){const e=Saber.enc.lista?.[d.encload];if(e){ui.encD={k:d.encload,n:e.n,items:{...(e.items||{})},adj:{...(e.adj||{})},pjs:e.pjs||0};this.save();render()}return true}
-    if(d.encdel){if(ui.encDel!==d.encdel){ui.encDel=d.encdel;render();return true}ui.encDel=null;this.set("lista/"+d.encdel,null);return true}
+    if(b.hasAttribute("data-encsave")){if(!(D.n||"").trim()){toast("Ponle un nombre.",true);$("#enc-n")?.focus();return true}
+      const k=D.k||this.uid();this.set("lista/"+k,{n:D.n.trim(),items:D.items,adj:D.adj,pjs:D.pjs||0,t:Date.now()}).then(()=>{toast("Encuentro guardado.");ui.encD={n:"",items:{},adj:{},pjs:0};this.save();ui.encTab="lista";ui.encVer=k;ui.sim=null;ui.simLote=null;render()});return true}
+    if(b.hasAttribute("data-encnuevo")){ui.encD={n:"",items:{},adj:{},pjs:0};this.save();render();return true}
+    if(d.encver!==undefined){ui.encVer=d.encver||null;ui.sim=null;ui.simLote=null;ui.encDel=null;render();return true}
+    if(d.encload){const e=Saber.enc.lista?.[d.encload];if(e){ui.encD={k:d.encload,n:e.n,items:{...(e.items||{})},adj:{...(e.adj||{})},pjs:e.pjs||0};this.save();ui.encTab="preparar";render()}return true}
+    if(d.encdel){if(ui.encDel!==d.encdel){ui.encDel=d.encdel;render();return true}ui.encDel=null;if(ui.encVer===d.encdel)ui.encVer=null;this.set("lista/"+d.encdel,null);return true}
     if(b.hasAttribute("data-encstart")||d.encstartk){const E=d.encstartk?Saber.enc.lista?.[d.encstartk]:{n:D.n,items:D.items,pjs:D.pjs};
       if(C&&!confirm("Ya hay un combate en curso. ¿Lo sustituyes por este?"))return true;
       this.empezar(st,E).then(()=>{ui.encTab="combate";render()});return true}

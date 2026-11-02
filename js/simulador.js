@@ -19,10 +19,7 @@ const Sim={
   pjsDisp(st){return PJS.filter(p=>st.hojas[p.id])},
   elegidos(st){const c=this.cfg(),D=this.pjsDisp(st);return c.pjs?D.filter(p=>c.pjs.includes(p.id)):D.filter(p=>!p.prueba)},
   // Adversarios del encuentro elegido: {id: cantidad}
-  items(st){const c=this.cfg();
-    if(c.src==="comb"){const C=Saber.enc.combate,M={};Object.values(C?.E||{}).forEach(e=>{if(!Enc.fuera(e))M[e.id]=(M[e.id]||0)+1});return M}
-    if(c.src.startsWith("k:"))return {...(Saber.enc.lista?.[c.src.slice(2)]?.items||{})};
-    return {...Enc.draft().items}},
+  items(st){return {...(Saber.enc.lista?.[ui.encVer]?.items||{})}},
   // ---------- dados ----------
   d(n){return 1+Math.floor(Math.random()*n)},
   dados(s){s=String(s||"").replace(/\s/g,"");const m=s.match(/^(\d*)d(\d+)([+-]\d+)?$/i);
@@ -214,10 +211,8 @@ const Sim={
     const lista=Object.entries(Saber.enc.lista||{}).sort((a,b)=>(b[1].t||0)-(a[1].t||0));
     const nItems=Object.values(I).reduce((t,q)=>t+q,0);
     const chip=(attr,v,on,l)=>`<button class="chip" ${attr}="${v}" aria-pressed="${on}">${l}</button>`;
-    const cfg=`<section class="block deco simcfg"><header><h2>Simulador</h2></header>
+    const cfg=`<section class="block deco simcfg"><header><h2>Simular</h2></header>
       <div class="erow"><span class="lab">PJs</span><span class="btns">${D.map(p=>chip("data-simpj",p.id,sel.includes(p.id),esc(st.pjs[p.id]?.n||p.n))).join("")||`<span class="note">Ninguno</span>`}</span></div>
-      <div class="erow"><span class="lab">Encuentro</span><select id="sim-src" aria-label="Encuentro"><option value="draft"${c.src==="draft"?" selected":""}>En preparación</option>${Saber.enc.combate?`<option value="comb"${c.src==="comb"?" selected":""}>Combate en curso</option>`:""}${lista.map(([k,e])=>`<option value="k:${k}"${c.src==="k:"+k?" selected":""}>${esc(e.n||"Sin nombre")}</option>`).join("")}</select></div>
-      <p class="simits">${Object.entries(I).filter(([id])=>ADV[id]).map(([id,q])=>`<span>${q}× ${esc(ADV[id].n)}</span>`).join("")||`<span class="note">Sin adversarios</span>`}</p>
       <div class="erow"><span class="lab">Distancia</span><span class="btns">${[[6,"Cercana"],[12,"Lejana"],[20,"Muy lejana"]].map(([v,l])=>chip("data-simdist",v,c.dist===v,l)).join("")}</span></div>
       <div class="erow"><span class="lab">Miedo inicial</span><span class="step"><button data-simfear="-1" aria-label="Menos Miedo">−</button><span class="v num">${c.miedo??sel.length}</span><button data-simfear="1" aria-label="Más Miedo">+</button></span></div>
       <div class="erow"><span class="lab">DM</span><span class="btns">${Object.entries(SIM_ESTILO).map(([k,v])=>chip("data-simest",k,c.estilo===k,v.l)).join("")}</span></div>
@@ -261,5 +256,5 @@ const Sim={
     if(d.simi!==undefined){ui.simI=+d.simi;render();return true}
     return false},
   input(t){if(t.id==="sim-i"){ui.simI=+t.value;render();const r=$("#sim-i");if(r)r.focus();return true}return false},
-  change(t){if(t.id==="sim-src"){this.cfg().src=t.value;this.saveCfg();ui.sim=null;ui.simLote=null;render();return true}return false}
+  change(t){return false}
 };
