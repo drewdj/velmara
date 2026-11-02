@@ -72,9 +72,9 @@ const Enc={
     return ""},
   linea(a){return `Tier ${a.tier} · ${ATIPO[a.ty]} · ${ACOSTE[a.ty]} pt${ACOSTE[a.ty]>1?"s":""}`},
   view(st){
-    const t=ui.encTab==="combate"?"combate":"preparar",C=Saber.enc.combate;
-    return `<nav class="subtabs enct" role="tablist"><button role="tab" data-enctab="preparar" aria-selected="${t==="preparar"}">Preparar</button><button role="tab" data-enctab="combate" aria-selected="${t==="combate"}">Combate${C?" · en curso":""}</button></nav>`
-      +(t==="combate"?this.combate(st)+(typeof chBotin==="function"?chBotin():""):this.preparar(st));
+    const t=["combate","sim"].includes(ui.encTab)?ui.encTab:"preparar",C=Saber.enc.combate;
+    return `<nav class="subtabs enct" role="tablist"><button role="tab" data-enctab="preparar" aria-selected="${t==="preparar"}">Preparar</button><button role="tab" data-enctab="combate" aria-selected="${t==="combate"}">Combate${C?" · en curso":""}</button><button role="tab" data-enctab="sim" aria-selected="${t==="sim"}">Simulador</button></nav>`
+      +(t==="sim"?Sim.view(st):t==="combate"?this.combate(st)+(typeof chBotin==="function"?chBotin():""):this.preparar(st));
   },
   preparar(st){
     const D=this.draft(),c=this.calc(st),q=(ui.encQ||"").toLowerCase(),ft=ui.encFT||"",fty=ui.encFTy||"";
@@ -147,6 +147,7 @@ const Enc={
   set(r,v){return Saber.encSet(r,v).catch(e=>{console.error(e);toast("No se pudo guardar.",true)})},
   // Devuelve true si el clic era suyo
   click(b,st){const d=b.dataset,C=Saber.enc.combate,D=this.draft();
+    if(ui.encTab==="sim"&&Sim.click(b,st))return true;
     if(d.enctab){ui.encTab=d.enctab;render();return true}
     if(d.encopen){ui.encOpen=ui.encOpen===d.encopen?null:d.encopen;render();return true}
     if(d.encft!==undefined){ui.encFT=d.encft;render();return true}
@@ -173,10 +174,10 @@ const Enc={
       this.set(`combate/E/${this.uid()}`,{id,o,n:a.n,pg:0,es:0,...(a.ty==="Minion"?{min:this.pjs(st),caidos:0}:{})});return true}
     if(b.hasAttribute("data-encfin")){if(!ui.encFin){ui.encFin=true;render();return true}ui.encFin=false;this.set("combate",null);return true}
     return false},
-  input(t){if(t.id==="enc-q"){ui.encQ=t.value;render();const q=$("#enc-q");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}return true}
+  input(t){if(Sim.input(t))return true;if(t.id==="enc-q"){ui.encQ=t.value;render();const q=$("#enc-q");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}return true}
     if(t.id==="enc-n"){this.draft().n=t.value.slice(0,60);this.save();return true}
     return false},
-  change(t){const C=Saber.enc.combate;
+  change(t){const C=Saber.enc.combate;if(Sim.change(t))return true;
     if(t.dataset?.encadj){const D=this.draft();if(t.checked)D.adj[t.dataset.encadj]=true;else delete D.adj[t.dataset.encadj];this.save();render();return true}
     return false},
   key(e){return false}
